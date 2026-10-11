@@ -2,7 +2,7 @@
   "name": "IlSboboz",
   "short_name": "IlSboboz",
   "start_url": "./index.html",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#111111",
   "theme_color": "#b8482f",
   "icons": [
