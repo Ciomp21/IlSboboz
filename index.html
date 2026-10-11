@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    --u:1px;
     --felt-1:#0d3b2e;
     --felt-2:#0a2e24;
     --cream:#f3ecd9;
@@ -38,30 +39,30 @@
   }
   h1,h2,h3,.display{ font-family:'Fraunces',serif; font-weight:700; letter-spacing:0.01em; }
 
-  .btn-primary{ background:var(--ember); color:var(--cream); border:none; padding:13px 32px; border-radius:10px; font-family:'Inter',sans-serif; font-weight:600; font-size:0.98rem; cursor:pointer; transition:transform .12s ease, background .15s ease; }
+  .btn-primary{ background:var(--ember); color:var(--cream); border:none; padding:calc(13 * var(--u)) calc(32 * var(--u)); border-radius:calc(10 * var(--u)); font-family:'Inter',sans-serif; font-weight:600; font-size:0.98rem; cursor:pointer; transition:transform .12s ease, background .15s ease; }
   .btn-primary:hover{background:#c9563a; transform:translateY(-1px);}
   .btn-primary:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
-  .btn-secondary{ background:transparent; color:var(--cream); border:1px solid rgba(243,236,217,0.35); padding:9px 20px; border-radius:10px; font-family:'Inter',sans-serif; font-weight:500; font-size:0.88rem; cursor:pointer; }
+  .btn-secondary{ background:transparent; color:var(--cream); border:1px solid rgba(243,236,217,0.35); padding:calc(9 * var(--u)) calc(20 * var(--u)); border-radius:calc(10 * var(--u)); font-family:'Inter',sans-serif; font-weight:500; font-size:0.88rem; cursor:pointer; }
   .btn-secondary:hover{border-color:var(--gold-bright); color:var(--gold-bright);}
 
   /* ---------- Setup screen ---------- */
 
   #setup-screen h2{ color:var(--gold-bright); margin:0; font-size:1.3rem; }
-  #setup-screen p{ color:rgba(243,236,217,0.7); max-width:480px; text-align:center; font-size:0.86rem; margin:0; }
-  #setup-hand{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:680px; }
+  #setup-screen p{ color:rgba(243,236,217,0.7); max-width:calc(480 * var(--u)); text-align:center; font-size:0.86rem; margin:0; }
+  #setup-hand{ display:flex; gap:calc(8 * var(--u)); flex-wrap:wrap; justify-content:center; max-width:calc(680 * var(--u)); }
 
   /* ---------- Game screen ---------- */
   #game-screen{
     height:var(--app-height); flex-direction:column; overflow:hidden;
-    padding: max(env(safe-area-inset-top), var(--top-gap)) max(env(safe-area-inset-right), 6px) max(env(safe-area-inset-bottom), 8px) max(env(safe-area-inset-left), 6px);
+    padding: max(env(safe-area-inset-top), var(--top-gap)) max(env(safe-area-inset-right), (6 * var(--u))) max(env(safe-area-inset-bottom), (8 * var(--u))) max(env(safe-area-inset-left), (6 * var(--u)));
   }
-  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:4px 10px; min-height:42px; background:rgba(0,0,0,0.32); border:1px solid rgba(232,192,95,0.18); border-radius:14px; flex:0 0 auto; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:calc(4 * var(--u)) calc(10 * var(--u)); min-height:calc(42 * var(--u)); background:rgba(0,0,0,0.32); border:1px solid rgba(232,192,95,0.18); border-radius:calc(14 * var(--u)); flex:0 0 auto; }
   .topbar h2{margin:0; font-size:1.85rem; line-height:1; color:var(--gold-bright);}
-  .topbar-actions{display:flex; gap:6px;}
-  .icon-btn{ background:rgba(255,255,255,0.04); border:1px solid rgba(243,236,217,0.3); color:var(--cream); border-radius:9px; padding:0 11px; min-height:32px; font-size:0.74rem; cursor:pointer; }
+  .topbar-actions{display:flex; gap:calc(6 * var(--u));}
+  .icon-btn{ background:rgba(255,255,255,0.04); border:1px solid rgba(243,236,217,0.3); color:var(--cream); border-radius:calc(9 * var(--u)); padding:0 calc(11 * var(--u)); min-height:calc(32 * var(--u)); font-size:0.74rem; cursor:pointer; }
   .icon-btn:hover{border-color:var(--gold-bright);}
 
-  .status-strip{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:10px; padding:0 10px; height:24px; overflow:hidden; font-size:0.78rem; white-space:nowrap; }
+  .status-strip{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:calc(10 * var(--u)); padding:0 calc(10 * var(--u)); height:calc(24 * var(--u)); overflow:hidden; font-size:0.78rem; white-space:nowrap; }
   #turn-banner{ flex:0 0 auto; }
   #turn-banner{ font-family:'Fraunces',serif; color:var(--gold-bright); font-weight:700; }
   #last-action{ color:rgba(243,236,217,0.6); font-style:italic; min-width:0; overflow:hidden; text-overflow:ellipsis; }
@@ -70,18 +71,18 @@
     position:relative;
     flex:1;
     min-height:0;
-    width:min(960px, 100%);
-    margin:4px auto 0;
+    width:min((960 * var(--u)), 100%);
+    margin:calc(4 * var(--u)) auto 0;
     background: radial-gradient(ellipse at 50% 30%, #175a41 0%, #0d3b2a 60%, #082a1d 100%);
-    border:7px solid var(--wood);
-    border-radius:24px;
+    border:calc(7 * var(--u)) solid var(--wood);
+    border-radius:calc(24 * var(--u));
     box-shadow: inset 0 0 70px rgba(0,0,0,.55), 0 10px 30px rgba(0,0,0,.45);
     overflow:visible;
     display:flex;
     flex-direction:column;
     justify-content:center;
-    gap:6px;
-    padding:4px;
+    gap:calc(6 * var(--u));
+    padding:calc(4 * var(--u));
   }
   /* Opponents sit in normal flow above the piles -- no absolute/arc
      positioning, so they can never overlap the cards in the middle
@@ -91,83 +92,83 @@
     flex-wrap:wrap;
     justify-content:center;
     align-content:center;
-    gap:5px;
+    gap:calc(5 * var(--u));
     flex:0 0 auto;
-    margin-top:4px;
-    padding:5px;
+    margin-top:calc(4 * var(--u));
+    padding:calc(5 * var(--u));
     background:rgba(0,0,0,0.22);
     border:1px solid rgba(232,192,95,0.14);
-    border-radius:16px;
+    border-radius:calc(16 * var(--u));
   }
   .opp-seat{
-    width:250px;
+    width:calc(250 * var(--u));
     background:rgba(0,0,0,0.32);
     border:1px solid rgba(232,192,95,0.18);
-    border-left:5px solid var(--ninja-color, var(--gold));
-    border-radius:10px;
-    padding:6px 8px;
+    border-left:calc(5 * var(--u)) solid var(--ninja-color, var(--gold));
+    border-radius:calc(10 * var(--u));
+    padding:calc(6 * var(--u)) calc(8 * var(--u));
     transition:box-shadow .2s ease, border-color .2s ease;
   }
   .opp-seat.active-turn{ border-color:var(--ninja-accent, var(--gold-bright)); box-shadow:0 0 0 1px var(--ninja-accent, var(--gold-bright)), 0 0 16px var(--ninja-color-bg, rgba(232,192,95,.35)); }
   .opp-seat.black-ninja{ border-left-color:#000; }
   .opp-seat.black-ninja .opp-elem{ color:#cfcfcf; background:rgba(255,255,255,.1); }
   .opp-seat.black-ninja.active-turn{ border-color:#000; background:rgba(0,0,0,0.7); box-shadow:0 0 0 2px #000, 0 0 16px rgba(0,0,0,.95); }
-  .opp-head{display:flex; align-items:center; margin-bottom:4px; gap:6px; min-height:22px;}
+  .opp-head{display:flex; align-items:center; margin-bottom:calc(4 * var(--u)); gap:calc(6 * var(--u)); min-height:calc(22 * var(--u));}
   .opp-name{font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem;}
-  .opp-elem{font-size:0.62rem; padding:2px 7px; border-radius:20px; background:var(--ninja-color-bg, rgba(232,192,95,.15)); color:var(--ninja-accent, var(--gold-bright)); text-transform:lowercase; white-space:nowrap;}
-  .opp-counts{display:flex; align-items:center; gap:6px; margin-left:auto; margin-right:2px;}
-  .opp-hand-row{display:flex; align-items:center; gap:4px; margin-bottom:4px; min-height:auto;}
+  .opp-elem{font-size:0.62rem; padding:calc(2 * var(--u)) calc(7 * var(--u)); border-radius:calc(20 * var(--u)); background:var(--ninja-color-bg, rgba(232,192,95,.15)); color:var(--ninja-accent, var(--gold-bright)); text-transform:lowercase; white-space:nowrap;}
+  .opp-counts{display:flex; align-items:center; gap:calc(6 * var(--u)); margin-left:auto; margin-right:calc(2 * var(--u));}
+  .opp-hand-row{display:flex; align-items:center; gap:calc(4 * var(--u)); margin-bottom:calc(4 * var(--u)); min-height:auto;}
   .opp-finished-badge{
     font-size:0.8rem; color:var(--gold-bright); font-weight:600;
     padding:0;
   }
   .seat-finished{ opacity:0.85; }
-  .hand-count{font-size:0.74rem; color:rgba(243,236,217,.8); display:inline-flex; align-items:center; gap:4px; font-weight:600;}
-  .mini-card-icon{ display:inline-block; width:9px; height:12px; border-radius:2px; background:var(--cream); box-shadow:2px 2px 0 rgba(243,236,217,.35); }
+  .hand-count{font-size:0.74rem; color:rgba(243,236,217,.8); display:inline-flex; align-items:center; gap:calc(4 * var(--u)); font-weight:600;}
+  .mini-card-icon{ display:inline-block; width:calc(9 * var(--u)); height:calc(12 * var(--u)); border-radius:calc(2 * var(--u)); background:var(--cream); box-shadow:2px 2px 0 rgba(243,236,217,.35); }
   .hand-count-empty{font-size:0.66rem; color:rgba(243,236,217,.4); font-style:italic;}
-  .opp-stacks-row{display:flex; gap:3px; flex-wrap:nowrap;}
+  .opp-stacks-row{display:flex; gap:calc(3 * var(--u)); flex-wrap:nowrap;}
 
   #piles-row{
     flex:0 0 auto;
-    display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap;
+    display:flex; gap:calc(14 * var(--u)); align-items:center; justify-content:center; flex-wrap:wrap;
   }
-  .pile-wrap{display:flex; flex-direction:column; align-items:center; gap:5px;}
+  .pile-wrap{display:flex; flex-direction:column; align-items:center; gap:calc(5 * var(--u));}
   #draw-pile-visual, #sboboz-pile-visual, #super-pile-visual{
-    width:calc(var(--card-w) + 34px);
+    width:calc(var(--card-w) + (34 * var(--u)));
     height:var(--card-h);
     display:flex;
     justify-content:center;
   }
   .pile-label-unused{font-size:0.64rem; text-transform:lowercase; color:rgba(243,236,217,0.55); letter-spacing:0.02em;}
   .pile-count{font-size:0.68rem; color:rgba(243,236,217,0.75); font-weight:600; line-height:1.1; min-height:1.1em; white-space:nowrap; text-transform:lowercase;}
-  .pile-count b{color:var(--gold-bright); font-weight:700; margin-left:3px;}
+  .pile-count b{color:var(--gold-bright); font-weight:700; margin-left:calc(3 * var(--u));}
   .pile-stack{position:relative; width:var(--card-w); height:var(--card-h);}
   .pile-stack .card-back{position:absolute;}
   .streak-badge{
-    position:absolute; top:-8px; right:-12px; z-index:10;
+    position:absolute; top:calc(-8 * var(--u)); right:calc(-12 * var(--u)); z-index:10;
     background:var(--gold-bright); color:var(--ink); font-weight:800; font-size:0.72rem;
-    padding:2px 7px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.45);
+    padding:calc(2 * var(--u)) calc(7 * var(--u)); border-radius:calc(12 * var(--u)); box-shadow:0 2px 6px rgba(0,0,0,.45);
     font-family:'Fraunces',serif;
   }
 
-  #table-dropzone{ padding:8px; border-radius:16px; transition:box-shadow .2s ease, background .2s ease; cursor:default; }
+  #table-dropzone{ padding:calc(8 * var(--u)); border-radius:calc(16 * var(--u)); transition:box-shadow .2s ease, background .2s ease; cursor:default; }
   #table-dropzone.droppable{ cursor:pointer; box-shadow:0 0 0 2px rgba(232,192,95,.35); }
   #table-dropzone.droppable.has-selection{ box-shadow:0 0 0 3px var(--gold-bright), 0 0 26px rgba(232,192,95,.5); background:rgba(232,192,95,0.06); }
 
   .constraint-banner{
-    align-self:center; flex:0 0 auto; margin-top:6px;
+    align-self:center; flex:0 0 auto; margin-top:calc(6 * var(--u));
     background:rgba(184,72,47,0.3); border:1px solid var(--ember); color:var(--cream);
-    padding:4px 14px; border-radius:10px; font-size:0.74rem; line-height:1.25; text-align:center; max-width:94%;
-    min-height:26px; display:flex; align-items:center; justify-content:center; visibility:hidden;
+    padding:calc(4 * var(--u)) calc(14 * var(--u)); border-radius:calc(10 * var(--u)); font-size:0.74rem; line-height:1.25; text-align:center; max-width:94%;
+    min-height:calc(26 * var(--u)); display:flex; align-items:center; justify-content:center; visibility:hidden;
   }
 
   #toast-stack{
     position:fixed; transform:translate(-50%,-50%); z-index:1200;
-    display:flex; flex-direction:column; align-items:center; gap:6px; pointer-events:none;
+    display:flex; flex-direction:column; align-items:center; gap:calc(6 * var(--u)); pointer-events:none;
   }
   .effect-toast{
     background:rgba(8,18,13,0.62); color:var(--gold-bright); font-family:'Fraunces',serif;
-    font-weight:700; padding:7px 16px; border-radius:30px; font-size:0.98rem; text-align:center;
+    font-weight:700; padding:calc(7 * var(--u)) calc(16 * var(--u)); border-radius:calc(30 * var(--u)); font-size:0.98rem; text-align:center;
     opacity:0; transform:translateY(8px); transition:opacity .28s ease, transform .28s ease;
     border:1px solid rgba(232,192,95,.45); backdrop-filter:blur(2px);
   }
@@ -177,8 +178,8 @@
   /* Cards */
   .card{
     width:var(--card-w); height:var(--card-h);
-    border-radius:7px; background:var(--cream); color:var(--ink);
-    display:flex; flex-direction:column; justify-content:space-between; padding:4px 5px;
+    border-radius:calc(7 * var(--u)); background:var(--cream); color:var(--ink);
+    display:flex; flex-direction:column; justify-content:space-between; padding:calc(4 * var(--u)) calc(5 * var(--u));
     font-family:'Fraunces',serif; font-weight:700; font-size:0.88rem;
     box-shadow:0 3px 8px rgba(0,0,0,0.35); position:relative; user-select:none; flex-shrink:0; text-align:left;
   }
@@ -187,17 +188,17 @@
   .card .suit-mid{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:1.35rem; opacity:0.85; }
   .card .corner{line-height:1; font-size:0.8rem;}
   .card .corner.bottom{align-self:flex-end; transform:rotate(180deg);}
-  .jolly-badge{ position:absolute; bottom:2px; right:3px; font-size:0.55rem; }
-  .card.small{ width:var(--small-w); height:var(--small-h); font-size:0.68rem; padding:4px 4px; border-radius:6px; }
+  .jolly-badge{ position:absolute; bottom:calc(2 * var(--u)); right:calc(3 * var(--u)); font-size:0.55rem; }
+  .card.small{ width:var(--small-w); height:var(--small-h); font-size:0.68rem; padding:calc(4 * var(--u)) calc(4 * var(--u)); border-radius:calc(6 * var(--u)); }
   .card.small .suit-mid{font-size:1.05rem;}
   .card.small .corner{font-size:0.62rem;}
   .card-back{
-    width:var(--card-w); height:var(--card-h); border-radius:7px;
+    width:var(--card-w); height:var(--card-h); border-radius:calc(7 * var(--u));
     background: repeating-linear-gradient(45deg, var(--slate), var(--slate) 6px, #2d4756 6px, #2d4756 12px);
     border:2px solid rgba(232,192,95,0.4); box-shadow:0 3px 8px rgba(0,0,0,0.35); flex-shrink:0;
   }
-  .card-back.small{width:var(--small-w); height:var(--small-h); border-radius:6px; border-width:1.5px;}
-  .card-back.pile-offset{margin-left:calc(-1 * (var(--card-w) - 17px));}
+  .card-back.small{width:var(--small-w); height:var(--small-h); border-radius:calc(6 * var(--u)); border-width:1.5px;}
+  .card-back.pile-offset{margin-left:calc(-1 * (var(--card-w) - (17 * var(--u))));}
   .card-back.pile-offset:first-child{margin-left:0;}
 
   .card.selectable{cursor:pointer; transition:transform .12s ease;}
@@ -210,44 +211,44 @@
   /* Paired stack slots (face-up over face-down) */
   .stack-slot{ position:relative; width:var(--card-w); height:var(--card-h); flex-shrink:0; }
   .stack-slot.small{ width:var(--small-w); height:var(--small-h); }
-  .stack-under{ position:absolute; top:4px; left:4px; opacity:0.55; z-index:1; }
+  .stack-under{ position:absolute; top:calc(4 * var(--u)); left:calc(4 * var(--u)); opacity:0.55; z-index:1; }
   .stack-top{ position:absolute; top:0; left:0; z-index:2; }
 
   /* Human zone */
-  #human-area{ padding:6px 10px 8px; margin-top:4px; background:rgba(0,0,0,0.34); border:1px solid rgba(232,192,95,0.18); border-radius:14px; flex:0 0 auto; }
-  .zone-label{ font-size:0.66rem; line-height:1.2; height:1.2em; white-space:nowrap; overflow:hidden; text-transform:lowercase; color:rgba(243,236,217,0.55); margin-bottom:3px; letter-spacing:0.02em; }
-  .human-zones{display:flex; flex-direction:column; gap:5px;}
-  .cards-row{display:flex; gap:5px; flex-wrap:wrap; min-height:var(--card-h); align-items:flex-start;}
-  #human-stacks.cards-row{ flex-wrap:nowrap; height:calc(var(--card-h) + 5px); min-height:0; }
-  #human-hand.cards-row{ flex-wrap:nowrap; gap:0; overflow-x:auto; overflow-y:hidden; height:calc(var(--card-h) + 14px); min-height:0; padding-top:12px; scrollbar-width:none; }
+  #human-area{ padding:calc(6 * var(--u)) calc(10 * var(--u)) calc(8 * var(--u)); margin-top:calc(4 * var(--u)); background:rgba(0,0,0,0.34); border:1px solid rgba(232,192,95,0.18); border-radius:calc(14 * var(--u)); flex:0 0 auto; }
+  .zone-label{ font-size:0.66rem; line-height:1.2; height:1.2em; white-space:nowrap; overflow:hidden; text-transform:lowercase; color:rgba(243,236,217,0.55); margin-bottom:0; letter-spacing:0.02em; text-align:center;}
+  .human-zones{display:flex; flex-direction:column; gap:calc(5 * var(--u));}
+  .cards-row{display:flex; gap:calc(5 * var(--u)); flex-wrap:wrap; min-height:var(--card-h); align-items:flex-start;}
+  #human-stacks.cards-row{ flex-wrap:nowrap; height:calc(var(--card-h) + (5 * var(--u))); min-height:0; }
+  #human-hand.cards-row{ flex-wrap:nowrap; gap:0; overflow-x:auto; overflow-y:hidden; height:calc(var(--card-h) + (14 * var(--u))); min-height:0; padding-top:calc(10 * var(--u)); scrollbar-width:none; }
   #human-stacks.cards-row, #human-hand.cards-row{ justify-content:safe center; }
   #human-hand.cards-row::-webkit-scrollbar{ display:none; }
-  .human-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:6px; flex-wrap:nowrap; gap:8px; height:40px; }
+  .human-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:calc(6 * var(--u)); flex-wrap:nowrap; gap:calc(8 * var(--u)); height:calc(40 * var(--u)); }
   .action-msg{font-size:0.78rem; line-height:1.2; color:rgba(243,236,217,0.75); flex:1 1 auto; min-width:0; max-height:2.4em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
-  #btn-pickup{ flex:0 0 auto; min-height:36px; white-space:nowrap; }
+  #btn-pickup{ flex:0 0 auto; min-height:calc(36 * var(--u)); white-space:nowrap; }
 
   /* Modal */
-  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:50; padding:18px; }
-  .modal-box{ background:var(--felt-1); border:1px solid var(--gold-bright); border-radius:14px; padding:20px 20px; max-width:420px; width:100%; text-align:center; max-height:calc(var(--app-height) - 48px); overflow-y:auto; }
-  .modal-box-wide{ max-width:620px; }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:50; padding:calc(18 * var(--u)); }
+  .modal-box{ background:var(--felt-1); border:1px solid var(--gold-bright); border-radius:calc(14 * var(--u)); padding:calc(20 * var(--u)) calc(20 * var(--u)); max-width:calc(420 * var(--u)); width:100%; text-align:center; max-height:calc(var(--app-height) - (48 * var(--u))); overflow-y:auto; }
+  .modal-box-wide{ max-width:calc(620 * var(--u)); }
   .modal-scroll-body{ max-height:65vh; overflow-y:auto; }
-  .modal-header-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+  .modal-header-row{ display:flex; align-items:center; justify-content:space-between; gap:calc(12 * var(--u)); margin-bottom:calc(10 * var(--u)); }
   .modal-header-row h3{ margin:0; flex:1; text-align:center; }
   .modal-close-x{
-    flex:0 0 auto; width:28px; height:28px; border-radius:50%;
+    flex:0 0 auto; width:calc(28 * var(--u)); height:calc(28 * var(--u)); border-radius:50%;
     background:rgba(255,255,255,0.08); border:1px solid rgba(232,192,95,0.3);
     color:var(--cream); font-size:1rem; line-height:1; cursor:pointer;
   }
   .modal-close-x:hover{ background:rgba(232,192,95,0.2); border-color:var(--gold-bright); }
-  .modal-box h3{color:var(--gold-bright); margin:0 0 10px;}
-  .modal-box p{color:rgba(243,236,217,0.8); font-size:0.85rem; margin:0 0 16px;}
-  .modal-btns{display:flex; gap:9px; justify-content:center; flex-wrap:wrap;}
-  .modal-card-row{display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; --card-w:46px; --card-h:65px;}
+  .modal-box h3{color:var(--gold-bright); margin:0 0 calc(10 * var(--u));}
+  .modal-box p{color:rgba(243,236,217,0.8); font-size:0.85rem; margin:0 0 calc(16 * var(--u));}
+  .modal-btns{display:flex; gap:calc(9 * var(--u)); justify-content:center; flex-wrap:wrap;}
+  .modal-card-row{display:flex; gap:calc(6 * var(--u)); flex-wrap:wrap; justify-content:center; margin-top:calc(10 * var(--u)); --card-w:46px; --card-h:65px;}
   .modal-card-row .card{ font-size:0.74rem; }
   .modal-card-row .card .corner{ font-size:0.66rem; }
   .modal-card-row .card .suit-mid{ font-size:1.1rem; }
   .rank-choice-btn{
-    width:36px; height:36px; border-radius:8px; border:1px solid rgba(232,192,95,0.4);
+    width:calc(36 * var(--u)); height:calc(36 * var(--u)); border-radius:calc(8 * var(--u)); border:1px solid rgba(232,192,95,0.4);
     background:rgba(232,192,95,0.08); color:var(--cream); font-family:'Fraunces',serif; font-weight:700;
     cursor:pointer; font-size:0.82rem;
   }
@@ -255,10 +256,10 @@
   .rank-choice-btn.disabled, .rank-choice-btn:disabled{opacity:0.25; cursor:not-allowed;}
 
   .rank-row{
-    display:flex; justify-content:space-between; padding:7px 10px; margin-bottom:5px;
-    border-radius:8px; background:rgba(255,255,255,0.05); font-size:0.9rem;
+    display:flex; justify-content:space-between; padding:calc(7 * var(--u)) calc(10 * var(--u)); margin-bottom:calc(5 * var(--u));
+    border-radius:calc(8 * var(--u)); background:rgba(255,255,255,0.05); font-size:0.9rem;
   }
-  .rank-row .rank-num{ color:var(--gold-bright); font-weight:700; margin-right:8px; }
+  .rank-row .rank-num{ color:var(--gold-bright); font-weight:700; margin-right:calc(8 * var(--u)); }
   .rank-row.rank-you{ background:rgba(232,192,95,0.18); border:1px solid rgba(232,192,95,0.4); font-weight:600; }
 
   #anim-layer{ position:fixed; inset:0; pointer-events:none; z-index:45; }
@@ -357,7 +358,7 @@
   .tagline{ margin:0 0 10px; color:rgba(243,236,217,.7); font-size:.9rem; padding:0 10px; }
   .ninja-row{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
   .ninja-row span{ font-size:.66rem; font-weight:600; padding:2px 9px; border-radius:20px; background:var(--c); color:#111; letter-spacing:.03em; }
-  .ninja-row span.dark{ color:#ddd; border:1px solid #444; }
+  .ninja-row span.dark{ color:#ddd; border:1px solid #000; }
   .home-menu{ width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex:0 0 auto; }
   .menu-btn{
     display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; cursor:pointer; color:var(--cream);
@@ -427,8 +428,8 @@
   .seat-row.mine{ border-color:rgba(232,192,95,.5); background:rgba(232,192,95,.1); }
   .seat-row.empty{ border-style:dashed; justify-content:center; background:transparent; }
   .s-ava{ width:34px; height:34px; border-radius:50%; background:rgba(232,192,95,.2); display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex:0 0 auto; }
-  .s-ava.bot{ background:var(--c); color:#111; font-family:'Fraunces',serif; font-weight:700; font-size:1rem; }
-  .s-ava.bot[style*="#111"]{ color:#ddd; border:1px solid #555; }
+  .s-ava.bot{ background:var(--c); color:#000; font-family:'Fraunces',serif; font-weight:700; font-size:1rem; }
+  .s-ava.bot[style*="#000"]{ color:#ddd; border:1px solid #000; }
   .s-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
   .s-tags{ display:flex; gap:4px; }
   .s-tags em{ font-style:normal; font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(255,255,255,.12); }
@@ -559,11 +560,11 @@
   /* table: the cards are centred on the felt; the captions hang below them */
   #table-surface{
     background:radial-gradient(ellipse at 50% 50%, #175a41 0%, #0d3b2a 60%, #082a1d 100%);
-    padding:22px 8px !important; gap:0 !important;
+    padding:calc(22 * var(--u)) calc(8 * var(--u)) !important; gap:0 !important;
   }
   .pile-wrap{ position:relative; gap:0; }
-  .pile-count{ position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:4px; }
-  .constraint-banner{ position:absolute; top:3px; left:50%; transform:translateX(-50%); margin:0 !important; min-height:20px !important; padding:2px 12px !important; z-index:4; width:max-content; }
+  .pile-count{ position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:calc(4 * var(--u)); }
+  .constraint-banner{ position:absolute; top:calc(3 * var(--u)); left:50%; transform:translateX(-50%); margin:0 !important; min-height:calc(20 * var(--u)) !important; padding:calc(2 * var(--u)) calc(12 * var(--u)) !important; z-index:4; width:max-content; }
   #piles-row{ flex-wrap:nowrap; }
 
   .nofile{ display:block; margin:10px auto 0; font-size:.76rem; }
@@ -571,7 +572,7 @@
 
   /* opponents' seats are as wide as their five cards, so they centre cleanly */
   @media (min-width:641px){
-    .opp-seat{ width:calc(5 * var(--small-w) + 38px); }
+    .opp-seat{ width:calc(5 * var(--small-w) + 38 * var(--u)); }
   }
   @media (max-width:640px){
     #game-screen[data-bots="1"] .opp-seat, #game-screen[data-bots="2"] .opp-seat{ width:calc(5 * var(--small-w) + 38px); max-width:100%; }
@@ -584,7 +585,7 @@
   @media (min-width:900px){
     #game-screen{ justify-content:center; }
     .topbar, #opponent-seats, .status-strip, #human-area{ width:100%; max-width:var(--col-w, 1000px); margin-left:auto; margin-right:auto; }
-    #table-surface{ flex:1 1 auto; width:100%; max-width:calc(var(--col-w, 1000px) * .96); max-height:calc(var(--card-h) * 2.5 + 80px); }
+    #table-surface{ flex:1 1 auto; width:100%; max-width:calc(var(--col-w, 1000px) * .96); max-height:calc(var(--card-h) * 2.5 + 80 * var(--u)); }
     #human-area{ max-width:calc(var(--col-w, 1000px) * .88); }
     .zone-label{ text-align:center; }
     .human-footer{ justify-content:center; }
@@ -607,6 +608,32 @@
 
   .s-edit{ background:rgba(232,192,95,.15); border:1px solid rgba(232,192,95,.5); color:var(--gold-bright); border-radius:14px; font-size:.7rem; font-weight:600; padding:4px 9px; cursor:pointer; white-space:nowrap; }
 
+  /* round 12c: the bottom corner is rotated 180deg, so it takes the same padding as the top one */
+  .fc-corner.bottom{ padding:5px 0 0 6px; }
+
+  /* round 13: the constraint banner sits midway between the felt's top edge and the cards */
+  .constraint-banner{ top:calc((100% - var(--card-h)) / 4) !important; transform:translate(-50%,-50%) !important; }
+  @media (min-width:900px){
+    #table-surface{ padding-top:2.6rem !important; padding-bottom:2.6rem !important; }
+  }
+
+  /* mobile: the constraint banner sits midway between the felt's top edge and the cards */
+  @media (max-width:640px){
+    .constraint-banner{ top:calc((100% - var(--card-h)) / 4); transform:translate(-50%, -50%); }
+  }
+
+  .s-edit{ background:rgba(232,192,95,.15); border:1px solid rgba(232,192,95,.5); color:var(--gold-bright); border-radius:14px; font-size:.7rem; font-weight:600; padding:4px 9px; cursor:pointer; white-space:nowrap; }
+
+  /* wide but short window: the face-up/face-down stacks and the hand share one row */
+  @media (min-width:900px){
+    #game-screen.sbs .human-zones{ flex-direction:row; align-items:flex-start; justify-content:center; gap:calc(var(--card-w) * .9); }
+    #game-screen.sbs .human-zones > div:first-child{ flex:0 0 auto; width:calc(5 * var(--card-w) + 34px); }
+    #game-screen.sbs .human-zones > div:last-child{ flex:0 1 auto; min-width:0; display:flex; flex-direction:column-reverse; justify-content:flex-end; max-width:calc(var(--card-w) * 9); }
+    #game-screen.sbs #human-stacks{ margin-top:12px; }
+    #game-screen.sbs #human-area{ max-width:var(--col-w, 1000px); }
+    #game-screen.sbs .zone-label{ text-align:center; }
+  }
+
 </style>
 </head>
 <body>
@@ -626,16 +653,16 @@
       <div class="fan-card c5"><div class="fc-corner">2<br>♠</div><div class="fc-mid">♠</div><div class="fc-corner bottom">2<br>♠</div></div>
     </div>
     <h1 class="logo">IlSboboz</h1>
-    <p class="tagline">Svuota mano, scoperte e coperte prima di tutti.</p>
+    <p class="tagline">Finisci le carte prima di tutti.</p>
     <div class="ninja-row" aria-hidden="true">
-      <span style="--c:#e0573f">Kai</span><span style="--c:#4b82d6">Jay</span><span style="--c:#f2f2f2">Zane</span><span style="--c:#222" class="dark">Cole</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4caf50">Lloyd</span>
+      <span style="--c:#4caf50">Lloyd</span><span style="--c:#e0573f">Kai</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4b82d6">Jay</span><span style="--c:#000" class="dark">Cole</span><span style="--c:#f2f2f2">Zane</span>
     </div>
   </div>
 
   <div class="home-menu">
-    <button class="menu-btn primary" id="btn-solo"><b>Gioca contro i bot</b><small>Scegli i ninja e inizia subito</small></button>
-    <button class="menu-btn" id="btn-create"><b>Crea una stanza</b><small>Invita amici con codice o QR</small></button>
-    <button class="menu-btn" id="btn-join"><b>Entra in una stanza</b><small>Hai un codice o un QR?</small></button>
+    <button class="menu-btn primary" id="btn-solo"><b>Gioca contro i bot</b><small>Sfida i ninja</small></button>
+    <button class="menu-btn" id="btn-create"><b>Crea una stanza</b><small>Sfida i tuoi amici</small></button>
+    <button class="menu-btn" id="btn-join"><b>Entra in una stanza</b><small>Tramite codice o QR Code</small></button>
     <div class="menu-row">
       <button class="menu-mini" id="btn-stats">📊 Statistiche</button>
       <button class="menu-mini" id="btn-rules">📖 Regole</button>
@@ -815,12 +842,12 @@ const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 const RANK_VALUE = {'JOLLY':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
 const EFFECT_RANKS = new Set(['2','3','4','5','7','8','9','J','K']);
 const NINJAGO_POOL = [
+  {name:'Lloyd', elem:'vita', color:'#4caf50'},
   {name:'Kai', elem:'fuoco', color:'#e0573f'},
-  {name:'Jay', elem:'fulmine', color:'#2255a4'},
-  {name:'Zane', elem:'ghiaccio', color:'#f2f2f2'},
-  {name:'Cole', elem:'terra', color:'#000000'},
   {name:'Nya', elem:'acqua', color:'#7ec8e8'},
-  {name:'Lloyd', elem:'energia', color:'#4caf50'}
+  {name:'Jay', elem:'fulmine', color:'#2255a4'},
+  {name:'Cole', elem:'terra', color:'#000000'},
+  {name:'Zane', elem:'ghiaccio', color:'#f2f2f2'}
 ];
 
 function rankValue(rank){ return RANK_VALUE[rank]; }
@@ -1227,7 +1254,7 @@ function sbobozGap(hand, r, extra){
   };
 }
 
-/* The J lets the player look through the super sboboz and pick any
+/* The J lets the player look through the ipersboboz and pick any
    card. Best pick: the missing card that completes a sboboz (e.g. 3 of
    a kind in hand + the 4th), then a K, a wild, or just the highest. */
 function aiChooseSuperCard(player){
@@ -1254,7 +1281,7 @@ function aiChooseSuperCard(player){
 }
 
 /* Does playing a J right now set up a sboboz next turn (picking the
-   missing card from the super sboboz)? */
+   missing card from the ipersboboz)? */
 function aiJackSetsUpSboboz(p){
   if(!G.superSboboz.length) return false;
   const rest = p.hand.filter(c=>c.rank!=='J');
@@ -1339,7 +1366,7 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
           player.st.discards++;
           emit('discard', {pid:player.id, card:pub(card)});
           toast('🗑️ Scarto forzato');
-          log(`${player.name} gioca un 5 e scarta una carta nel super sboboz.`);
+          log(`${player.name} gioca un 5 e scarta una carta nell\'ipersboboz.`);
           onDone();
         });
         return;
@@ -1396,13 +1423,13 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
           player.st.jdraws++;
           player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
           emit('jdraw', {pid:player.id, card:pub(choice)});
-          toast('🎴 Pescata dal super sboboz');
-          log(`${player.name} gioca un J e prende una carta dal super sboboz.`);
+          toast('🎴 Pescata dall\'ipersboboz');
+          log(`${player.name} gioca un J e prende una carta dall\'ipersboboz.`);
           onDone();
         });
         return;
       }
-      log(`${player.name} gioca un J (super sboboz vuoto).`);
+      log(`${player.name} gioca un J (ipersboboz vuoto).`);
       onDone(); break;
     }
     case 'K': {
@@ -1593,7 +1620,7 @@ function aiPlayHand(p){
       }
     }
     // Three of a kind in hand (or whatever is one card short of a
-    // sboboz) and the missing card sits in the super sboboz: play a J
+    // sboboz) and the missing card sits in the ipersboboz: play a J
     // to fetch it. Only if no rank already completes a sboboz now.
     if(!sabotage && legalRanks.includes('J') && bestRank!=='J' && aiJackSetsUpSboboz(p)){
       const completesNow = legalRanks.some(r=>{
@@ -2318,8 +2345,11 @@ const Host = {
 
   startGame(){
     R.phase = 'game';
-    R.members.forEach((m,i)=>{ m.pid = i; });
-    const mem = R.members.map(m=>({kind:m.kind, name:m.name, avatar:m.avatar, elem:m.elem, color:m.color}));
+    // seating order is random, not the lobby order
+    const order = R.members.slice();
+    for(let i=order.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [order[i],order[j]] = [order[j],order[i]]; }
+    order.forEach((m,i)=>{ m.pid = i; });
+    const mem = order.map(m=>({kind:m.kind, name:m.name, avatar:m.avatar, elem:m.elem, color:m.color}));
     initGame(mem, {twoDecks:R.settings.twoDecks});
     R.members.forEach(m=>{ if(m.kind==='human' && !m.connected) G.players[m.pid].connected = false; });
     R.myPid = R.members.find(m=>m.isHost).pid;
@@ -2790,12 +2820,15 @@ function fitLayout(){
     root.style.setProperty('--card-w', cw+'px');
     if(!mobile) root.style.setProperty('--card-h', Math.round(cw*1.41)+'px');   // real card proportions
     if(wide){
-      // everything grows together with the cards on big screens
-      root.style.fontSize = (16 * Math.max(1, Math.min(1.9, cw/84))).toFixed(2) + 'px';
-      root.style.setProperty('--col-w', Math.round(Math.max(900, cw*9.6)) + 'px');
+      // one design for every wide window: all sizes follow the cards, so a smaller
+      // window shows exactly the fullscreen layout, just scaled down
+      root.style.setProperty('--u', (cw/120).toFixed(3) + 'px');
+      root.style.fontSize = (16 * Math.max(0.75, Math.min(2.4, cw/84))).toFixed(2) + 'px';
+      root.style.setProperty('--col-w', Math.round(Math.max(900*cw/120, cw*9.6)) + 'px');
     } else {
       root.style.fontSize = '';
       root.style.removeProperty('--col-w');
+      root.style.removeProperty('--u');
     }
     // bots' mini cards: as big as the seat's row allows. With few opponents
     // (or on a wide screen) the seat itself is as wide as its five cards.
@@ -2804,7 +2837,8 @@ function fitLayout(){
       const k = mobile ? 0.8 : (nb<=1 ? 0.8 : nb===2 ? 0.68 : nb===3 ? 0.58 : 0.5);
       sw = Math.round(cw * k);
       const perRow = mobile ? 1 : Math.max(1, Math.min(nb, 3));
-      const cap = Math.floor((seats.clientWidth - 24 - perRow*44) / (5*perRow));
+      const uu = wide ? cw/120 : 1;
+      const cap = Math.floor((seats.clientWidth - (24 + perRow*44)*uu) / (5*perRow));
       if(cap>0) sw = Math.min(sw, cap);
     } else {
       const row = document.querySelector('.opp-stacks-row');
@@ -3149,7 +3183,7 @@ function renderPiles(){
   document.getElementById('sboboz-pile-visual').innerHTML = pileStackHtml(V.sboboz.length);
   document.getElementById('sboboz-count').innerHTML = `sboboz <b>${V.sboboz.length}</b>`;
   document.getElementById('super-pile-visual').innerHTML = pileStackHtml(V.superSboboz.length);
-  document.getElementById('super-count').innerHTML = `super <b>${V.superSboboz.length}</b>`;
+  document.getElementById('super-count').innerHTML = `ipersboboz <b>${V.superSboboz.length}</b>`;
 
   const cb = document.getElementById('constraint-banner');
   if(V.constraint){
@@ -3485,7 +3519,7 @@ const Modal = {
     if(c) c.onclick = ()=>Modal.close();
   },
   pickSuper(cards, onPick){
-    const box = Modal.open(`<h3>Hai giocato un J</h3><p>Scegli una carta dal super sboboz da aggiungere alla tua mano.</p><div class="modal-card-row" id="jdraw-row">${cards.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
+    const box = Modal.open(`<h3>Hai giocato un J</h3><p>Scegli una carta dall\'ipersboboz da aggiungere alla tua mano.</p><div class="modal-card-row" id="jdraw-row">${cards.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
     const row = document.getElementById('jdraw-row');
     Array.from(row.children).forEach((el,i)=>{
       el.style.cursor = 'pointer';
@@ -3499,9 +3533,9 @@ const Modal = {
       };
     });
   },
-  /* the chosen card flies straight out of the dialog to the super sboboz */
+  /* the chosen card flies straight out of the dialog to the ipersboboz */
   discard(hand, onPick){
-    const box = Modal.open(`<h3>Hai giocato un 5</h3><p>Scarta una carta dalla mano nel super sboboz (esce definitivamente dal gioco).</p><div class="modal-card-row" id="discard-row">${hand.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
+    const box = Modal.open(`<h3>Hai giocato un 5</h3><p>Scarta una carta dalla mano nell\'ipersboboz (esce definitivamente dal gioco).</p><div class="modal-card-row" id="discard-row">${hand.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
     const row = document.getElementById('discard-row');
     Array.from(row.children).forEach((el,i)=>{
       el.style.cursor = 'pointer';
@@ -3661,7 +3695,7 @@ const UI = {
     if(name==='game'){ requestAnimationFrame(()=>{ fitLayout(); }); }
     if(name==='home'){ UI.renderHome(); }
     if(prev==='game' && name!=='game'){ $('react-tray').classList.remove('open'); }
-    if(name!=='game'){ document.documentElement.style.fontSize = ''; }
+    if(name!=='game'){ document.documentElement.style.fontSize = ''; document.documentElement.style.removeProperty('--u'); document.documentElement.style.removeProperty('--col-w'); }
   },
 
   renderHome(){
@@ -3794,7 +3828,7 @@ const UI = {
     L.members.forEach(m=>{
       const me = m.mid===myMid;
       const ava = m.kind==='bot'
-        ? `<span class="s-ava bot" style="--c:${m.color==='#000000'?'#111':m.color}">${esc(m.name[0]||'N')}</span>`
+        ? `<span class="s-ava bot" style="--c:${m.color==='#000000'?'#000':m.color}">${esc(m.name[0]||'N')}</span>`
         : `<span class="s-ava">${esc(m.avatar||'🥷')}</span>`;
       const tags = [];
       if(m.isHost) tags.push('<em class="t host">Host</em>');
@@ -3852,7 +3886,7 @@ const UI = {
     if(q('btn-qr-toggle')) q('btn-qr-toggle').onclick = ()=>{
       const box = q('qr-box');
       if(box.style.display==='none'){
-        box.innerHTML = qrSvg(roomQrPayload()) + '<div class="qr-cap">Fai scansionare questo QR da «Entra in una stanza → Scansiona il QR»</div>';
+        box.innerHTML = qrSvg(roomQrPayload());
         box.style.display = 'block';
       } else box.style.display = 'none';
     };
@@ -4069,7 +4103,7 @@ function renderStats(tab){
       ${tile(cnt? (sum/cnt).toFixed(2):'—','posizione media')}${tile(s.streak,'serie attuale')}${tile(s.bestStreak,'serie record')}
       ${tile(t.sboboz,'sboboz fatti')}${tile(t.pickups,'tavoli presi')}${tile(t.played,'carte giocate')}
       ${tile(t.kings,'Re giocati')}${tile(t.jollies,'jolly usati')}${tile(s.maxHand,'mano più grande')}
-      ${tile(t.reveals,'coperte girate')}${tile(t.discards,'scarti con il 5')}${tile(t.jdraws,'pescate con J')}
+      ${tile(t.reveals,'coperte girate')}${tile(t.discards,'scarti con 5')}${tile(t.jdraws,'pescate con J')}
       ${tile(s.online,'partite online')}${tile(s.solo,'contro i bot')}${tile(fmtTime(t.secs),'tempo di gioco')}
     </div>`;
     // distribution of places
@@ -4148,9 +4182,9 @@ function showRules(){
   closableModal('Regole', `
     <p class="rules">
     <b>Obiettivo.</b> Finire tutte le tue carte: mano, scoperte e coperte. Vince chi finisce per primo; si prosegue finché la classifica è completa.<br><br>
-    <b>Come si gioca.</b> Seleziona una o più carte dello stesso valore (dalla mano o dalle scoperte) e tocca il <b>tavolo</b>: devono valere pari o più della carta in cima, oppure essere un jolly. Se non puoi giocare prendi tutto il tavolo (puoi farlo anche volontariamente). Dopo uno sboboz o dopo aver preso il tavolo, tocca di nuovo a te. Finito il mazzo e la mano si passa alle scoperte, poi alle coperte (una per turno, alla cieca).<br><br>
-    <b>Effetti.</b> <b>2</b> jolly universale, sempre giocabile. <b>3</b> è la carta più bassa e segue le regole normali, ma riporta sul tavolo l’ultimo sboboz. <b>4</b> da scoperta rivela la coperta sotto. <b>5</b> da mano fa scartare un’altra carta nel super sboboz. <b>7</b> annulla l’effetto della carta successiva. <b>8</b> impone più alta/più bassa. <b>9</b> impone con/senza effetto (se la stessa giocata completa uno sboboz, nessun vincolo viene chiesto). <b>J</b> ti fa scegliere una carta qualsiasi dal super sboboz. <b>Q</b> da coperta non è mai giocabile: torna in mano e, se non sarebbe stata legale, prendi anche il tavolo. <b>K</b> fa sboboz immediato. Il vincolo di 8/9 sostituisce il normale confronto di valore per la sola carta successiva.<br><br>
-    <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nel super sboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
+    <b>Come si gioca.</b> Seleziona una o più carte dello stesso valore (dalla mano o dalle scoperte se non hai carte in mano) e tocca il <b>tavolo</b>: devono valere pari o più della carta in cima, oppure essere un jolly. Se non puoi giocare prendi tutto il tavolo (puoi farlo anche volontariamente). Dopo uno sboboz o dopo aver preso il tavolo, tocca di nuovo a te. Finito il mazzo e la mano si passa alle scoperte, poi alle coperte (una per turno, alla cieca).<br><br>
+    <b>Effetti.</b> <b>2</b> jolly universale, sempre giocabile. <b>3</b> è la carta più bassa e segue le regole normali, ma riporta sul tavolo l’ultimo sboboz. <b>4</b> da scoperta rivela la coperta sotto. <b>5</b> da mano fa scartare un’altra carta nell\'ipersboboz. <b>7</b> annulla l’effetto della carta successiva. <b>8</b> impone più alta/più bassa. <b>9</b> impone con/senza effetto (se la stessa giocata completa uno sboboz, nessun vincolo viene chiesto). <b>J</b> ti fa scegliere una carta qualsiasi dall'ipersboboz. <b>Q</b> da coperta non è mai giocabile: torna in mano e, se non sarebbe stata legale, prendi anche il tavolo. <b>K</b> fa sboboz immediato. Il vincolo di 8/9 sostituisce il normale confronto di valore per la sola carta successiva.<br><br>
+    <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nell\'ipersboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
     <b>Mazzi.</b> 2–3 giocatori: 1 mazzo (a scelta anche 2). 4–6: 2 mazzi. 7: 2 mazzi + 1 Jolly. Il Jolly diventa la carta che scegli (valida) o si unisce a un gruppo; quando torna in una mano ridiventa libero.<br><br>
     <b>Pile.</b> Ognuno ha 5 pile: una coperta con sopra una scoperta scelta all’inizio. Le coperte si girano solo quando hai finito mano e scoperte.<br><br>
     <b>Online.</b> Crea una stanza, condividi il codice o il QR; gli altri entrano da «Entra in una stanza» (o aprendo il link del QR). Puoi aggiungere bot fino a 7 giocatori.<br><br>
