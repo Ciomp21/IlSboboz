@@ -357,7 +357,7 @@
   .tagline{ margin:0 0 10px; color:rgba(243,236,217,.7); font-size:.9rem; padding:0 10px; }
   .ninja-row{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
   .ninja-row span{ font-size:.66rem; font-weight:600; padding:2px 9px; border-radius:20px; background:var(--c); color:#111; letter-spacing:.03em; }
-  .ninja-row span.dark{ color:#ddd; border:1px solid #222; }
+  .ninja-row span.dark{ color:#ddd; border:1px solid #444; }
   .home-menu{ width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex:0 0 auto; }
   .menu-btn{
     display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; cursor:pointer; color:var(--cream);
@@ -428,7 +428,7 @@
   .seat-row.empty{ border-style:dashed; justify-content:center; background:transparent; }
   .s-ava{ width:34px; height:34px; border-radius:50%; background:rgba(232,192,95,.2); display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex:0 0 auto; }
   .s-ava.bot{ background:var(--c); color:#111; font-family:'Fraunces',serif; font-weight:700; font-size:1rem; }
-  .s-ava.bot[style*="#111"]{ color:#ddd; border:1px solid #111; }
+  .s-ava.bot[style*="#111"]{ color:#ddd; border:1px solid #555; }
   .s-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
   .s-tags{ display:flex; gap:4px; }
   .s-tags em{ font-style:normal; font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(255,255,255,.12); }
@@ -594,6 +594,19 @@
   /* round 12c: the bottom corner is rotated 180deg, so it takes the same padding as the top one */
   .fc-corner.bottom{ padding:5px 0 0 6px; }
 
+  /* round 13: the constraint banner sits midway between the felt's top edge and the cards */
+  .constraint-banner{ top:calc((100% - var(--card-h)) / 4) !important; transform:translate(-50%,-50%) !important; }
+  @media (min-width:900px){
+    #table-surface{ padding-top:2.6rem !important; padding-bottom:2.6rem !important; }
+  }
+
+  /* mobile: the constraint banner sits midway between the felt's top edge and the cards */
+  @media (max-width:640px){
+    .constraint-banner{ top:calc((100% - var(--card-h)) / 4); transform:translate(-50%, -50%); }
+  }
+
+  .s-edit{ background:rgba(232,192,95,.15); border:1px solid rgba(232,192,95,.5); color:var(--gold-bright); border-radius:14px; font-size:.7rem; font-weight:600; padding:4px 9px; cursor:pointer; white-space:nowrap; }
+
 </style>
 </head>
 <body>
@@ -613,16 +626,16 @@
       <div class="fan-card c5"><div class="fc-corner">2<br>♠</div><div class="fc-mid">♠</div><div class="fc-corner bottom">2<br>♠</div></div>
     </div>
     <h1 class="logo">IlSboboz</h1>
-    <p class="tagline">Finisci le carte prima di tutti.</p>
+    <p class="tagline">Svuota mano, scoperte e coperte prima di tutti.</p>
     <div class="ninja-row" aria-hidden="true">
-      <span style="--c:#4caf50">Lloyd</span><span style="--c:#e0573f">Kai</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4b82d6">Jay</span><span style="--c:#222" class="dark">Cole</span><span style="--c:#f2f2f2">Zane</span>
+      <span style="--c:#e0573f">Kai</span><span style="--c:#4b82d6">Jay</span><span style="--c:#f2f2f2">Zane</span><span style="--c:#222" class="dark">Cole</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4caf50">Lloyd</span>
     </div>
   </div>
 
   <div class="home-menu">
-    <button class="menu-btn primary" id="btn-solo"><b>Gioca contro i bot</b><small>Sfida i ninja</small></button>
-    <button class="menu-btn" id="btn-create"><b>Crea una stanza</b><small>Sfida i tuoi amici</small></button>
-    <button class="menu-btn" id="btn-join"><b>Entra in una stanza</b><small>Tramite codice o QR code</small></button>
+    <button class="menu-btn primary" id="btn-solo"><b>Gioca contro i bot</b><small>Scegli i ninja e inizia subito</small></button>
+    <button class="menu-btn" id="btn-create"><b>Crea una stanza</b><small>Invita amici con codice o QR</small></button>
+    <button class="menu-btn" id="btn-join"><b>Entra in una stanza</b><small>Hai un codice o un QR?</small></button>
     <div class="menu-row">
       <button class="menu-mini" id="btn-stats">📊 Statistiche</button>
       <button class="menu-mini" id="btn-rules">📖 Regole</button>
@@ -632,7 +645,7 @@
 
   <div class="home-foot">
     <div class="credits">Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>
-    <div class="disclaimer">Non è la versione originale di Sboboz: è una versione avanzata creata a partire da quella originale.</div>
+    <div class="disclaimer">Non è la versione originale di Sboboz: è una versione avanzata creata a partire da quella ufficiale.</div>
   </div>
 </div>
 
@@ -654,7 +667,7 @@
     </div>
     <button class="link-btn" id="btn-scan" style="display:none;">Oppure scansiona dal vivo con la fotocamera</button>
     <div id="join-msg" class="join-msg"></div>
-    <p class="join-note">Serve lo stesso identico file di gioco dell’host: se è diverso o modificato la stanza ti rifiuta.</p>
+    <p class="join-note">Serve la stessa versione del gioco dell’host: se è diversa o modificata la stanza ti rifiuta.</p>
   </div>
 </div>
 
@@ -802,12 +815,12 @@ const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 const RANK_VALUE = {'JOLLY':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
 const EFFECT_RANKS = new Set(['2','3','4','5','7','8','9','J','K']);
 const NINJAGO_POOL = [
-  {name:'Lloyd', elem:'vita', color:'#4caf50'},
   {name:'Kai', elem:'fuoco', color:'#e0573f'},
-  {name:'Nya', elem:'acqua', color:'#7ec8e8'},
   {name:'Jay', elem:'fulmine', color:'#2255a4'},
+  {name:'Zane', elem:'ghiaccio', color:'#f2f2f2'},
   {name:'Cole', elem:'terra', color:'#000000'},
-  {name:'Zane', elem:'ghiaccio', color:'#f2f2f2'}
+  {name:'Nya', elem:'acqua', color:'#7ec8e8'},
+  {name:'Lloyd', elem:'energia', color:'#4caf50'}
 ];
 
 function rankValue(rank){ return RANK_VALUE[rank]; }
@@ -1522,9 +1535,11 @@ function processFacedownCard(player, card, afterAll){
     player.hand.push(card);
     player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
     if(!isLegalRank(G, 'Q', 'facedown')){
+      // not playable: the table is picked up and, as after any pickup, the turn goes on
       pickUpTable(player);
+    } else {
+      nextTurn();
     }
-    nextTurn();
     afterAll();
     return;
   }
@@ -2216,6 +2231,13 @@ const Room = {
         if(!r.ok) Room.reply(m, {t:'rej', msg:r.msg});
         break;
       }
+      case 'profile': {
+        if(R.phase!=='lobby') return;
+        m.name = uniqueName(String(msg.name||'').trim() || 'Giocatore', m.mid);
+        m.avatar = String(msg.avatar||'').slice(0,8) || m.avatar;
+        Room.lobbyChanged();
+        break;
+      }
       case 'setup': Host.onSetup(m, msg.uids); break;
       case 'ans': Host.onAnswer(m, msg.id, msg.v); break;
       case 'skip': Host.onSkip(m); break;
@@ -2754,6 +2776,12 @@ function fitLayout(){
     if(surface.scrollHeight > surface.clientHeight + 1) return false;
     if(seats.scrollHeight > seats.clientHeight + 1) return false;
     if(gs.scrollHeight > gs.clientHeight + 1) return false;
+    if(wide){
+      // keep room above the cards for the constraint banner, with equal margins
+      const rem = parseFloat(getComputedStyle(root).fontSize) || 16;
+      const cardH = parseFloat(getComputedStyle(root).getPropertyValue('--card-h')) || 0;
+      if(surface.clientHeight < cardH + 16 + 2*(1.7*rem + 10)) return false;
+    }
     if(pilesRow.scrollWidth > pilesRow.clientWidth + 1) return false;
     if(stacks.scrollWidth > stacks.clientWidth + 1) return false;
     return true;
@@ -3013,14 +3041,19 @@ async function playEvent(ev){
       break;
     }
     case 'sboboz': {
-      clearHeld(true);
+      // the cards played so far stay put while the old table (drawn underneath) is hidden,
+      // then the whole pile flies to the sboboz pile and stays there until the redraw
+      const faces = heldClones.splice(0);
       const tEl = document.getElementById('table-visual'), sEl = document.getElementById('sboboz-pile-visual');
       if(tEl && sEl){
+        tEl.style.visibility = 'hidden';
         const from = tEl.getBoundingClientRect(), to = sEl.getBoundingClientRect();
         const n = Math.min(ev.n||4, 4);
-        const fl = []; for(let i=0;i<n;i++) fl.push(wait(i*45).then(()=>fly('<div class="card-back"></div>', from, to, {rotate:(Math.random()*20-10)})));
+        const fl = []; for(let i=0;i<n;i++) fl.push(wait(i*45).then(()=>fly('<div class="card-back"></div>', from, to, {rotate:(Math.random()*20-10), hold:true})));
+        setTimeout(()=>faces.forEach(e=>e.remove()), 90);
         await Promise.all(fl);
       }
+      faces.forEach(e=>e.remove());
       break;
     }
     case 'flip': {
@@ -3089,6 +3122,7 @@ function renderPiles(){
   document.getElementById('draw-count').innerHTML = `mazzo <b>${V.drawPile.length}</b>`;
 
   const tv = document.getElementById('table-visual');
+  tv.style.visibility = '';
   tv.innerHTML = '';
   const top = topOfTable(V);
   if(top){
@@ -3748,7 +3782,6 @@ const UI = {
             <button class="btn-secondary" id="btn-share">Condividi</button>
             <button class="btn-secondary" id="btn-qr-toggle">QR</button>
           </div>
-          <button class="link-btn nofile" id="btn-nofile">${roomUrl() ? 'Chi non ha il file entra dal link ✓' : 'Come far entrare chi non ha il file'}</button>
           <div class="qr-box" id="qr-box" style="display:none;"></div>`;
       } else {
         html += `<div class="cc-wait">Sei dentro: aspetta che l’host avvii la partita.</div>`;
@@ -3767,11 +3800,13 @@ const UI = {
       if(m.isHost) tags.push('<em class="t host">Host</em>');
       if(me) tags.push('<em class="t me">Tu</em>');
       if(m.kind==='bot') tags.push('<em class="t bot">Bot</em>');
+      const ed = me ? '<button class="s-edit" id="btn-edit-me" title="Cambia nome e avatar">✎ Nome</button>' : '';
       const rm = (isHost && !m.isHost) ? `<button class="s-x" data-rm="${m.mid}" title="${m.kind==='bot'?'Rimuovi bot':'Espelli'}">✕</button>` : '';
       html += `<div class="seat-row${me?' mine':''}">
         ${ava}
         <span class="s-name">${esc(m.name)}</span>
         <span class="s-tags">${tags.join('')}</span>
+        ${ed}
         <span class="s-dot ${m.connected?'on':'off'}"></span>
         ${rm}
       </div>`;
@@ -3821,7 +3856,7 @@ const UI = {
         box.style.display = 'block';
       } else box.style.display = 'none';
     };
-    if(q('btn-nofile')) q('btn-nofile').onclick = openNoFile;
+    if(q('btn-edit-me')) q('btn-edit-me').onclick = openProfile;
     if(q('btn-add-bot')) q('btn-add-bot').onclick = ()=>Room.addBot();
     document.querySelectorAll('[data-rm]').forEach(b=>{ b.onclick = ()=>Room.removeMember(+b.dataset.rm); });
     if(q('st-plus')) q('st-plus').onclick = ()=>Room.fillBots(R.members.length+1);
@@ -3837,23 +3872,9 @@ const UI = {
   }
 };
 
-const PUB_KEY = 'ilsboboz.publicUrl';
-function getPublicUrl(){ try{ return localStorage.getItem(PUB_KEY) || ''; }catch(e){ return ''; } }
-function setPublicUrl(u){ try{ if(u) localStorage.setItem(PUB_KEY, u); else localStorage.removeItem(PUB_KEY); }catch(e){} }
-function cleanPublicUrl(u){
-  u = (u||'').trim();
-  if(!u) return '';
-  if(!/^https?:\/\//i.test(u)) u = 'https://' + u;
-  try{ const x = new URL(u); return x.origin + x.pathname; }catch(e){ return ''; }
-}
-function roomUrl(){
-  try{
-    if(location.protocol==='http:' || location.protocol==='https:') return location.origin + location.pathname + '#room=' + R.code;
-  }catch(e){}
-  const pub = getPublicUrl();
-  return pub ? pub + '#room=' + R.code : '';
-}
-function roomQrPayload(){ return roomUrl() || ('ILSBOBOZ:' + R.code); }
+const SITE_URL = 'https://supermariomacher.github.io/IlSboboz/';
+function roomUrl(){ return SITE_URL + '#room=' + R.code; }
+function roomQrPayload(){ return roomUrl(); }
 
 function qrSvg(text){
   try{
@@ -3862,23 +3883,6 @@ function qrSvg(text){
     qr.make();
     return qr.createSvgTag({cellSize:6, margin:2, scalable:true});
   }catch(e){ return '<div>QR non disponibile</div>'; }
-}
-
-function openNoFile(){
-  const local = (location.protocol==='http:' || location.protocol==='https:');
-  const box = Modal.open(`<h3>Entrare senza il file</h3>
-    <p>Il QR può aprire il gioco direttamente sul telefono di chi lo scansiona, senza che debba avere il file. Serve però che questo stesso file sia pubblicato online una volta (per esempio con GitHub Pages o Netlify Drop, entrambi gratuiti).</p>
-    ${local ? '<p>Stai già usando il gioco da un indirizzo web: il QR lo usa in automatico.</p>' : `<input id="pub-url" class="text-input" placeholder="https://il-tuo-sito.netlify.app/" value="${esc(getPublicUrl())}" inputmode="url" autocapitalize="off" spellcheck="false">
-    <p class="muted">Incolla qui l’indirizzo della copia pubblicata. Deve essere identica a questo file, altrimenti la stanza rifiuta chi entra.</p>`}
-    <div class="modal-btns">${local ? '' : '<button class="btn-primary" id="pub-save">Salva</button>'}<button class="btn-secondary" id="pub-close">Chiudi</button></div>`, 'left');
-  $('pub-close').onclick = Modal.close;
-  if($('pub-save')) $('pub-save').onclick = ()=>{
-    const raw = $('pub-url').value;
-    const u = cleanPublicUrl(raw);
-    if(raw.trim() && !u){ UI.toastTop('Indirizzo non valido'); return; }
-    setPublicUrl(u); Modal.close(); UI.renderLobby();
-    UI.toastTop(u ? 'Salvato: il QR ora apre il gioco online' : 'Indirizzo rimosso');
-  };
 }
 
 function copyText(t){
@@ -4038,6 +4042,10 @@ function openProfile(){
     Store.save();
     Modal.close();
     UI.renderHome();
+    if(UI.current==='lobby'){
+      if(R.role==='host'){ Room.updateMyProfile(); Room.lobbyChanged(); }
+      else if(R.role==='guest'){ sendToHost({t:'profile', name:Store.data.name, avatar:Store.data.avatar}); }
+    }
   };
 }
 
@@ -4099,7 +4107,7 @@ function renderStats(tab){
       html += `<h4>Contro altri giocatori</h4><div class="mini-table">${rv.map(n=>`<div><span>${esc(n)} · ${s.rivals[n].games} partite</span><b>davanti ${s.rivals[n].ahead} · dietro ${s.rivals[n].behind}</b></div>`).join('')}</div>`;
     }
     html += `<h4>Salva o sposta le statistiche</h4>
-      <p class="muted">Le statistiche stanno in questo dispositivo (e in questo file). Per portarle su un altro telefono o su una copia nuova del file: esporta qui e importa lì.</p>
+      <p class="muted">Le statistiche stanno in questo dispositivo, nel browser che usi. Per portarle su un altro telefono o browser: esporta qui e importa lì.</p>
       <div class="stat-actions">
         <button class="btn-secondary" id="st-export">Copia codice</button>
         <button class="btn-secondary" id="st-download">Scarica file</button>
@@ -4145,7 +4153,7 @@ function showRules(){
     <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nel super sboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
     <b>Mazzi.</b> 2–3 giocatori: 1 mazzo (a scelta anche 2). 4–6: 2 mazzi. 7: 2 mazzi + 1 Jolly. Il Jolly diventa la carta che scegli (valida) o si unisce a un gruppo; quando torna in una mano ridiventa libero.<br><br>
     <b>Pile.</b> Ognuno ha 5 pile: una coperta con sopra una scoperta scelta all’inizio. Le coperte si girano solo quando hai finito mano e scoperte.<br><br>
-    <b>Online.</b> Crea una stanza, condividi il codice o il QR; gli altri entrano da «Entra in una stanza» con lo stesso file. Puoi aggiungere bot fino a 7 giocatori.<br><br>
+    <b>Online.</b> Crea una stanza, condividi il codice o il QR; gli altri entrano da «Entra in una stanza» (o aprendo il link del QR). Puoi aggiungere bot fino a 7 giocatori.<br><br>
     <b>Stallo.</b> Se la stessa identica situazione si ripete 3 volte è pareggio tra chi è ancora in gioco.
     </p>`, true);
 }
@@ -4156,7 +4164,7 @@ function showAbout(){
       <div class="about-logo">IlSboboz</div>
       <p>Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>, l’assistente AI di Anthropic.</p>
       <div class="about-disc"><b>Disclaimer per i creatori di Sboboz</b><br>Questa non è la versione originale di Sboboz: è una versione avanzata creata a partire dalla versione ufficiale di Sboboz.</div>
-      <p class="muted">Le partite online viaggiano direttamente tra i dispositivi (peer-to-peer); il file non ha un server proprio. Per l’accoppiamento iniziale si usa il servizio pubblico PeerJS. Ogni stanza accetta solo copie identiche di questo file (impronta <code>${BUILD_SHORT}</code>) e l’host controlla ogni mossa.</p>
+      <p class="muted">Le partite online viaggiano direttamente tra i dispositivi (peer-to-peer); il gioco non ha un server proprio. Per l’accoppiamento iniziale si usa il servizio pubblico PeerJS. Ogni stanza accetta solo la stessa versione del gioco (impronta <code>${BUILD_SHORT}</code>) e l’host controlla ogni mossa.</p>
     </div>`);
 }
 
@@ -4268,7 +4276,7 @@ updateFullscreenButtons();
   }catch(e){}
 })();
 
-window.__dbg={R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
+window.__dbg={humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
 
 })();
 </script>
