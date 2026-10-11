@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="32x32" href="icona-192.png">
-<link rel="apple-touch-icon" href="icona-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#05130d">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="IlSboboz: il gioco di carte Sboboz con i ninja di Ninjago, contro i bot o online con gli amici.">
+<meta name="application-name" content="IlSboboz">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="IlSboboz">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icona-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>IlSboboz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -219,11 +226,11 @@
 
   /* Human zone */
   #human-area{ padding:calc(6 * var(--u)) calc(10 * var(--u)) calc(8 * var(--u)); margin-top:calc(4 * var(--u)); background:rgba(0,0,0,0.34); border:1px solid rgba(232,192,95,0.18); border-radius:calc(14 * var(--u)); flex:0 0 auto; }
-  .zone-label{ font-size:0.66rem; line-height:1.2; height:1.2em; white-space:nowrap; overflow:hidden; text-transform:lowercase; color:rgba(243,236,217,0.55); margin-bottom:0; letter-spacing:0.02em; text-align:center;}
+  .zone-label{ font-size:0.66rem; line-height:1.2; height:1.2em; white-space:nowrap; overflow:hidden; text-transform:lowercase; color:rgba(243,236,217,0.55); margin-bottom:calc(3 * var(--u)); letter-spacing:0.02em; }
   .human-zones{display:flex; flex-direction:column; gap:calc(5 * var(--u));}
   .cards-row{display:flex; gap:calc(5 * var(--u)); flex-wrap:wrap; min-height:var(--card-h); align-items:flex-start;}
   #human-stacks.cards-row{ flex-wrap:nowrap; height:calc(var(--card-h) + (5 * var(--u))); min-height:0; }
-  #human-hand.cards-row{ flex-wrap:nowrap; gap:0; overflow-x:auto; overflow-y:hidden; height:calc(var(--card-h) + (14 * var(--u))); min-height:0; padding-top:calc(10 * var(--u)); scrollbar-width:none; }
+  #human-hand.cards-row{ flex-wrap:nowrap; gap:0; overflow-x:auto; overflow-y:hidden; height:calc(var(--card-h) + (14 * var(--u))); min-height:0; padding-top:calc(12 * var(--u)); scrollbar-width:none; }
   #human-stacks.cards-row, #human-hand.cards-row{ justify-content:safe center; }
   #human-hand.cards-row::-webkit-scrollbar{ display:none; }
   .human-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:calc(6 * var(--u)); flex-wrap:nowrap; gap:calc(8 * var(--u)); height:calc(40 * var(--u)); }
@@ -637,6 +644,22 @@
     #game-screen.sbs .zone-label{ text-align:center; }
   }
 
+  .music{ display:inline-flex; align-items:center; gap:8px; margin-bottom:8px; padding:4px 6px 4px 4px; border:1px solid rgba(243,236,217,.18); border-radius:999px; background:rgba(0,0,0,.22); position:relative; }
+  .music-btn{ width:26px; height:26px; border-radius:50%; border:0; background:var(--gold-bright); color:#2a1a05; font-size:.7rem; cursor:pointer; padding:0; line-height:26px; }
+  .music-title{ font-size:.74rem; color:rgba(243,236,217,.85); }
+  .music-info{ position:relative; width:20px; height:20px; border-radius:50%; border:1px solid rgba(243,236,217,.4); background:none; color:rgba(243,236,217,.8); font:italic 700 .7rem Georgia,serif; cursor:pointer; padding:0; }
+  .music-tip{ position:absolute; bottom:130%; right:-6px; white-space:nowrap; background:#1b1410; color:#f3ecd9; border:1px solid var(--gold-bright); border-radius:8px; padding:5px 9px; font:500 .7rem Inter,sans-serif; opacity:0; pointer-events:none; transition:opacity .15s; z-index:5; }
+  .music-info:hover .music-tip, .music-info:focus .music-tip, .music-info.open .music-tip{ opacity:1; }
+  @media (max-height:640px){ .music{ margin-bottom:4px; } }
+
+  /* captions under the four piles sit on one line: the table pile has padding */
+  .zone-label{ text-align:center; }
+  #table-count{ top:calc(100% - 8 * var(--u)); }
+  @media (max-width:640px){ #table-count{ top:calc(100% - 4px); } }
+
+  /* app installata (PWA): lo schermo intero non serve */
+  html.pwa .fs-toggle, html.pwa #btn-fullscreen-game{ display:none !important; }
+
 </style>
 </head>
 <body>
@@ -674,6 +697,12 @@
   </div>
 
   <div class="home-foot">
+    <div class="music" id="music">
+      <button class="music-btn" id="music-btn" type="button" aria-label="Riproduci musica">▶</button>
+      <span class="music-title">♪ Completamente Sboboz</span>
+      <button class="music-info" id="music-info" type="button" aria-label="Info sulla musica">i<span class="music-tip" role="tooltip">Musica creata con Mureka (AI)</span></button>
+      <audio id="music-audio" src="completamente-sboboz.mp3" preload="none" loop></audio>
+    </div>
     <div class="credits">Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>
     <div class="disclaimer">Non è la versione originale di Sboboz: è una versione avanzata creata a partire da quella ufficiale.</div>
   </div>
@@ -1000,16 +1029,42 @@ function requiredValue(S){
   return rankValue(top.rank);
 }
 
-/* Whether a rank's special ability actually does anything right now:
-   a 3 only if there's a sboboz pile to bring back, a 4 only from the
-   face-up zone. */
-function hasEffectContextual(S, rank, zone){
-  if(rank==='3') return S.sboboz.length>0;
-  if(rank==='4') return zone==='faceup';
-  return EFFECT_RANKS.has(rank);
+/* Whether a rank's special ability would ACTUALLY do something if it were
+   played right now (this is what the 9 looks at). ctx describes the move:
+     p   the player making it       n   how many cards are played together
+     uid the face-up card (zone 'faceup')   future  evaluate on a hypothetical
+     later state: don't look at the table (used by the AI to size up a victim).
+   Without ctx we fall back to the optimistic "potential" answer. */
+function hasEffectContextual(S, rank, zone, ctx){
+  if(rank==='2' || rank==='K') return true;
+  if(!EFFECT_RANKS.has(rank)) return false;
+  const known = !!(ctx && ctx.p);
+  const n = (ctx && ctx.n) || 1;
+  // a 7/8/9 that completes a sboboz imposes/cancels nothing
+  if((rank==='7' || rank==='8' || rank==='9') && ctx && !ctx.future && S.table){
+    const top = topOfTable(S);
+    const streak = (top && top.rank===rank) ? currentTopStreak(S) : 0;
+    if(streak + n >= S.sbobozThreshold) return false;
+  }
+  switch(rank){
+    case '3': return S.sboboz.length>0;
+    case '4': {
+      if(zone!=='faceup') return false;
+      if(!known || ctx.uid==null) return true;
+      const slot = ctx.p.slots.find(sl=>sl.up && sl.up.uid===ctx.uid);
+      return !!(slot && slot.down);
+    }
+    case '5': {
+      if(zone!=='hand') return false;
+      if(!known) return true;
+      return ctx.p.hand.length - n > 0;
+    }
+    case 'J': return S.superSboboz.length>0;
+    default: return true; // 7, 8, 9
+  }
 }
 
-function satisfiesConstraint(S, rank, zone){
+function satisfiesConstraint(S, rank, zone, ctx){
   const c = S.constraint;
   if(!c) return true;
   if(rank==='2') return true;
@@ -1020,7 +1075,7 @@ function satisfiesConstraint(S, rank, zone){
   }
   if(c.type==='9'){
     if(rank==='9') return true;
-    const hasEffect = hasEffectContextual(S, rank, zone);
+    const hasEffect = hasEffectContextual(S, rank, zone, ctx);
     return c.mode==='effect' ? hasEffect : !hasEffect;
   }
   return true;
@@ -1028,20 +1083,31 @@ function satisfiesConstraint(S, rank, zone){
 
 /* 2 and Jolly are true wilds. The 3 is only the lowest ordinary card.
    An active 8/9 constraint REPLACES the normal equal-or-higher check. */
-function isLegalRank(S, rank, zone){
+function isLegalRank(S, rank, zone, ctx){
   if(rank==='2') return true;
   if(rank==='JOLLY') return true;
-  if(S.constraint) return satisfiesConstraint(S, rank, zone);
+  if(S.constraint) return satisfiesConstraint(S, rank, zone, ctx);
   return rankValue(rank) >= requiredValue(S);
 }
 
 function hasAnyLegalInHand(S, p){
-  const ranks = new Set(p.hand.map(c=>c.rank));
-  for(const r of ranks){ if(isLegalRank(S, r, 'hand')) return true; }
+  const counts = {};
+  p.hand.forEach(c=>{ counts[c.rank]=(counts[c.rank]||0)+1; });
+  const jollies = counts['JOLLY']||0;
+  for(const r in counts){
+    if(r==='JOLLY') continue;
+    // any subset size of that rank (a jolly can join) may be the one that works
+    for(let n=1; n<=counts[r]+jollies; n++){
+      if(isLegalRank(S, r, 'hand', {p, n})) return true;
+    }
+  }
+  if(jollies){
+    for(const r of RANKS){ for(let n=1;n<=jollies;n++){ if(isLegalRank(S, r, 'hand', {p, n})) return true; } }
+  }
   return false;
 }
 function hasAnyLegalInFaceUp(S, p){
-  return p.slots.some(s=>s.up && isLegalRank(S, s.up.rank, 'faceup'));
+  return p.slots.some(s=>s.up && isLegalRank(S, s.up.rank==='JOLLY'?'2':s.up.rank, 'faceup', {p, n:1, uid:s.up.uid}));
 }
 
 function handLen(p){ return p.hand.length; }
@@ -1188,12 +1254,13 @@ function describeCards(cards){
 /* ============================================================
    AI HELPERS
 ============================================================ */
-function aiResolveJollyRank(zone){
-  if(isLegalRank(G, 'K', zone)) return 'K';
-  if(isLegalRank(G, 'A', zone)) return 'A';
-  if(isLegalRank(G, '2', zone)) return '2';
+function aiResolveJollyRank(zone, p, uid, n){
+  const ctx = {p, n:n||1, uid};
+  if(isLegalRank(G, 'K', zone, ctx)) return 'K';
+  if(isLegalRank(G, 'A', zone, ctx)) return 'A';
+  if(isLegalRank(G, '2', zone, ctx)) return '2';
   const order = ['3','4','5','6','7','8','9','10','J','Q','A','K'];
-  for(const r of order){ if(isLegalRank(G, r, zone)) return r; }
+  for(const r of order){ if(isLegalRank(G, r, zone, ctx)) return r; }
   return '3';
 }
 
@@ -1212,8 +1279,8 @@ function aiChoose9Mode(){
   const target = peekNextPlayer();
   if(target && !target.finished && currentZone(target)==='faceup'){
     const upCards = target.slots.filter(s=>s.up).map(s=>s.up);
-    const effectCount = upCards.filter(c=>c.rank!=='2' && hasEffectContextual(G, c.rank, 'faceup')).length;
-    const noEffectCount = upCards.filter(c=>c.rank!=='2' && !hasEffectContextual(G, c.rank, 'faceup')).length;
+    const effectCount = upCards.filter(c=>c.rank!=='2' && hasEffectContextual(G, c.rank, 'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
+    const noEffectCount = upCards.filter(c=>c.rank!=='2' && !hasEffectContextual(G, c.rank, 'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
     return effectCount <= noEffectCount ? 'effect' : 'noeffect';
   }
   return Math.random()<0.5 ? 'effect' : 'noeffect';
@@ -1308,7 +1375,7 @@ function aiAnswer(player, kind){
     case 'c9': return aiChoose9Mode();
     case 'discard': { const c = aiChooseDiscardCard(player.hand) || player.hand[0]; return c ? c.uid : null; }
     case 'jpick': { const c = aiChooseSuperCard(player); return c ? c.uid : null; }
-    case 'jolly': return aiResolveJollyRank('facedown');
+    case 'jolly': return aiResolveJollyRank('facedown', player);
   }
   return null;
 }
@@ -1369,7 +1436,7 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
           player.st.discards++;
           emit('discard', {pid:player.id, card:pub(card)});
           toast('🗑️ Scarto forzato');
-          log(`${player.name} gioca un 5 e scarta una carta nell\'ipersboboz.`);
+          log(`${player.name} gioca un 5 e scarta una carta nell’ipersboboz.`);
           onDone();
         });
         return;
@@ -1426,8 +1493,8 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
           player.st.jdraws++;
           player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
           emit('jdraw', {pid:player.id, card:pub(choice)});
-          toast('🎴 Pescata dall\'ipersboboz');
-          log(`${player.name} gioca un J e prende una carta dall\'ipersboboz.`);
+          toast('🎴 Pescata dall’ipersboboz');
+          log(`${player.name} gioca un J e prende una carta dall’ipersboboz.`);
           onDone();
         });
         return;
@@ -1564,7 +1631,7 @@ function processFacedownCard(player, card, afterAll){
     player.st.queens++;
     player.hand.push(card);
     player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
-    if(!isLegalRank(G, 'Q', 'facedown')){
+    if(!isLegalRank(G, 'Q', 'facedown', {p:player, n:1})){
       // not playable: the table is picked up and, as after any pickup, the turn goes on
       pickUpTable(player);
     } else {
@@ -1575,16 +1642,15 @@ function processFacedownCard(player, card, afterAll){
   }
 
   if(card.rank==='JOLLY'){
-    const legal = RANKS.filter(r=>isLegalRank(G, r, 'facedown'));
+    const legal = RANKS.filter(r=>isLegalRank(G, r, 'facedown', {p:player, n:1}));
     ask(player, 'jolly', {legal}, (rank)=>{
-      if(!legal.includes(rank)) rank = aiResolveJollyRank('facedown');
-      card.rank = rank; card.wasJolly = true;
+      if(!legal.includes(rank)) rank = X = rank; card.wasJolly = true;
       continueFacedownLegal(player, card, afterAll);
     });
     return;
   }
 
-  if(isLegalRank(G, card.rank, 'facedown')){
+  if(isLegalRank(G, card.rank, 'facedown', {p:player, n:1})){
     continueFacedownLegal(player, card, afterAll);
   } else {
     player.hand.push(card);
@@ -1602,10 +1668,14 @@ function aiPlayHand(p){
   p.hand.forEach(c=>{ (groups[c.rank]=groups[c.rank]||[]).push(c); });
   const jollyCard = groups['JOLLY'] ? groups['JOLLY'][0] : null;
 
-  const legalRanks = [];
+  const legalRanks = [], legalN = {};
   for(const r in groups){
     if(r==='2' || r==='JOLLY') continue;
-    if(isLegalRank(G, r, 'hand')) legalRanks.push(r);
+    // largest group of that rank that is still legal (the 5 / 7 / 8 / 9 may
+    // lose their effect depending on how many are played together)
+    for(let n=groups[r].length; n>=1; n--){
+      if(isLegalRank(G, r, 'hand', {p, n})){ legalN[r]=n; legalRanks.push(r); break; }
+    }
   }
 
   if(legalRanks.length>0){
@@ -1632,15 +1702,15 @@ function aiPlayHand(p){
       });
       if(!completesNow) bestRank = 'J';
     }
-    let group = groups[bestRank].slice();
+    let group = groups[bestRank].slice(0, legalN[bestRank]);
     // The jolly is only worth spending on a group when it completes a
     // sboboz that the group alone would not (or when it empties the hand).
     if(jollyCard){
       const topStreak = (topOfTable(G) && topOfTable(G).rank===bestRank) ? currentTopStreak(G) : 0;
       const alreadyEnough = (topStreak + group.length >= G.sbobozThreshold) || bestRank==='K';
       const wouldCompleteWithJolly = (topStreak + group.length + 1) >= G.sbobozThreshold;
-      const wouldEmptyHand = p.hand.length === group.length + 1;
-      if((!alreadyEnough && wouldCompleteWithJolly) || wouldEmptyHand){
+      const wouldEmptyHand = p.hand.length === group.length + 1 && group.length===groups[bestRank].length;
+      if(((!alreadyEnough && wouldCompleteWithJolly) || wouldEmptyHand) && isLegalRank(G, bestRank, 'hand', {p, n:group.length+1})){
         jollyCard.rank = bestRank;
         jollyCard.wasJolly = true;
         group = group.concat([jollyCard]);
@@ -1650,7 +1720,7 @@ function aiPlayHand(p){
   }
   if(groups['2']) return groups['2'];
   if(jollyCard){
-    jollyCard.rank = aiResolveJollyRank('hand');
+    jollyCard.rank = aiResolveJollyRank('hand', p);
     jollyCard.wasJolly = true;
     return [jollyCard];
   }
@@ -1662,7 +1732,7 @@ function aiPlayFaceUp(p){
   p.slots.forEach(s=>{
     if(!s.up) return;
     if(s.up.rank==='2' || s.up.rank==='JOLLY') return;
-    if(isLegalRank(G, s.up.rank, 'faceup')) candidates.push(s.up);
+    if(isLegalRank(G, s.up.rank, 'faceup', {p, n:1, uid:s.up.uid})) candidates.push(s.up);
   });
   if(candidates.length>0){
     const sabotage = nextPlayerAboutToWinBlind();
@@ -1682,7 +1752,7 @@ function aiPlayFaceUp(p){
   const twoSlot = p.slots.find(s=>s.up && s.up.rank==='2');
   if(twoSlot) return [twoSlot.up];
   const jollySlot = p.slots.find(s=>s.up && s.up.rank==='JOLLY');
-  if(jollySlot){ jollySlot.up.rank = aiResolveJollyRank('faceup'); jollySlot.up.wasJolly = true; return [jollySlot.up]; }
+  if(jollySlot){ jollySlot.up.rank = aiResolveJollyRank('faceup', p, jollySlot.up.uid); jollySlot.up.wasJolly = true; return [jollySlot.up]; }
   return null;
 }
 
@@ -1754,10 +1824,10 @@ function humanAction(pid, a){
     let rank;
     if(others.length===0){
       rank = String(a.jollyRank||'');
-      if(!RANKS.includes(rank) || !isLegalRank(G, rank, zone)) return {ok:false, msg:'Valore del jolly non valido.'};
+      if(!RANKS.includes(rank) || !isLegalRank(G, rank, zone, {p, n:cards.length, uid:cards[0].uid})) return {ok:false, msg:'Valore del jolly non valido.'};
     } else {
       rank = others[0].rank;
-      if(!isLegalRank(G, rank, zone)) return {ok:false, msg:'Mossa non valida: non rispetta il tavolo o il vincolo attivo.'};
+      if(!isLegalRank(G, rank, zone, {p, n:cards.length, uid:cards[0].uid})) return {ok:false, msg:'Mossa non valida: non rispetta il tavolo o il vincolo attivo.'};
     }
     jollies.forEach(j=>{ j.rank = rank; j.wasJolly = true; });
     G.actor = pid; p.st.turns++; G.turnsCount++;
@@ -1896,8 +1966,8 @@ const Store = {
     if(!d || typeof d!=='object') return base;
     const out = base;
     if(typeof d.clientId==='string') out.clientId = d.clientId;
-    if(typeof d.name==='string') out.name = d.name.slice(0,16);
-    if(typeof d.avatar==='string') out.avatar = d.avatar.slice(0,8);
+    if(typeof d.name==='string') out.name = d.name.slice(0,24);
+    if(typeof d.avatar==='string') out.avatar = d.avatar.slice(0,16);
     if(d.stats && typeof d.stats==='object'){
       const s = d.stats, o = out.stats;
       ['games','wins','ties','online','solo','streak','bestStreak','maxHand'].forEach(k=>{ if(typeof s[k]==='number') o[k]=s[k]; });
@@ -2069,11 +2139,11 @@ const R = {
 };
 
 function uniqueName(base, exceptMid){
-  let name = (base||'Giocatore').trim().slice(0,16) || 'Giocatore';
+  let name = (base||'Giocatore').trim().slice(0,24) || 'Giocatore';
   const taken = n=>R.members.some(m=>m.mid!==exceptMid && m.name.toLowerCase()===n.toLowerCase());
   if(!taken(name)) return name;
   for(let i=2;i<30;i++){
-    const n = name.slice(0,13)+' '+i;
+    const n = name.slice(0,21)+' '+i;
     if(!taken(n)) return n;
   }
   return name+'*';
@@ -2194,7 +2264,7 @@ const Room = {
         }
         if(R.phase!=='lobby'){ kill('La partita è già iniziata.'); return; }
         if(R.members.length>=MAX_PLAYERS){ kill('La stanza è piena (max 7 giocatori).'); return; }
-        m = newMember('human', '', String(msg.avatar||'🥷').slice(0,8), {token, conn});
+        m = newMember('human', '', String(msg.avatar||"🥷").slice(0,16), {token, conn});
         m.name = uniqueName(String(msg.name||'Giocatore'), m.mid);
         R.members.push(m);
         done = true;
@@ -2264,7 +2334,7 @@ const Room = {
       case 'profile': {
         if(R.phase!=='lobby') return;
         m.name = uniqueName(String(msg.name||'').trim() || 'Giocatore', m.mid);
-        m.avatar = String(msg.avatar||'').slice(0,8) || m.avatar;
+        m.avatar = String(msg.avatar||'').slice(0,16) || m.avatar;
         Room.lobbyChanged();
         break;
       }
@@ -2864,6 +2934,35 @@ function fitLayout(){
   render();
 }
 let fitTimer = null;
+/* "tocca a te" sits exactly halfway between the table and the player's first
+   row of cards; "la tua mano" halfway between the covered cards (the lowest
+   edge of the stacks) and the hand. Only a visual nudge (transform). */
+function centerBands(){
+  const strip = document.querySelector('.status-strip'), lab = document.getElementById('hand-label');
+  const gs = document.getElementById('game-screen');
+  if(!strip || !lab || !gs || gs.style.display==='none') return;
+  strip.style.transform = ''; lab.style.transform = '';
+  const edges = sel=>{
+    const els = [...document.querySelectorAll(sel)];
+    if(!els.length) return null;
+    const r = els.map(e=>e.getBoundingClientRect());
+    return {top:Math.min(...r.map(x=>x.top)), bottom:Math.max(...r.map(x=>x.bottom))};
+  };
+  const st = edges('#human-stacks .card, #human-stacks .card-back, #human-stacks .slot');
+  const hd = edges('#human-hand .card');
+  const table = document.getElementById('table-surface').getBoundingClientRect();
+  if(st){
+    const sr = strip.getBoundingClientRect();
+    const dy = ((table.bottom + st.top)/2) - (sr.top + sr.bottom)/2;
+    if(Math.abs(dy)<40) strip.style.transform = `translateY(${dy.toFixed(1)}px)`;
+  }
+  if(st && hd){
+    const lr = lab.getBoundingClientRect();
+    const dy = ((st.bottom + hd.top)/2) - (lr.top + lr.bottom)/2;
+    if(Math.abs(dy)<40) lab.style.transform = `translateY(${dy.toFixed(1)}px)`;
+  }
+}
+
 function scheduleFit(){ clearTimeout(fitTimer); fitTimer = setTimeout(()=>{ if(!animating) fitLayout(); }, 120); }
 window.addEventListener('resize', scheduleFit);
 window.addEventListener('orientationchange', scheduleFit);
@@ -2875,6 +2974,29 @@ function setAppHeight(){
 window.addEventListener('resize', setAppHeight);
 window.addEventListener('orientationchange', setAppHeight);
 setAppHeight();
+
+/* ---- PWA: app installata -> niente pulsante schermo intero, e lo schermo
+   intero parte da solo al primo tocco (il manifest da solo non basta ovunque) ---- */
+const IS_PWA = (()=>{
+  try{
+    const mm = q=>window.matchMedia && window.matchMedia(q).matches;
+    if(window.navigator.standalone===true) return true;                       // iOS
+    if(mm('(display-mode: standalone)') || mm('(display-mode: minimal-ui)')) return true;
+    // manifest "fullscreen": stesso media query dell'F11 del browser, quindi solo su touch
+    if(mm('(display-mode: fullscreen)') && !document.fullscreenElement && ('ontouchstart' in window)) return true;
+  }catch(e){}
+  return false;
+})();
+if(IS_PWA){
+  document.documentElement.classList.add('pwa');
+  const goFs = ()=>{
+    const de = document.documentElement;
+    if(document.fullscreenElement || !de.requestFullscreen) return;
+    try{ const p = de.requestFullscreen({navigationUI:'hide'}); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+  };
+  goFs();
+  ['pointerup','touchend','click'].forEach(ev=>document.addEventListener(ev, goFs, {passive:true}));
+}
 
 function toggleFullscreen(){
   if(!document.fullscreenElement){
@@ -3151,6 +3273,7 @@ function render(){
   renderOpponents();
   renderHuman();
   renderStatusStrip();
+  centerBands();
 }
 
 function renderPiles(){
@@ -3468,13 +3591,13 @@ function onTableDropzoneClick(){
   const others = cards.filter(c=>c.rank!=='JOLLY');
   const uids = cards.map(c=>c.uid);
   if(jollyCards.length && others.length===0){
-    Modal.jolly(RANKS.filter(r=>isLegalRank(V, r, zone)), (rank)=>{
+    Modal.jolly(RANKS.filter(r=>isLegalRank(V, r, zone, {p, n:cards.length, uid:cards[0].uid})), (rank)=>{
       Client.sel = [];
       Client.act({t:'play', uids, jollyRank:rank});
     }, true);
     return;
   }
-  if(!isLegalRank(V, others[0].rank, zone)){
+  if(!isLegalRank(V, others[0].rank, zone, {p, n:cards.length, uid:cards[0].uid})){
     Client.msg = 'Mossa non valida: non rispetta il tavolo o il vincolo attivo.';
     document.getElementById('action-msg').textContent = Client.msg;
     return;
@@ -3522,7 +3645,7 @@ const Modal = {
     if(c) c.onclick = ()=>Modal.close();
   },
   pickSuper(cards, onPick){
-    const box = Modal.open(`<h3>Hai giocato un J</h3><p>Scegli una carta dall\'ipersboboz da aggiungere alla tua mano.</p><div class="modal-card-row" id="jdraw-row">${cards.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
+    const box = Modal.open(`<h3>Hai giocato un J</h3><p>Scegli una carta dall’ipersboboz da aggiungere alla tua mano.</p><div class="modal-card-row" id="jdraw-row">${cards.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
     const row = document.getElementById('jdraw-row');
     Array.from(row.children).forEach((el,i)=>{
       el.style.cursor = 'pointer';
@@ -3538,7 +3661,7 @@ const Modal = {
   },
   /* the chosen card flies straight out of the dialog to the ipersboboz */
   discard(hand, onPick){
-    const box = Modal.open(`<h3>Hai giocato un 5</h3><p>Scarta una carta dalla mano nell\'ipersboboz (esce definitivamente dal gioco).</p><div class="modal-card-row" id="discard-row">${hand.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
+    const box = Modal.open(`<h3>Hai giocato un 5</h3><p>Scarta una carta dalla mano nell’ipersboboz (esce definitivamente dal gioco).</p><div class="modal-card-row" id="discard-row">${hand.map(c=>cardHtml(c)).join('')}</div>`, 'modal-box-wide');
     const row = document.getElementById('discard-row');
     Array.from(row.children).forEach((el,i)=>{
       el.style.cursor = 'pointer';
@@ -3684,6 +3807,7 @@ const $ = id=>document.getElementById(id);
 const AVATARS = ['🥷','🦊','🐉','🐺','🦁','🐼','🐸','🦄','👑','🔥','⚡','❄️','🌊','🌿','🎩','🃏'];
 const SCREENS = ['home','join','lobby','setup','stats','game'];
 
+let MUSIC_STOP=()=>{};
 const UI = {
   current:null,
 
@@ -3695,6 +3819,7 @@ const UI = {
       const el = $(s+'-screen');
       if(el) el.style.display = (s===name) ? 'flex' : 'none';
     });
+    if(name!=='home') MUSIC_STOP();
     if(name==='game'){ requestAnimationFrame(()=>{ fitLayout(); }); }
     if(name==='home'){ UI.renderHome(); }
     if(prev==='game' && name!=='game'){ $('react-tray').classList.remove('open'); }
@@ -3819,7 +3944,7 @@ const UI = {
             <button class="btn-secondary" id="btn-share">Condividi</button>
             <button class="btn-secondary" id="btn-qr-toggle">QR</button>
           </div>
-          <div class="qr-box" id="qr-box" style="display:none;"></div>`;
+          <div class="qr-box" id="qr-box" style="display:${UI.qrOpen?'block':'none'};">${UI.qrOpen?qrSvg(roomQrPayload()):''}</div>`;
       } else {
         html += `<div class="cc-wait">Sei dentro: aspetta che l’host avvii la partita.</div>`;
       }
@@ -3888,10 +4013,9 @@ const UI = {
     };
     if(q('btn-qr-toggle')) q('btn-qr-toggle').onclick = ()=>{
       const box = q('qr-box');
-      if(box.style.display==='none'){
-        box.innerHTML = qrSvg(roomQrPayload());
-        box.style.display = 'block';
-      } else box.style.display = 'none';
+      UI.qrOpen = box.style.display==='none';
+      if(UI.qrOpen){ box.innerHTML = qrSvg(roomQrPayload()); box.style.display = 'block'; }
+      else box.style.display = 'none';
     };
     if(q('btn-edit-me')) q('btn-edit-me').onclick = openProfile;
     if(q('btn-add-bot')) q('btn-add-bot').onclick = ()=>Room.addBot();
@@ -4067,14 +4191,20 @@ function openProfile(){
   const p = Store.data;
   const box = Modal.open(`<h3>Il tuo profilo</h3>
     <p>Nome e avatar compaiono nelle stanze online.</p>
-    <input id="pf-name" class="text-input" maxlength="16" placeholder="Il tuo nome" value="${esc(p.name)}">
+    <input id="pf-name" class="text-input" maxlength="24" placeholder="Il tuo nome" value="${esc(p.name)}">
     <div class="avatar-grid">${AVATARS.map(a=>`<button class="av${a===p.avatar?' sel':''}" data-a="${a}">${a}</button>`).join('')}</div>
+    <input id="pf-emoji" class="text-input" maxlength="12" placeholder="…oppure scrivi o incolla un tuo emoji" autocomplete="off">
     <div class="modal-btns"><button class="btn-primary" id="pf-save">Salva</button><button class="btn-secondary" id="pf-cancel">Annulla</button></div>`);
   let avatar = p.avatar;
   box.querySelectorAll('.av').forEach(b=>{ b.onclick = ()=>{ avatar = b.dataset.a; box.querySelectorAll('.av').forEach(x=>x.classList.toggle('sel', x===b)); }; });
+  $('pf-emoji').addEventListener('input', e=>{
+    const v = e.target.value.trim(); if(!v) return;
+    const g = (window.Intl && Intl.Segmenter) ? [...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(v)].map(x=>x.segment)[0] : Array.from(v)[0];
+    avatar = g; box.querySelectorAll('.av').forEach(x=>x.classList.remove('sel'));
+  });
   $('pf-cancel').onclick = Modal.close;
   $('pf-save').onclick = ()=>{
-    Store.data.name = ($('pf-name').value||'').trim().slice(0,16);
+    Store.data.name = ($('pf-name').value||'').trim().slice(0,24);
     Store.data.avatar = avatar;
     Store.save();
     Modal.close();
@@ -4186,8 +4316,8 @@ function showRules(){
     <p class="rules">
     <b>Obiettivo.</b> Finire tutte le tue carte: mano, scoperte e coperte. Vince chi finisce per primo; si prosegue finché la classifica è completa.<br><br>
     <b>Come si gioca.</b> Seleziona una o più carte dello stesso valore (dalla mano o dalle scoperte se non hai carte in mano) e tocca il <b>tavolo</b>: devono valere pari o più della carta in cima, oppure essere un jolly. Se non puoi giocare prendi tutto il tavolo (puoi farlo anche volontariamente). Dopo uno sboboz o dopo aver preso il tavolo, tocca di nuovo a te. Finito il mazzo e la mano si passa alle scoperte, poi alle coperte (una per turno, alla cieca).<br><br>
-    <b>Effetti.</b> <b>2</b> jolly universale, sempre giocabile. <b>3</b> è la carta più bassa e segue le regole normali, ma riporta sul tavolo l’ultimo sboboz. <b>4</b> da scoperta rivela la coperta sotto. <b>5</b> da mano fa scartare un’altra carta nell\'ipersboboz. <b>7</b> annulla l’effetto della carta successiva. <b>8</b> impone più alta/più bassa. <b>9</b> impone con/senza effetto (se la stessa giocata completa uno sboboz, nessun vincolo viene chiesto). <b>J</b> ti fa scegliere una carta qualsiasi dall'ipersboboz. <b>Q</b> da coperta non è mai giocabile: torna in mano e, se non sarebbe stata legale, prendi anche il tavolo. <b>K</b> fa sboboz immediato. Il vincolo di 8/9 sostituisce il normale confronto di valore per la sola carta successiva.<br><br>
-    <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nell\'ipersboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
+    <b>Effetti.</b> <b>2</b> jolly universale, sempre giocabile. <b>3</b> è la carta più bassa e segue le regole normali, ma riporta sul tavolo l’ultimo sboboz. <b>4</b> da scoperta rivela la coperta sotto. <b>5</b> da mano fa scartare un’altra carta nell’ipersboboz. <b>7</b> annulla l’effetto della carta successiva. <b>8</b> impone più alta/più bassa. <b>9</b> impone con/senza effetto (se la stessa giocata completa uno sboboz, nessun vincolo viene chiesto): conta l’effetto che la carta avrebbe <i>davvero</i> in quel momento, quindi un 4 senza coperta sotto, un 5 senza altre carte in mano, un 3 senza sboboz, un J con l’ipersboboz vuoto o un 7/8/9 che completa uno sboboz valgono come senza effetto. <b>J</b> ti fa scegliere una carta qualsiasi dall’ipersboboz. <b>Q</b> da coperta non è mai giocabile: torna in mano e, se non sarebbe stata legale, prendi anche il tavolo. <b>K</b> fa sboboz immediato. Il vincolo di 8/9 sostituisce il normale confronto di valore per la sola carta successiva.<br><br>
+    <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nell’ipersboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
     <b>Mazzi.</b> 2–3 giocatori: 1 mazzo (a scelta anche 2). 4–6: 2 mazzi. 7: 2 mazzi + 1 Jolly. Il Jolly diventa la carta che scegli (valida) o si unisce a un gruppo; quando torna in una mano ridiventa libero.<br><br>
     <b>Pile.</b> Ognuno ha 5 pile: una coperta con sopra una scoperta scelta all’inizio. Le coperte si girano solo quando hai finito mano e scoperte.<br><br>
     <b>Online.</b> Crea una stanza, condividi il codice o il QR; gli altri entrano da «Entra in una stanza» (o aprendo il link del QR). Puoi aggiungere bot fino a 7 giocatori.<br><br>
@@ -4238,8 +4368,26 @@ function startSolo(){
 }
 
 function wireUp(){
+  if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+  }
+  (function(){
+    const au=$('music-audio'), mb=$('music-btn'), inf=$('music-info');
+    if(!au||!mb) return;
+    const sync=()=>{ mb.textContent = au.paused ? '▶' : '■'; mb.setAttribute('aria-label', au.paused?'Riproduci musica':'Ferma musica'); };
+    mb.onclick=()=>{
+      if(!au.paused){ au.pause(); au.currentTime=0; sync(); return; }
+      const p=au.play(); if(p&&p.catch) p.catch(()=>{ sync(); UI.toastTop('File audio non trovato'); });
+      sync();
+    };
+    au.addEventListener('error',()=>{ sync(); });
+    au.addEventListener('pause',sync); au.addEventListener('play',sync);
+    inf.onclick=e=>{ e.stopPropagation(); inf.classList.toggle('open'); };
+    document.addEventListener('click',e=>{ if(e.target!==inf) inf.classList.remove('open'); });
+    MUSIC_STOP=()=>{ if(!au.paused){ au.pause(); au.currentTime=0; } };
+  })();
   $('btn-solo').onclick = startSolo;
-  $('btn-create').onclick = ()=>{ Client.reset(); Room.create(true); UI.show('lobby'); UI.renderLobby(); };
+  $('btn-create').onclick = ()=>{ UI.qrOpen=false; Client.reset(); Room.create(true); UI.show('lobby'); UI.renderLobby(); };
   $('btn-join').onclick = ()=>{ $('join-msg').textContent=''; $('btn-join-go').disabled=false; UI.show('join'); setTimeout(()=>$('join-code').focus(), 50); };
   $('btn-stats').onclick = ()=>{ renderStats('me'); UI.show('stats'); };
   $('btn-rules').onclick = showRules;
@@ -4313,7 +4461,7 @@ updateFullscreenButtons();
   }catch(e){}
 })();
 
-window.__dbg={humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
+window.__dbg={isLegalRank,hasEffectContextual,hasAnyLegalInHand,humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
 
 })();
 </script>
