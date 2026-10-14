@@ -1032,7 +1032,7 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.0.4',   // mostrata in fondo alla home
+  version: '1.0.5',   // mostrata in fondo alla home
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -2420,14 +2420,15 @@ const Analytics = (function(){
         players: res.nPlayers, humans, bots: res.nPlayers-humans, decks: res.numDecks,
         duration_s: res.secs||0, turns: res.turns||0,
         result: res.draw ? 'patta' : (res.stalemate ? 'stallo' : 'normale'),
-        winner: (rows.find(r=>r.place===1 && !r.tie)||{}).kind || 'nessuno',
-        pwa: A.isPwa()
+        winner: ({human:'umano', bot:'bot'})[(rows.find(r=>r.place===1 && !r.tie)||{}).kind] || 'nessuno'
       };
-      rows.forEach((r,i)=>{
-        const k = 'p'+(i+1)+'_', st = r.st||{};
-        d[k+'who'] = r.kind==='bot' ? r.name : 'umano';
-        d[k+'pos'] = r.place; d[k+'played'] = st.played||0; d[k+'pick'] = st.pickups||0;
-        d[k+'sbz'] = st.sboboz||0; d[k+'hand'] = st.maxHand||0;
+      // statistiche della partita: somma di tutti i giocatori (maxHand = il massimo)
+      const sum = k=>rows.reduce((t,r)=>t+((r.st&&r.st[k])||0),0);
+      Object.assign(d, {
+        sboboz: sum('sboboz'), sboboz_cards: sum('sbobozCards'), sboboz_kings: sum('sbobozKings'),
+        tables_taken: sum('pickups'), cards_played: sum('played'), jokers: sum('jollies'),
+        reveals: sum('reveals'), discards_5: sum('discards'), draws_j: sum('jdraws'),
+        max_hand: Math.max(0, ...rows.map(r=>(r.st&&r.st.maxHand)||0))
       });
       A.track('game_end', d);
     },
