@@ -4,8 +4,8 @@
      stessa versione), se sei offline parte quella in cache (si gioca contro i bot).
    - Icone, manifest e font: "stale-while-revalidate".
    - L'mp3 e tutto il resto (PeerJS, ecc.) non vengono toccati. */
-const VERSION = 'ilsboboz-v2';
-const CORE = ['./', 'index.html', 'manifest.json', 'icona-192.png', 'icona-512.png', 'icona-maskable-512.png', 'apple-touch-icon.png'];
+const VERSION = 'ilsboboz-v4';
+const CORE = ['./', 'index.html', 'manifest.json', 'icona.png'];
 
 self.addEventListener('install', e=>{
   e.waitUntil(caches.open(VERSION).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));

@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#05130d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="IlSboboz: il gioco di carte Sboboz con i ninja di Ninjago, contro i bot o online con gli amici.">
+<meta name="description" content="Il gioco di carte Sboboz come non lo hai mai visto prima. I tuoi amici ti aspettano, ma contro i ninja non hai speranza!">
 <meta name="application-name" content="IlSboboz">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="IlSboboz">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="icona-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icona.png">
+<link rel="apple-touch-icon" href="icona.png">
 <title>IlSboboz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
 
   #setup-screen h2{ color:var(--gold-bright); margin:0; font-size:1.3rem; }
   #setup-screen p{ color:rgba(243,236,217,0.7); max-width:calc(480 * var(--u)); text-align:center; font-size:0.86rem; margin:0; }
-  #setup-hand{ display:flex; gap:calc(8 * var(--u)); flex-wrap:wrap; justify-content:center; max-width:calc(680 * var(--u)); }
+  #setup-hand{ display:grid; grid-template-columns:repeat(5,max-content); gap:calc(8 * var(--u)); justify-content:center; max-width:100%; }
 
   /* ---------- Game screen ---------- */
   #game-screen{
@@ -125,6 +125,7 @@
   .opp-seat.black-ninja.active-turn{ border-color:#000; background:rgba(0,0,0,0.7); box-shadow:0 0 0 2px #000, 0 0 16px rgba(0,0,0,.95); }
   .opp-head{display:flex; align-items:center; margin-bottom:calc(4 * var(--u)); gap:calc(6 * var(--u)); min-height:calc(22 * var(--u));}
   .opp-name{font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem;}
+  .opp-seat .opp-elem[data-elem="terra"]{ background:rgba(176,116,58,.2); color:#c98a4b; }
   .opp-elem{font-size:0.62rem; padding:calc(2 * var(--u)) calc(7 * var(--u)); border-radius:calc(20 * var(--u)); background:var(--ninja-color-bg, rgba(232,192,95,.15)); color:var(--ninja-accent, var(--gold-bright)); text-transform:lowercase; white-space:nowrap;}
   .opp-counts{display:flex; align-items:center; gap:calc(6 * var(--u)); margin-left:auto; margin-right:calc(2 * var(--u));}
   .opp-hand-row{display:flex; align-items:center; gap:calc(4 * var(--u)); margin-bottom:calc(4 * var(--u)); min-height:auto;}
@@ -274,7 +275,7 @@
 
   #anim-layer{ position:fixed; inset:0; pointer-events:none; z-index:45; }
 
-  @media (max-width: 640px){
+  @media (max-width: 640px), (orientation:landscape) and (max-height:520px) and (max-width:1000px){
     :root{ --card-w:clamp(40px, min(14vw, 7vh), 56px); --card-h:calc(var(--card-w) * 1.41); --small-w:clamp(20px, calc((50vw - 58px) / 5), 34px); --small-h:calc(var(--small-w) * 1.41); }
     .card.small, .card-back.small{ border-radius:4px; }
     .card.small .corner{ font-size:0.45rem; }
@@ -368,7 +369,7 @@
   .tagline{ margin:0 0 10px; color:rgba(243,236,217,.7); font-size:.9rem; padding:0 10px; }
   .ninja-row{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
   .ninja-row span{ font-size:.66rem; font-weight:600; padding:2px 9px; border-radius:20px; background:var(--c); color:#111; letter-spacing:.03em; }
-  .ninja-row span.dark{ color:#ddd; border:1px solid #000; }
+  .ninja-row span.dark{ color:#fff3e0; }
   .home-menu{ width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex:0 0 auto; }
   .menu-btn{
     display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; cursor:pointer; color:var(--cream);
@@ -439,7 +440,7 @@
   .seat-row.empty{ border-style:dashed; justify-content:center; background:transparent; }
   .s-ava{ width:34px; height:34px; border-radius:50%; background:rgba(232,192,95,.2); display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex:0 0 auto; }
   .s-ava.bot{ background:var(--c); color:#000; font-family:'Fraunces',serif; font-weight:700; font-size:1rem; }
-  .s-ava.bot[style*="#000"]{ color:#ddd; border:1px solid #000; }
+  .s-ava.bot[style*="#000000"]{ color:#fff3e0; }
   .s-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
   .s-tags{ display:flex; gap:4px; }
   .s-tags em{ font-style:normal; font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(255,255,255,.12); }
@@ -681,6 +682,148 @@
 
   .log-sub{ opacity:.78; padding-left:.9em; display:inline-block; }
 
+  .app-version{ font-size:.62rem; opacity:.55; margin:2px 0 3px; letter-spacing:.06em; }
+
+  .btn-add-bot.rnd{ margin-left:8px; }
+  .seat-row.empty{ flex-wrap:wrap; gap:6px; }
+  .s-rnd{ background:none; border:1px solid rgba(243,236,217,.2); border-radius:8px; padding:2px 6px; font-size:.8rem; cursor:pointer; opacity:.55; filter:grayscale(1); }
+  .s-rnd.on{ opacity:1; filter:none; border-color:var(--gold-bright); background:rgba(232,192,95,.15); }
+
+  /* ---- whose turn is it? ---- */
+  @keyframes myturnGlow{ 0%,100%{ box-shadow:0 0 0 1px var(--gold-bright), 0 0 8px rgba(232,192,95,.25); } 50%{ box-shadow:0 0 0 2px var(--gold-bright), 0 0 22px rgba(232,192,95,.62); } }
+  @keyframes pillPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.07); } }
+  #game-screen.my-turn #human-area{ border-color:var(--gold-bright); background:rgba(232,192,95,.07); animation:myturnGlow 1.5s ease-in-out infinite; }
+  #game-screen:not(.my-turn) #human-area{ filter:saturate(.8) brightness(.9); }
+  #turn-banner.mine{ background:var(--gold-bright); color:#2a1a05; padding:1px 11px; border-radius:20px; animation:pillPulse 1.3s ease-in-out infinite; }
+  @keyframes seatGlow{ 0%,100%{ box-shadow:0 0 0 1px var(--ninja-accent, var(--gold-bright)), 0 0 8px var(--ninja-color-bg, rgba(232,192,95,.3)); } 50%{ box-shadow:0 0 0 2px var(--ninja-accent, var(--gold-bright)), 0 0 20px var(--ninja-accent, rgba(232,192,95,.55)); } }
+  .opp-seat.active-turn{ animation:seatGlow 1.5s ease-in-out infinite; }
+  .opp-seat:not(.active-turn):not(.seat-finished){ opacity:.92; }
+  @media (prefers-reduced-motion:reduce){ #game-screen.my-turn #human-area, #turn-banner.mine, .opp-seat.active-turn{ animation:none; } }
+  .seat-row.empty .btn-add-bot{ width:auto; flex:1 1 45%; }
+
+  /* zoom on a player's cards */
+  .opp-seat{ cursor:pointer; }
+  .zoom-stacks{ display:flex; gap:calc(var(--zw) * .12); justify-content:center; margin:6px 0 12px; --zw:clamp(46px, 15vw, 96px); --card-w:var(--zw); --card-h:calc(var(--zw) * 1.41); }
+  .zoom-stacks .stack-slot{ width:var(--card-w); height:var(--card-h); }
+  .zoom-stacks .stack-under{ top:calc(var(--zw) * .07); left:calc(var(--zw) * .07); }
+  .zoom-stacks .card{ font-size:calc(var(--zw) * .26); padding:calc(var(--zw) * .06) calc(var(--zw) * .08); border-radius:calc(var(--zw) * .1); }
+  .zoom-stacks .card .corner{ font-size:calc(var(--zw) * .24); }
+  .zoom-stacks .card .suit-mid{ font-size:calc(var(--zw) * .5); }
+  .zoom-stacks .card-back{ border-radius:calc(var(--zw) * .1); }
+  .zoom-stacks .stack-slot.empty{ border:1px dashed rgba(243,236,217,.15); border-radius:calc(var(--zw) * .1); }
+  .zoom-info{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; font-size:.8rem; color:rgba(243,236,217,.75); }
+  .zoom-info b{ color:var(--gold-bright); font-size:1rem; }
+  .zoom-fin{ color:var(--gold-bright); }
+  .zoom-hand{ display:flex; justify-content:center; margin:12px 0 4px; --card-w:34px; --card-h:48px; }
+  .zoom-hand .card-back{ margin-left:-20px; border-radius:5px; }
+  .zoom-hand .card-back:first-child{ margin-left:0; }
+  .zoom-note{ font-size:.68rem; color:rgba(243,236,217,.45); margin-top:10px; }
+  .zoom-elem{ font-weight:400; font-size:.6em; opacity:.7; text-transform:lowercase; }
+
+  /* ---- patta (draw offer) ---- */
+  #draw-banner{ position:fixed; left:50%; transform:translateX(-50%); top:calc(env(safe-area-inset-top,0px) + 52px); z-index:260; display:none; width:min(92vw,440px); box-sizing:border-box; padding:10px 12px; border-radius:14px; background:rgba(8,28,20,.97); border:1px solid rgba(232,192,95,.55); box-shadow:0 8px 28px rgba(0,0,0,.55); text-align:center; font-size:.86rem; color:var(--cream,#f3ecd9); }
+  #draw-banner.show{ display:block; }
+  #draw-banner b{ color:var(--gold-bright); }
+  #draw-banner .db-btns{ display:flex; gap:8px; justify-content:center; margin-top:8px; }
+  #draw-banner button{ padding:7px 14px; border-radius:10px; font-weight:600; font-size:.82rem; cursor:pointer; border:1px solid rgba(232,192,95,.5); background:rgba(232,192,95,.12); color:var(--gold-bright); font-family:inherit; }
+  #draw-banner button.yes{ background:var(--gold-bright); color:#1a1204; }
+
+  /* ---- statistics 2.0 ---- */
+  .sf{ display:flex; flex-direction:column; gap:8px; margin:2px 0 10px; }
+  .seg{ display:flex; gap:4px; background:rgba(0,0,0,.28); border:1px solid rgba(232,192,95,.18); border-radius:12px; padding:3px; overflow-x:auto; scrollbar-width:none; }
+  .seg button{ flex:1 0 auto; padding:6px 10px; border-radius:9px; border:0; background:transparent; color:rgba(243,236,217,.7); font:600 .74rem 'Inter',sans-serif; cursor:pointer; white-space:nowrap; }
+  .seg button.on{ background:var(--gold-bright); color:#1a1204; }
+  .sf-dates{ display:flex; gap:10px; justify-content:center; font-size:.76rem; color:rgba(243,236,217,.75); }
+  .sf-dates input{ background:rgba(0,0,0,.35); color:inherit; border:1px solid rgba(232,192,95,.3); border-radius:8px; padding:4px 6px; font:inherit; color-scheme:dark; }
+  .empty{ text-align:center; padding:26px 0; }
+  .hint{ font-size:.7rem; color:rgba(243,236,217,.55); margin:6px 2px; line-height:1.35; }
+  .hero{ display:flex; align-items:center; gap:14px; background:rgba(0,0,0,.28); border:1px solid rgba(232,192,95,.22); border-radius:16px; padding:12px; }
+  .donut{ width:112px; height:112px; flex:0 0 auto; }
+  .donut .dn-v{ font:700 17px 'Fraunces',serif; fill:var(--gold-bright); dominant-baseline:middle; }
+  .donut .dn-s{ font:500 7px 'Inter',sans-serif; fill:rgba(243,236,217,.6); }
+  .hero-side{ flex:1; display:grid; grid-template-columns:1fr 1fr; gap:8px 6px; }
+  .hero-side div{ display:flex; flex-direction:column; }
+  .hero-side b{ font:700 1.2rem 'Fraunces',serif; color:var(--gold-bright); line-height:1.1; } .hero-side b small{ font-size:.6rem; opacity:.7; }
+  .hero-side span{ font-size:.62rem; color:rgba(243,236,217,.6); }
+  .form-strip{ display:flex; gap:4px; margin:10px 0 4px; flex-wrap:wrap; justify-content:center; }
+  .form-strip i{ font-style:normal; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:700; background:rgba(243,236,217,.14); color:#f3ecd9; }
+  .form-strip i.w{ background:var(--gold-bright); color:#1a1204; font-size:.8rem; } .form-strip i.l{ background:rgba(224,87,63,.55); } .form-strip i.t{ background:rgba(126,200,232,.4); }
+  .trend{ width:100%; height:90px; background:rgba(0,0,0,.22); border-radius:12px; margin-top:8px; }
+  .trend .tg{ stroke:rgba(243,236,217,.15); stroke-dasharray:3 3; stroke-width:1; }
+  .trend .tline{ stroke:var(--gold-bright); stroke-width:2; }
+  .trend .tw{ fill:var(--gold-bright); } .trend .tl, .trend .tt{ fill:rgba(243,236,217,.55); }
+  .trend-leg{ display:flex; gap:12px; justify-content:center; font-size:.6rem; color:rgba(243,236,217,.55); margin-top:3px; }
+  .stat-tile.acc{ border-color:rgba(232,192,95,.55); background:rgba(232,192,95,.08); }
+  .bar i{ background:linear-gradient(90deg, rgba(232,192,95,.55), var(--gold-bright)); }
+  .ninja-card.dim{ opacity:.55; }
+  .nc-head{ align-items:center; gap:8px; }
+  .nc-head b{ flex:1; }
+  .nc-rank{ width:22px; height:22px; border-radius:50%; background:rgba(243,236,217,.14); display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; }
+  .nc-score{ font:700 1rem 'Fraunces',serif; color:var(--gold-bright); } .nc-score small{ font-size:.55rem; opacity:.7; }
+  .nc-head em.elem{ font-size:.62rem; padding:2px 7px; border-radius:20px; text-transform:lowercase; background:color-mix(in srgb, var(--ec) 18%, transparent); color:var(--ec); }
+  .nc-bar{ height:5px; border-radius:5px; background:rgba(243,236,217,.1); overflow:hidden; margin:2px 0 8px; } .nc-bar i{ display:block; height:100%; border-radius:5px; }
+  .games{ display:flex; flex-direction:column; gap:7px; }
+  .game{ background:rgba(0,0,0,.26); border:1px solid rgba(255,255,255,.1); border-radius:13px; overflow:hidden; }
+  .game.open{ border-color:rgba(232,192,95,.45); }
+  .game-head{ width:100%; display:flex; align-items:center; gap:8px; padding:10px 12px; background:none; border:0; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+  .g-when{ flex:1; display:flex; flex-direction:column; font-size:.82rem; } .g-when small{ font-size:.66rem; color:rgba(243,236,217,.6); }
+  .g-place{ font:700 1.05rem 'Fraunces',serif; } .g-place.win{ color:var(--gold-bright); }
+  .g-chev{ opacity:.6; transition:transform .15s; } .game.open .g-chev{ transform:rotate(180deg); }
+  .game-body{ padding:0 12px 12px; }
+  .g-sum{ display:flex; gap:12px; font-size:.72rem; color:rgba(243,236,217,.7); margin-bottom:8px; flex-wrap:wrap; }
+  .g-row{ display:flex; align-items:center; gap:8px; padding:5px 6px; border-radius:8px; font-size:.8rem; }
+  .g-row.me{ background:rgba(232,192,95,.12); }
+  .g-pl{ width:26px; font-weight:700; color:var(--gold-bright); } .g-nm{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .g-nm small{ opacity:.55; }
+  .g-st{ display:flex; gap:7px; font-size:.66rem; color:rgba(243,236,217,.75); } .g-st i{ font-style:normal; white-space:nowrap; }
+  .g-del{ margin-top:10px; width:100%; padding:8px; font-size:.78rem; }
+  .lobby-card{ background:rgba(0,0,0,.26); border:1px solid rgba(232,192,95,.25); border-radius:14px; padding:10px 12px; margin-top:9px; }
+  .lc-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; } .lc-head b{ font-family:'Fraunces',serif; color:var(--gold-bright); } .lc-head span{ font-size:.68rem; color:rgba(243,236,217,.6); }
+  .lc-row{ display:flex; align-items:center; gap:8px; padding:4px 4px; font-size:.8rem; border-radius:7px; } .lc-row.me{ background:rgba(232,192,95,.1); }
+  .lc-pos{ width:18px; opacity:.6; } .lc-nm{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .lc-a, .lc-n{ font-size:.68rem; color:rgba(243,236,217,.7); }
+
+  /* ================= phone held sideways (landscape) =================
+     Only active for wide-and-short windows: portrait is untouched. */
+  @media (orientation:landscape) and (max-height:520px) and (max-width:1000px){
+    #home-screen[style*="flex"]{ display:grid !important; grid-template-columns:1fr 1fr; grid-template-rows:auto 1fr auto; column-gap:28px; align-items:center; justify-items:center; padding-top:8px; }
+    #home-screen .home-top{ grid-column:1; grid-row:1; }
+    #home-screen .home-hero{ grid-column:1; grid-row:2; max-width:none; }
+    #home-screen .home-menu{ grid-column:2; grid-row:1 / span 3; max-width:420px; }
+    #home-screen .home-foot{ grid-column:1; grid-row:3; max-width:none; }
+    #home-screen .logo{ font-size:2.6rem; margin:0; }
+    #home-screen .fan{ display:none; }
+
+    #game-screen[style*="flex"]{ display:grid !important; grid-template-columns:minmax(0,46fr) minmax(0,54fr); grid-template-rows:auto auto minmax(0,1fr) auto; column-gap:6px; row-gap:3px; }
+    #game-screen[style*="flex"] > *{ min-width:0; min-height:0; }
+    #game-screen .topbar{ grid-column:1 / -1; grid-row:1; }
+    #game-screen #react-tray{ position:absolute; top:44px; right:8px; z-index:50; }
+    #game-screen #opponent-seats{ grid-column:1; grid-row:2; width:auto; margin:0; align-content:flex-start; max-height:46vh; overflow:hidden; }
+    #game-screen #table-surface{ grid-column:1; grid-row:3; width:auto; margin:0; }
+    #game-screen .status-strip{ grid-column:1; grid-row:4; width:auto; justify-content:flex-start; }
+    #game-screen #human-area{ grid-column:2; grid-row:2 / span 3; margin:0; width:auto; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; }
+    #game-screen .human-zones{ flex:1 1 auto; justify-content:center; }
+    #game-screen .zone-label{ text-align:center; }
+    #game-screen .action-msg{ text-align:left; }
+    #setup-hand{ max-width:100%; }
+  }
+
+  .room-board{ margin-top:12px; }
+  .lc-foot{ margin-top:6px; font-size:.58rem; color:rgba(243,236,217,.45); text-align:center; }
+  #results-awards .room-board{ text-align:left; }
+
+  /* ---- rules document ---- */
+  .rules-doc{ font-size:.86rem; line-height:1.5; color:rgba(243,236,217,.92); }
+  .rules-doc .rd-lead{ font-size:.95rem; margin:0 0 4px; }
+  .rules-doc h4{ margin:16px 0 6px; font-family:'Fraunces',serif; font-size:1.02rem; color:var(--gold-bright); border-bottom:1px solid rgba(232,192,95,.25); padding-bottom:3px; }
+  .rules-doc p{ margin:6px 0; }
+  .rules-doc ul{ margin:6px 0; padding-left:18px; } .rules-doc li{ margin:4px 0; }
+  .rules-doc b{ color:#fff3d6; }
+  .rule-cards{ display:flex; flex-direction:column; gap:5px; margin:8px 0; }
+  .rule-card{ display:flex; gap:10px; align-items:flex-start; background:rgba(0,0,0,.26); border:1px solid rgba(232,192,95,.18); border-radius:10px; padding:7px 10px; }
+  .rule-card b{ flex:0 0 28px; text-align:center; font:700 1.05rem 'Fraunces',serif; color:var(--gold-bright); }
+  .rule-card span{ font-size:.8rem; }
+  .lc-nm small{ opacity:.5; font-size:.62rem; }
+  .deck-info{ margin:2px 0 8px; padding:8px 10px; border-radius:10px; background:rgba(232,192,95,.1); border:1px solid rgba(232,192,95,.3); font-size:.8rem; text-align:center; }
+
 </style>
 </head>
 <body>
@@ -702,7 +845,7 @@
     <h1 class="logo">IlSboboz</h1>
     <p class="tagline">Finisci le carte prima di tutti.</p>
     <div class="ninja-row" aria-hidden="true">
-      <span style="--c:#4caf50">Lloyd</span><span style="--c:#e0573f">Kai</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4b82d6">Jay</span><span style="--c:#000" class="dark">Cole</span><span style="--c:#f2f2f2">Zane</span>
+      <span style="--c:#4caf50">Lloyd</span><span style="--c:#e0573f">Kai</span><span style="--c:#7ec8e8">Nya</span><span style="--c:#4b82d6">Jay</span><span style="--c:#000000" class="dark">Cole</span><span style="--c:#f2f2f2">Zane</span>
     </div>
   </div>
 
@@ -727,6 +870,7 @@
     </div>
     <div class="credits">Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>
     <div class="disclaimer">Non è la versione originale di Sboboz: è una versione avanzata creata a partire da quella originale.</div>
+    <div class="app-version" id="app-version">v1.0.0</div>
   </div>
 </div>
 
@@ -791,6 +935,7 @@
     <button data-tab="me" class="active">Io</button>
     <button data-tab="ninja">Ninja</button>
     <button data-tab="hist">Storico</button>
+    <button data-tab="lobby">Lobby</button>
   </div>
   <div class="stats-scroll"><div id="stats-body"></div></div>
 </div>
@@ -800,6 +945,7 @@
   <div class="topbar">
     <h2>IlSboboz</h2>
     <div class="topbar-actions">
+      <button class="icon-btn" id="btn-draw" style="display:none;" title="Proponi patta" aria-label="Proponi patta">🤝</button>
       <button class="icon-btn" id="btn-react" style="display:none;">💬</button>
       <button class="icon-btn" id="btn-log">Diario</button>
       <button class="icon-btn" id="btn-fullscreen-game">⛶</button>
@@ -871,6 +1017,7 @@
   </div>
 </div>
 
+<div id="draw-banner" role="alert"></div>
 <div id="toast-host"></div>
 <div id="anim-layer"></div>
 
@@ -879,10 +1026,15 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
+  version: '1.0.2',   // mostrata in fondo alla home
+  // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
+  // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
+  // Lasciato vuoto = nessun dato inviato.
+  analytics: { websiteId: '0f19803f-3151-4ae9-a427-fdf4e4121310', host: 'https://cloud.umami.is' },
   // emoji tra cui scegliere l'avatar (tocca il tuo nome nella home)
-  avatars: ['🥷','🌿','🔥','🌊','⚡','⛰️','❄️','🐶','🐱','🐉','💨','🐸','🦄','👑','🎩','🃏'],
+  avatars: ['🥷','🦊','🐉','🐺','🦁','🐼','🐸','🦄','👑','🔥','⚡','❄️','🌊','🌿','🎩','🃏'],
   // reazioni rapide in partita (💬): emoji o frasi brevi
-  reactions: ['👍','😂','😮','🔥','😭','Bella giocata!','Ops!','Sboboz!','Dai!']
+  reactions: ['👍','😂','😮','🔥','😭','🥷','Bella giocata!','Ahi!','Sboboz!','Dai!']
 };
 </script>
 <script>var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});</script>
@@ -915,6 +1067,8 @@ const NINJAGO_POOL = [
   {name:'Zane', elem:'ghiaccio', color:'#f2f2f2'}
 ];
 
+/* old saves stored Cole as black: show him brown */
+function fixColor(c){ return c; }
 function rankValue(rank){ return RANK_VALUE[rank]; }
 
 /* Hand display order: ascending, but the 2 (a near-universal wild) is
@@ -961,7 +1115,7 @@ function buildDeck(numDecks, withJolly){
 }
 
 function isRed(card){ return RED_SUITS.has(card.suit); }
-function pub(c){ return {uid:c.uid, rank:c.rank, suit:c.suit, wasJolly:!!c.wasJolly}; }
+function pub(c){ return {uid:c.uid, rank:c.rank, suit:c.suit, wasJolly:!!c.wasJolly, restored:!!c.restored}; }
 
 /* ============================================================
    GAME STATE (authoritative -- lives only on the host)
@@ -969,7 +1123,7 @@ function pub(c){ return {uid:c.uid, rank:c.rank, suit:c.suit, wasJolly:!!c.wasJo
 let G = null;
 
 function newStats(){
-  return {played:0, pickups:0, taken:0, sboboz:0, kings:0, jollies:0, turns:0, reveals:0, discards:0, jdraws:0, maxHand:0, queens:0};
+  return {played:0, pickups:0, taken:0, sboboz:0, sbobozCards:0, sbobozKings:0, kings:0, jollies:0, turns:0, reveals:0, discards:0, jdraws:0, maxHand:0, queens:0};
 }
 
 function newPlayer(id, m){
@@ -977,6 +1131,7 @@ function newPlayer(id, m){
     id, name:m.name, kind:m.kind, avatar:m.avatar||'🥷',
     elem:m.elem||null, color:m.color||null,
     hand:[], faceDown:[], slots:[], finished:false, connected:true, ready:false,
+    known:new Set(),   // uids of cards in this hand that everybody has seen (picked-up table, returned queens)
     st:newStats()
   };
 }
@@ -1039,13 +1194,35 @@ function finalizeSetup(p, chosenFaceUpCards){
 
 function aiChooseFaceUp(p){
   const jolly = p.hand.find(c=>c.rank==='JOLLY');
-  let chosen;
-  if(jolly){
-    const rest = p.hand.filter(c=>c.rank!=='JOLLY').sort((a,b)=> rankValue(b.rank)-rankValue(a.rank));
-    chosen = [jolly, ...rest.slice(0,4)];
-  } else {
-    chosen = [...p.hand].sort((a,b)=> rankValue(b.rank)-rankValue(a.rank)).slice(0,5);
+  const slots = jolly ? 4 : 5;
+  const byValueDesc = (a,b)=> rankValue(b.rank)-rankValue(a.rank);
+  const fours = p.hand.filter(c=>c.rank==='4');
+  const others = p.hand.filter(c=>c.rank!=='JOLLY' && c.rank!=='4').sort(byValueDesc);
+  // start from the best cards of the hand...
+  let chosen = others.slice(0, slots);
+  const weakestIdx = ()=>{
+    let wi = -1;
+    chosen.forEach((c,i)=>{ if(c.rank!=='4' && (wi<0 || rankValue(c.rank)<rankValue(chosen[wi].rank))) wi = i; });
+    return wi;
+  };
+  // ...a 4 face-up flips the hidden card under it (good), but it is a dead
+  // weight in the hand: one 4 for every King on show, and more 4s only
+  // instead of cards that are not worth showing (10 or lower).
+  const kings = chosen.filter(c=>c.rank==='K').length;
+  let used = 0;
+  for(const f of fours){
+    const wi = weakestIdx();
+    if(wi<0) break;
+    const v = rankValue(chosen[wi].rank);
+    const byKing = used < kings && v<=12;
+    if(byKing || v<=10){ chosen[wi] = f; used++; }
   }
+  // not enough "others" to fill the row: top up with the leftover 4s / whatever is left
+  if(chosen.length<slots){
+    const left = p.hand.filter(c=>c.rank!=='JOLLY' && !chosen.includes(c)).sort(byValueDesc);
+    chosen = chosen.concat(left.slice(0, slots-chosen.length));
+  }
+  if(jolly) chosen = [jolly, ...chosen];
   finalizeSetup(p, chosen);
 }
 
@@ -1070,6 +1247,8 @@ function requiredValue(S){
    Without ctx we fall back to the optimistic "potential" answer. */
 function hasEffectContextual(S, rank, zone, ctx){
   if(rank==='2' || rank==='K') return true;
+  // a Queen revealed from the face-down cards goes back to the hand: that counts as an effect
+  if(rank==='Q') return zone==='facedown';
   if(!EFFECT_RANKS.has(rank)) return false;
   const known = !!(ctx && ctx.p);
   const n = (ctx && ctx.n) || 1;
@@ -1077,7 +1256,7 @@ function hasEffectContextual(S, rank, zone, ctx){
   if((rank==='7' || rank==='8' || rank==='9') && ctx && !ctx.future && S.table){
     const top = topOfTable(S);
     const streak = (top && top.rank===rank) ? currentTopStreak(S) : 0;
-    if(streak + n >= S.sbobozThreshold) return false;
+    if(streak + n === S.sbobozThreshold) return false;
   }
   switch(rank){
     case '3': return S.sboboz.length>0;
@@ -1151,56 +1330,51 @@ function currentZone(p){
   return 'done';
 }
 
+/* Cards brought back by a 3 are flagged `restored`: they never count towards
+   a new sboboz (a 3 that recreates 4/6 equal cards in a row doesn't trigger it). */
 function currentTopStreak(S){
   if(S.table.length===0) return 0;
   const lastRank = S.table[S.table.length-1].rank;
   let count = 0;
   for(let i=S.table.length-1; i>=0; i--){
-    if(S.table[i].rank===lastRank) count++; else break;
+    const c = S.table[i];
+    if(c.rank===lastRank && !c.restored) count++; else break;
   }
   return count;
 }
 
 function wouldTriggerSboboz(){
-  const n = G.sbobozThreshold;
-  if(G.table.length < n) return false;
-  const lastRank = G.table[G.table.length-1].rank;
-  for(let i=1;i<=n;i++){
-    if(G.table[G.table.length-i].rank!==lastRank) return false;
-  }
-  return true;
+  return currentTopStreak(G) >= G.sbobozThreshold;
 }
 
 /* Sboboz triggers on EXACTLY n matching cards; cards beyond that stay
    on the table as the "move after the sboboz". */
 function checkAutoSboboz(){
   const n = G.sbobozThreshold;
-  if(G.table.length < n) return;
-  const lastRank = G.table[G.table.length-1].rank;
-  let streak = 0;
-  for(let i=G.table.length-1; i>=0; i--){
-    if(G.table[i].rank===lastRank) streak++; else break;
-  }
+  const streak = currentTopStreak(G);
   if(streak < n) return;
   const excess = streak - n;
   const remainingTable = excess>0 ? G.table.slice(G.table.length-excess) : [];
   const sbobozPortion = excess>0 ? G.table.slice(0, G.table.length-excess) : G.table;
-  doSboboz(`${n} carte di pari valore di fila`, sbobozPortion, remainingTable, excess===0);
+  doSboboz(`${n} carte di pari valore di fila`, sbobozPortion, remainingTable, excess===0, false);
 }
 
-function doSboboz(reason, sbobozPortion, remainingTable, grantExtraTurn){
+function doSboboz(reason, sbobozPortion, remainingTable, grantExtraTurn, byKing){
   sbobozPortion = sbobozPortion || G.table;
   remainingTable = remainingTable || [];
   if(grantExtraTurn===undefined) grantExtraTurn = true;
-  emit('sboboz', {n:sbobozPortion.length});
+  emit('sboboz', {n:sbobozPortion.length, oldN:G.sboboz.length, oldTop:G.sboboz.slice(-3).map(pub), cards:sbobozPortion.slice(-4).map(pub)});
   toast('💥 Sboboz!');
   G.superSboboz.push(...G.sboboz);
+  G.pickChain = 0;
+  G.superSboboz.forEach(c=>{ c.restored=false; });
+  sbobozPortion.forEach(c=>{ c.restored=false; });
   G.sboboz = sbobozPortion;
   G.table = remainingTable;
   G.extraTurn = grantExtraTurn;
   const actor = G.players[G.actor];
-  if(actor) actor.st.sboboz++;
-  log(`💥 Sboboz! (${reason})${grantExtraTurn ? ' — si continua a giocare.' : ''}`);
+  if(actor){ actor.st.sboboz++; if(byKing) actor.st.sbobozKings++; else actor.st.sbobozCards++; }
+  log(`↳ 💥 Sboboz! (${reason})${grantExtraTurn ? ' — si continua a giocare.' : ''}`);
 }
 
 /* A jolly's declared identity is temporary: it reverts to a free jolly
@@ -1217,8 +1391,11 @@ function pickUpTable(p){
   if(G.table.length===0) return;
   emit('pickup', {pid:p.id, shown:G.table.slice(-4).map(pub), n:G.table.length});
   G.table.forEach(resetIfJolly);
+  G.table.forEach(c=>{ c.restored=false; });
+  G.pickChain = (G.pickChain||0) + 1;
   p.st.pickups++; p.st.taken += G.table.length;
   p.hand.push(...G.table);
+  G.table.forEach(c=>p.known.add(c.uid));
   p.st.maxHand = Math.max(p.st.maxHand, p.hand.length);
   log(`${p.name} prende tutto il tavolo (${G.table.length} carte) e continua il turno.`);
   toast(`📥 ${p.name} prende tutto il tavolo`);
@@ -1298,26 +1475,68 @@ function aiResolveJollyRank(zone, p, uid, n){
   return '3';
 }
 
+/* What everybody can know about the next player's cards: every face-up
+   card once the hand is empty, plus the hand cards seen when they were
+   picked up (table pickups, returned queens). */
+function visibleCardsOf(target){
+  const out = [];
+  target.slots.forEach(sl=>{ if(sl.up) out.push(sl.up); });
+  const knownHand = target.hand.filter(c=>target.known.has(c.uid));
+  out.push(...knownHand);
+  return {cards:out, handFullyKnown: knownHand.length===target.hand.length};
+}
+
+/* Two players can bounce the same 8/9 back and forth for ever (each one picks
+   the table up and plays it again). The more pickups in a row, the more the bot
+   stops insisting on the harshest choice. */
+function pingPongPick(best, other){
+  const chain = G.pickChain || 0;
+  if(chain>=4) return other;
+  return Math.random() < Math.max(0.25, 0.9 - 0.2*chain) ? best : other;
+}
+
 function aiChoose8Mode(){
   const target = peekNextPlayer();
-  if(target && !target.finished && currentZone(target)==='faceup'){
-    const upCards = target.slots.filter(s=>s.up).map(s=>s.up);
-    const higherCount = upCards.filter(c=>c.rank!=='2' && rankValue(c.rank)>8).length;
-    const lowerCount = upCards.filter(c=>c.rank!=='2' && rankValue(c.rank)<8).length;
-    return higherCount <= lowerCount ? 'higher' : 'lower';
+  if(target && !target.finished){
+    const vis = visibleCardsOf(target).cards.filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='8');
+    if(vis.length){
+      const higher = vis.filter(c=>rankValue(c.rank)>8).length;
+      const lower = vis.filter(c=>rankValue(c.rank)<8).length;
+      if(higher!==lower){ const best = higher < lower ? 'higher' : 'lower'; return pingPongPick(best, best==='higher'?'lower':'higher'); }
+    }
   }
   return Math.random()<0.5 ? 'higher' : 'lower';
 }
 
 function aiChoose9Mode(){
   const target = peekNextPlayer();
-  if(target && !target.finished && currentZone(target)==='faceup'){
-    const upCards = target.slots.filter(s=>s.up).map(s=>s.up);
-    const effectCount = upCards.filter(c=>c.rank!=='2' && hasEffectContextual(G, c.rank, 'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
-    const noEffectCount = upCards.filter(c=>c.rank!=='2' && !hasEffectContextual(G, c.rank, 'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
-    return effectCount <= noEffectCount ? 'effect' : 'noeffect';
+  if(target && !target.finished){
+    const vis = visibleCardsOf(target).cards.filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='9');
+    if(vis.length){
+      const eff = vis.filter(c=>hasEffectContextual(G, c.rank, currentZone(target)==='hand' && target.hand.includes(c) ? 'hand':'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
+      const non = vis.length - eff;
+      if(eff!==non){ const best = eff < non ? 'effect' : 'noeffect'; return pingPongPick(best, best==='effect'?'noeffect':'effect'); }
+    }
   }
   return Math.random()<0.5 ? 'effect' : 'noeffect';
+}
+
+/* Highest ordinary value the next player can answer with, when we know it
+   (face-up cards with an empty hand, or a fully known hand). null if they
+   hold a wild card or something unseen. */
+function targetKnownMax(){
+  const target = peekNextPlayer();
+  if(!target || target.finished) return null;
+  const z = currentZone(target);
+  let cards;
+  if(z==='faceup') cards = target.slots.filter(sl=>sl.up).map(sl=>sl.up);
+  else if(z==='hand'){
+    const v = visibleCardsOf(target);
+    if(!v.handFullyKnown) return null;
+    cards = target.hand.slice();
+  } else return null;
+  if(cards.some(c=>c.rank==='2' || c.rank==='JOLLY')) return null;
+  return Math.max(0, ...cards.map(c=>rankValue(c.rank)));
 }
 
 function nextPlayerAboutToWinBlind(){
@@ -1368,13 +1587,14 @@ function aiChooseSuperCard(player){
   let best = null, bestScore = -Infinity;
   for(const c of pile){
     let score = rankValue(c.rank) / 100;
-    if(c.rank!=='JOLLY' && !c.wasJolly){
+    if(c.rank==='J'){ score = -1000; }               // taking a J with a J is pointless
+    else if(c.rank!=='JOLLY' && !c.wasJolly){
       const gap = sbobozGap(hand, c.rank, 1);
       if(gap.pure<=0) score = 1000 + rankValue(c.rank);          // 4th card in hand: a sboboz by itself
       else if(gap.withStreak<=0) score = 900 + rankValue(c.rank); // completes with the table streak
       else if(gap.withJolly<=0) score = 800 + rankValue(c.rank);
     }
-    if(score<800){
+    if(score<800 && score>-500){
       if(c.rank==='K') score = 500;
       else if(c.rank==='JOLLY' || c.wasJolly) score = 400;
       else if(c.rank==='2') score = 300;
@@ -1439,6 +1659,7 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
         const restored = G.sboboz;
         G.sboboz = [];
         const insertAt = G.table.length - playedCards.length;
+        restored.forEach(c=>{ c.restored = true; });
         G.table.splice(insertAt, 0, ...restored);
         toast('↩️ Sboboz annullato');
         log(`↳ la pila sboboz (${restored.length} carte) torna sul tavolo.`);
@@ -1533,8 +1754,7 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
       onDone(); break;
     }
     case 'K': {
-      log(`↳ sboboz immediato!`);
-      doSboboz('Re giocato');
+      doSboboz('Re giocato', null, null, undefined, true);
       onDone(); break;
     }
     default: onDone();
@@ -1557,6 +1777,22 @@ function endOfAction(player, afterAll){
   afterAll();
 }
 
+
+/* Would this play actually have done something if no 7 were in the way?
+   (used to word the diary: "annullato dal 7" only makes sense for a card
+   that had an effect to begin with) */
+function playHasEffect(rank, player, zone, slotIndex, sbobozImminent){
+  switch(rank){
+    case '2': case 'K': return true;
+    case '3': return G.sboboz.length>0;
+    case '4': return zone==='faceup' && slotIndex>=0 && !!(player.slots[slotIndex] && player.slots[slotIndex].down);
+    case '5': return zone==='hand' && player.hand.length>0;
+    case '7': case '8': case '9': return !sbobozImminent;
+    case 'J': return G.superSboboz.length>0;
+    default: return false;
+  }
+}
+
 function resolvePlay(player, cards, zone, afterAll){
   G.actor = player.id;
   let slotIndex = -1;
@@ -1573,9 +1809,18 @@ function resolvePlay(player, cards, zone, afterAll){
   if(cards.some(c=>c.wasJolly)) player.st.jollies++;
   if(cards[0].rank==='K') player.st.kings += cards.length;
 
-  G.table.push(...cards);
   const rank = cards[0].rank;
-  const sbobozImminent = wouldTriggerSboboz();
+  if(rank!=='8' && rank!=='9') G.pickChain = 0;
+  /* More cards than the sboboz needs: it plays out as if the first ones were
+     played (effect, then sboboz) and the extra ones came right after. */
+  const tH = G.sbobozThreshold;
+  const kBefore = (topOfTable(G) && topOfTable(G).rank===rank) ? currentTopStreak(G) : 0;
+  let first = cards, rest = [];
+  if(rank!=='K' && kBefore < tH && kBefore + cards.length > tH){
+    first = cards.slice(0, tH-kBefore); rest = cards.slice(tH-kBefore);
+  }
+  G.table.push(...cards);
+  const sbobozImminent = rest.length>0 ? true : wouldTriggerSboboz();
   log(`${player.name} gioca ${describeCards(cards)}${zone==='faceup'?' dalle scoperte':''}.`);
 
   const wasSuppressed = G.suppressNext;
@@ -1598,9 +1843,25 @@ function resolvePlay(player, cards, zone, afterAll){
     afterAll();
   };
 
+  if(rest.length>0){
+    const afterFirst = ()=>{
+      G.actor = player.id;
+      const nFirst = G.table.length - rest.length;
+      doSboboz(`${tH} carte di pari valore di fila`, G.table.slice(0,nFirst), G.table.slice(nFirst), false, false);
+      log(`↳ ${rest.length===1?'la carta in più viene giocata':'le '+rest.length+' carte in più vengono giocate'} subito dopo lo sboboz.`);
+      applyEffect(rank, player, zone, rest, finish, slotIndex, false);
+    };
+    if(wasSuppressed){
+      if(playHasEffect(rank, player, zone, slotIndex, false)) log(`↳ effetto annullato dal 7 precedente.`);
+      afterFirst();
+    } else {
+      applyEffect(rank, player, zone, cards, afterFirst, slotIndex, true);
+    }
+    return;
+  }
   if(wasSuppressed){
     if(rank==='7' && !sbobozImminent){ G.suppressNext = true; }
-    log(`↳ effetto annullato dal 7 precedente.`);
+    if(playHasEffect(rank, player, zone, slotIndex, sbobozImminent)) log(`↳ effetto annullato dal 7 precedente.`);
     finish();
   } else {
     applyEffect(rank, player, zone, cards, finish, slotIndex, sbobozImminent);
@@ -1623,6 +1884,7 @@ function continueFacedownLegal(player, card, afterAll){
   const finish = ()=>{ G.actor = player.id; endOfAction(player, afterAll); };
   if(wasSuppressed){
     if(rank==='7' && !sbobozImminent) G.suppressNext = true;
+    if(playHasEffect(rank, player, 'facedown', -1, sbobozImminent)) log(`↳ effetto annullato dal 7 precedente.`);
     finish();
   } else {
     applyEffect(rank, player, 'facedown', [card], finish, -1, sbobozImminent);
@@ -1658,7 +1920,7 @@ function processFacedownCard(player, card, afterAll){
 
   if(card.rank==='Q' && !queenSuppressed){
     player.st.queens++;
-    player.hand.push(card);
+    player.hand.push(card); player.known.add(card.uid);
     player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
     log(`↳ la Regina dalle coperte torna in mano.`);
     if(!isLegalRank(G, 'Q', 'facedown', {p:player, n:1})){
@@ -1685,7 +1947,7 @@ function processFacedownCard(player, card, afterAll){
     continueFacedownLegal(player, card, afterAll);
   } else {
     log(`↳ non è giocabile: torna in mano.`);
-    player.hand.push(card);
+    player.hand.push(card); player.known.add(card.uid);
     player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
     pickUpTable(player);
     afterAll();
@@ -1711,18 +1973,34 @@ function aiPlayHand(p){
   }
 
   if(legalRanks.length>0){
-    const sabotage = nextPlayerAboutToWinBlind();
+    // a J that would only fetch another J is pointless: skip it if there is any other choice
+    if(legalRanks.length>1 && !G.superSboboz.some(c=>c.rank!=='J')){
+      const i = legalRanks.indexOf('J'); if(i>=0) legalRanks.splice(i,1);
+    }
+    let sabotage = nextPlayerAboutToWinBlind();
+    // pushing the table up only makes sense when it really is high
+    if(sabotage && !legalRanks.some(r=>rankValue(r)>=8)) sabotage = false;
     let bestRank = legalRanks[0];
     for(const r of legalRanks){
       if(sabotage ? rankValue(r)>rankValue(bestRank) : rankValue(r)<rankValue(bestRank)) bestRank = r;
     }
-    // If the hand is basically just 3s/4s plus a 5, play the 5 first:
-    // its discard effect eats one of them in the very same move.
-    if(!sabotage && legalRanks.includes('5') && (bestRank==='3' || bestRank==='4')){
-      const nonWild = p.hand.filter(c=>c.rank!=='2' && c.rank!=='JOLLY');
-      if(nonWild.every(c=>c.rank==='3' || c.rank==='4' || c.rank==='5')){
-        bestRank = '5';
+    const completesNowEarly = legalRanks.some(r=>{
+      const topStreak = (topOfTable(G) && topOfTable(G).rank===r) ? currentTopStreak(G) : 0;
+      return r==='K' || topStreak + groups[r].length >= G.sbobozThreshold;
+    });
+    // The next player's cards are known: play the lowest rank they cannot answer
+    if(!sabotage && !completesNowEarly && (G.pickChain||0)<2 && Math.random()<0.6){
+      const M = targetKnownMax();
+      if(M!==null){
+        const above = legalRanks.filter(r=>rankValue(r)>M && rankValue(r)<=12 && r!=='8' && r!=='9').sort((a,b)=>rankValue(a)-rankValue(b));
+        if(above.length) bestRank = above[0];
       }
+    }
+    // A 5 played from the hand also throws away a card: with a 3 or a 4 in
+    // the hand (the hardest cards to get rid of) play the 5 first.
+    if(!sabotage && !completesNowEarly && legalRanks.includes('5') && bestRank!=='5'){
+      const hardCards = p.hand.filter(c=>c.rank==='3' || c.rank==='4').length;
+      if(hardCards>0 && p.hand.length>=2) bestRank = '5';   // all the legal 5s go down together
     }
     // Three of a kind in hand (or whatever is one card short of a
     // sboboz) and the missing card sits in the ipersboboz: play a J
@@ -1767,7 +2045,8 @@ function aiPlayFaceUp(p){
     if(isLegalRank(G, s.up.rank, 'faceup', {p, n:1, uid:s.up.uid})) candidates.push(s.up);
   });
   if(candidates.length>0){
-    const sabotage = nextPlayerAboutToWinBlind();
+    let sabotage = nextPlayerAboutToWinBlind();
+    if(sabotage && !candidates.some(c=>rankValue(c.rank)>=8)) sabotage = false;
     let best = candidates[0];
     for(const c of candidates){
       if(sabotage ? rankValue(c.rank)>rankValue(best.rank) : rankValue(c.rank)<rankValue(best.rank)) best = c;
@@ -1881,9 +2160,15 @@ function stateSignature(){
   return parts.join('|');
 }
 
+/* Humans still playing and reachable: only they have a say in a draw offer */
+function drawEligible(){
+  return G.players.filter(p=>p.kind==='human' && !p.finished && p.connected);
+}
+
 function checkStalemate(){
   const sig = stateSignature();
   G.stateCounts[sig] = (G.stateCounts[sig]||0)+1;
+  (G.sigLog = G.sigLog||[]).push(sig); if(G.sigLog.length>600) G.sigLog.shift();
   if(G.stateCounts[sig] >= 3){
     G.phase = 'stalemate';
     return true;
@@ -1905,6 +2190,7 @@ function skipToEnd(){
     if(G.phase==='play' && checkStalemate()) break;
   }
   G.quiet = false;
+  if(G.phase==='play') G.phase = 'stalemate';   // safety net: never leave the game hanging
 }
 
 function buildResults(){
@@ -1915,6 +2201,7 @@ function buildResults(){
   stillPlaying.forEach(p=>rows.push({pid:p.id, place:placed.length+1, tie:true}));
   return {
     stalemate: G.phase==='stalemate',
+    draw: !!G.drawAgreed,
     numDecks: G.numDecks, nPlayers: G.players.length, turns: G.turnsCount,
     secs: Math.round((Date.now()-G.startedAt)/1000),
     startedAt: G.startedAt,
@@ -1944,10 +2231,13 @@ function viewFor(pid){
   return {
     me:pid, phase:G.phase, turn:G.turn, players,
     drawPile:{length:G.drawPile.length}, table:G.table.map(pub),
-    sboboz:{length:G.sboboz.length}, superSboboz:{length:G.superSboboz.length},
+    sboboz:G.sboboz.map(pub), superSboboz:{length:G.superSboboz.length},
     constraint:G.constraint, suppressNext:G.suppressNext,
     sbobozThreshold:G.sbobozThreshold, numDecks:G.numDecks, hasJolly:G.hasJolly,
     pendingPid: G.pending ? G.pending.pid : -1,
+    draw: G.draw ? {by:G.draw.by, yes:G.draw.yes.slice()} : null,
+    drawOk: G.phase==='play' && drawEligible().length>=2 && !!(G.players[pid] && drawEligible().includes(G.players[pid])),
+    rep: G.stateCounts[stateSignature()] || 0,
     log:G.log.slice(0,60), seq:G.seq
   };
 }
@@ -1961,25 +2251,15 @@ function viewFor(pid){
 const LS_KEY = 'ilsboboz.profile.v1';
 const NINJA_NAMES = NINJAGO_POOL.map(n=>n.name);
 
-function emptyAgg(){ return {games:0, wins:0, placeSum:0, sboboz:0, played:0, pickups:0}; }
+const MAX_GAMES = 600;
+const ST_KEYS = ['played','pickups','taken','sboboz','sbobozCards','sbobozKings','kings','jollies','turns','reveals','discards','jdraws','maxHand','queens'];
 
 function defaultProfile(){
-  const ninja = {};
-  NINJA_NAMES.forEach(n=>{ ninja[n] = emptyAgg(); });
   return {
-    v:1,
+    v:2,
     clientId: 'u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36),
     name:'', avatar:'🥷',
-    stats:{
-      games:0, wins:0, ties:0, places:{}, online:0, solo:0, streak:0, bestStreak:0,
-      totals:{played:0, pickups:0, taken:0, sboboz:0, kings:0, jollies:0, turns:0, reveals:0, discards:0, jdraws:0, queens:0, secs:0},
-      maxHand:0,
-      byN:{},
-      ninja,
-      vs:{},          // me against each ninja bot: {games, ahead, behind}
-      rivals:{},      // me against human opponents, by name
-      history:[]
-    }
+    games:[]      // every finished game; all the statistics are computed from these
   };
 }
 
@@ -2000,60 +2280,44 @@ const Store = {
     if(typeof d.clientId==='string') out.clientId = d.clientId;
     if(typeof d.name==='string') out.name = d.name.slice(0,24);
     if(typeof d.avatar==='string') out.avatar = d.avatar.slice(0,16);
-    if(d.stats && typeof d.stats==='object'){
-      const s = d.stats, o = out.stats;
-      ['games','wins','ties','online','solo','streak','bestStreak','maxHand'].forEach(k=>{ if(typeof s[k]==='number') o[k]=s[k]; });
-      if(s.places && typeof s.places==='object') o.places = s.places;
-      if(s.totals && typeof s.totals==='object') Object.keys(o.totals).forEach(k=>{ if(typeof s.totals[k]==='number') o.totals[k]=s.totals[k]; });
-      if(s.byN && typeof s.byN==='object') o.byN = s.byN;
-      if(s.ninja && typeof s.ninja==='object') Object.keys(s.ninja).forEach(n=>{ if(o.ninja[n]) Object.assign(o.ninja[n], s.ninja[n]); });
-      if(s.vs && typeof s.vs==='object') o.vs = s.vs;
-      if(s.rivals && typeof s.rivals==='object') o.rivals = s.rivals;
-      if(Array.isArray(s.history)) o.history = s.history.slice(0,40);
+    if(Array.isArray(d.games)){
+      out.games = d.games.filter(g=>g && typeof g==='object' && Array.isArray(g.rows)).slice(0,MAX_GAMES);
+    } else if(d.stats && Array.isArray(d.stats.history)){
+      // v1 save: only the last results survive (as simple records)
+      out.games = d.stats.history.map((h,i)=>({
+        id:'legacy-'+h.ts+'-'+i, ts:h.ts||0, secs:0, turns:0, n:h.n||2, decks:h.decks||1,
+        online:!!h.online, stale:false, draw:false, legacy:true, room:null,
+        rows:[{w:'Tu', k:'h', pl:h.place||1, t:h.tie?1:0, me:1, st:{}}]
+      }));
     }
     return out;
   },
   save(){
     try{ localStorage.setItem(LS_KEY, JSON.stringify(this.data)); }catch(e){}
   },
-  /* Fold one finished game (the `results` the host broadcasts) into
-     this device's statistics. `me` is my seat number in that game. */
-  record(res, me, online){
-    const s = this.data.stats;
+  /* Store one finished game (the `results` the host broadcasts).
+     `me` is my seat number in that game. */
+  record(res, me, online, roomId){
     const mine = res.rows.find(r=>r.pid===me);
     if(!mine) return;
-    s.games++;
-    if(online) s.online++; else s.solo++;
-    const place = mine.place;
-    const isTie = !!mine.tie;
-    const key = isTie ? 'T' : String(place);
-    s.places[key] = (s.places[key]||0)+1;
-    if(!isTie && place===1){ s.wins++; s.streak++; s.bestStreak = Math.max(s.bestStreak, s.streak); }
-    else { s.streak = 0; }
-    if(isTie) s.ties++;
-    Object.keys(s.totals).forEach(k=>{
-      if(k==='secs') s.totals.secs += res.secs||0;
-      else s.totals[k] += (mine.st && mine.st[k])||0;
+    const id = (res.startedAt||Date.now())+'-'+res.nPlayers+'-'+this.data.clientId;
+    if(this.data.games.some(g=>g.id===id)) return;
+    const rows = res.rows.map(r=>{
+      const st = {}; ST_KEYS.forEach(k=>{ st[k] = (r.st&&r.st[k])||0; });
+      const o = {w:r.name, k:r.kind==='bot'?'b':'h', pl:r.place, t:r.tie?1:0, st};
+      if(r.pid===me) o.me = 1;
+      return o;
     });
-    s.maxHand = Math.max(s.maxHand, (mine.st && mine.st.maxHand)||0);
-    const bn = s.byN[res.nPlayers] || (s.byN[res.nPlayers] = {games:0, wins:0});
-    bn.games++; if(!isTie && place===1) bn.wins++;
-    res.rows.forEach(r=>{
-      if(r.pid===me) return;
-      const cmp = (!isTie && !r.tie && place!==r.place) ? (place<r.place ? 'ahead' : 'behind') : null;
-      if(r.kind==='bot' && s.ninja[r.name]){
-        const a = s.ninja[r.name];
-        a.games++; a.placeSum += r.place; if(!r.tie && r.place===1) a.wins++;
-        a.sboboz += (r.st&&r.st.sboboz)||0; a.played += (r.st&&r.st.played)||0; a.pickups += (r.st&&r.st.pickups)||0;
-        const v = s.vs[r.name] || (s.vs[r.name] = {games:0, ahead:0, behind:0});
-        v.games++; if(cmp) v[cmp]++;
-      } else if(r.kind==='human'){
-        const v = s.rivals[r.name] || (s.rivals[r.name] = {games:0, ahead:0, behind:0});
-        v.games++; if(cmp) v[cmp]++;
-      }
+    this.data.games.unshift({
+      id, ts:res.startedAt||Date.now(), secs:res.secs||0, turns:res.turns||0, n:res.nPlayers,
+      decks:res.numDecks||1, online:!!online, stale:!!res.stalemate, draw:!!res.draw,
+      room: online && roomId ? String(roomId) : null, rows
     });
-    s.history.unshift({ts:res.startedAt||Date.now(), n:res.nPlayers, place, tie:isTie, online:!!online, decks:res.numDecks});
-    if(s.history.length>40) s.history.length = 40;
+    if(this.data.games.length>MAX_GAMES) this.data.games.length = MAX_GAMES;
+    this.save();
+  },
+  remove(id){
+    this.data.games = this.data.games.filter(g=>g.id!==id);
     this.save();
   },
   exportString(){
@@ -2068,7 +2332,7 @@ const Store = {
     }
     let d;
     try{ d = JSON.parse(json); }catch(e){ return false; }
-    if(!d || typeof d!=='object' || !d.stats) return false;
+    if(!d || typeof d!=='object' || !(Array.isArray(d.games) || d.stats)) return false;
     const keepId = this.data.clientId;
     this.data = this.merge(defaultProfile(), d);
     this.data.clientId = keepId;
@@ -2083,6 +2347,115 @@ const Store = {
   }
 };
 Store.load();
+
+/* ============================================================
+   ANALYTICS (Umami, senza cookie)
+   Disattivata finché in SBOBOZ_CONFIG.analytics.websiteId non metti
+   l'ID del tuo sito Umami. Eventi inviati (pochi, per stare nel piano gratis):
+     - visita (pageview) all'apertura
+     - "game_end": UNO per partita, con tutte le statistiche (solo dall'host)
+     - "session": uno ogni tanto, con i secondi di utilizzo attivo
+   Offline: gli eventi restano in coda nel browser e partono appena c'è rete.
+   Rispetta "Do Not Track" e ha un interruttore nelle Info.
+============================================================ */
+const Analytics = (function(){
+  const CFG = (window.SBOBOZ_CONFIG && SBOBOZ_CONFIG.analytics) || {};
+  const QKEY = 'ilsboboz.aq', OFFKEY = 'ilsboboz.noanalytics', ACTKEY = 'ilsboboz.active';
+  const host = (CFG.host || 'https://cloud.umami.is').replace(/\/$/,'');
+  const ls = {
+    get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+    set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+    del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  };
+  const A = {
+    configured(){ return !!CFG.websiteId && /^https?:$/.test(location.protocol); },
+    optedOut(){ return ls.get(OFFKEY)==='1' || navigator.doNotTrack==='1'; },
+    enabled(){ return A.configured() && !A.optedOut(); },
+    setOptOut(off){ if(off){ ls.set(OFFKEY,'1'); ls.del(QKEY); } else ls.del(OFFKEY); },
+    isPwa(){ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } },
+    _queue(){ try{ return JSON.parse(ls.get(QKEY)||'[]'); }catch(e){ return []; } },
+    _saveQueue(q){ q.length ? ls.set(QKEY, JSON.stringify(q.slice(-60))) : ls.del(QKEY); },
+    _payload(name, data){
+      const p = {
+        website: CFG.websiteId, hostname: location.hostname, language: navigator.language || 'it',
+        screen: screen.width+'x'+screen.height, title: 'IlSboboz', url: location.pathname || '/', referrer: '',
+        timestamp: Math.floor(Date.now()/1000)
+      };
+      if(name) p.name = name;
+      if(data) p.data = data;
+      return {type:'event', payload:p};
+    },
+    async _send(body){
+      const r = await fetch(host+'/api/send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), keepalive:true, credentials:'omit'});
+      if(!r.ok && r.status>=500) throw new Error('http'+r.status);   // 4xx: inutile ritentare
+    },
+    track(name, data){
+      if(!A.enabled()) return;
+      const body = A._payload(name, data);
+      if(!navigator.onLine){ const q = A._queue(); q.push(body); A._saveQueue(q); return; }
+      A._send(body).catch(()=>{ const q = A._queue(); q.push(body); A._saveQueue(q); });
+    },
+    async flush(){
+      if(!A.enabled() || !navigator.onLine) return;
+      const q = A._queue(); if(!q.length) return;
+      A._saveQueue([]);
+      const failed = [];
+      for(const b of q){ try{ await A._send(b); }catch(e){ failed.push(b); } }
+      if(failed.length) A._saveQueue(failed.concat(A._queue()));
+    },
+    /* una sola chiamata per partita, tutte le proprietà "piatte" */
+    gameEnd(res, online){
+      if(!A.enabled() || !res) return;
+      const rows = res.rows || [];
+      const humans = rows.filter(r=>r.kind==='human').length;
+      const d = {
+        v: (SBOBOZ_CONFIG.version||''), mode: online ? 'online' : 'bot',
+        players: res.nPlayers, humans, bots: res.nPlayers-humans, decks: res.numDecks,
+        duration_s: res.secs||0, turns: res.turns||0,
+        result: res.draw ? 'patta' : (res.stalemate ? 'stallo' : 'normale'),
+        winner: (rows.find(r=>r.place===1 && !r.tie)||{}).kind || 'nessuno',
+        pwa: A.isPwa()
+      };
+      rows.forEach((r,i)=>{
+        const k = 'p'+(i+1)+'_', st = r.st||{};
+        d[k+'who'] = r.kind==='bot' ? r.name : 'umano';
+        d[k+'pos'] = r.place; d[k+'played'] = st.played||0; d[k+'pick'] = st.pickups||0;
+        d[k+'sbz'] = st.sboboz||0; d[k+'hand'] = st.maxHand||0;
+      });
+      A.track('game_end', d);
+    },
+    /* secondi di utilizzo attivo (scheda visibile), inviati a blocchi */
+    _active:{since:0, acc:0, lastSent:0},
+    _startActive(){ if(!A._active.since) A._active.since = Date.now(); },
+    _stopActive(){
+      const a = A._active;
+      if(a.since){ a.acc += Math.round((Date.now()-a.since)/1000); a.since = 0; }
+      ls.set(ACTKEY, String(a.acc));
+    },
+    _flushActive(force){
+      const a = A._active;
+      if(a.acc < 10 && !force) return;
+      if(!force && Date.now()-a.lastSent < 60000) return;
+      if(a.acc < 3) return;
+      A.track('session', {active_s:a.acc, pwa:A.isPwa(), v:(SBOBOZ_CONFIG.version||'')});
+      a.acc = 0; a.lastSent = Date.now(); ls.del(ACTKEY);
+    },
+    init(){
+      if(!A.configured()) return;
+      A._active.acc = parseInt(ls.get(ACTKEY)||'0',10) || 0;   // secondi non ancora inviati
+      if(!document.hidden) A._startActive();
+      document.addEventListener('visibilitychange', ()=>{
+        if(document.hidden){ A._stopActive(); A._flushActive(false); }
+        else { A._startActive(); A.flush(); }
+      });
+      window.addEventListener('pagehide', ()=>{ A._stopActive(); A._flushActive(false); });
+      window.addEventListener('online', ()=>A.flush());
+      A.track(null);          // la visita
+      A.flush();
+    }
+  };
+  return A;
+})();
 
 /* ============================================================
    BUILD FINGERPRINT
@@ -2192,7 +2565,7 @@ function lobbyPublic(){
   return {
     code:R.code, phase:R.phase, net:R.net, settings:R.settings, build:BUILD_SHORT,
     members:R.members.map(m=>({mid:m.mid, kind:m.kind, name:m.name, avatar:m.avatar, elem:m.elem, color:m.color,
-      connected:m.connected, isHost:m.isHost}))
+      connected:m.connected, isHost:m.isHost, random:!!m.random}))
   };
 }
 
@@ -2373,6 +2746,7 @@ const Room = {
       case 'setup': Host.onSetup(m, msg.uids); break;
       case 'ans': Host.onAnswer(m, msg.id, msg.v); break;
       case 'skip': Host.onSkip(m); break;
+      case 'draw': if(R.phase==='game') Host.onDraw(m, String(msg.a||'')); break;
       case 'react': {
         const e = String(msg.e||'');
         if(typeof e!=='string' || !e || e.length>30) return;
@@ -2401,8 +2775,14 @@ const Room = {
     broadcastGuests(m=>({t:'lobby', lobby:lobbyPublic(), you:m.mid}));
     UI.lobbyChanged();
   },
-  addBot(){
+  addBot(random){
     if(R.members.length>=MAX_PLAYERS) return;
+    if(random===true){
+      const m = newMember('bot', 'Casuale', '🎲', {elem:null, color:'#8a8f98', random:true});
+      R.members.push(m);
+      Room.lobbyChanged();
+      return;
+    }
     const used = new Set(R.members.map(m=>m.name.toLowerCase()));
     const free = NINJAGO_POOL.filter(n=>!used.has(n.name.toLowerCase()));
     let b;
@@ -2411,6 +2791,37 @@ const Room = {
     const m = newMember('bot', b.name, '🥷', {elem:b.elem, color:b.color});
     R.members.push(m);
     Room.lobbyChanged();
+  },
+  /* a bot can be turned into a "random" one (a different ninja every game) and back */
+  toggleRandom(mid){
+    const m = R.members.find(x=>x.mid===mid);
+    if(!m || m.kind!=='bot') return;
+    if(m.random){
+      m.random = false;
+      const used = new Set(R.members.filter(x=>x!==m).map(x=>x.name.toLowerCase()));
+      const free = NINJAGO_POOL.filter(n=>!used.has(n.name.toLowerCase()));
+      const b = free.length ? free[Math.floor(Math.random()*free.length)] : {name:'Ninja '+m.mid, elem:'ombra', color:'#8a6ad0'};
+      m.name = b.name; m.elem = b.elem; m.color = b.color; m.avatar = '🥷';
+    } else {
+      m.random = true; m.name = 'Casuale'; m.elem = null; m.color = '#8a8f98'; m.avatar = '🎲';
+    }
+    Room.lobbyChanged();
+  },
+  /* when a game starts from the room, every random bot becomes a ninja nobody else
+     in the room is using. (A rematch skips this: they stay the same.) */
+  rollRandomBots(){
+    const rnd = R.members.filter(m=>m.random);
+    if(!rnd.length) return;
+    const used = new Set(R.members.filter(m=>!m.random).map(m=>m.name.toLowerCase()));
+    const free = shuffle(NINJAGO_POOL.filter(n=>!used.has(n.name.toLowerCase())));
+    rnd.forEach((m,i)=>{
+      const b = free[i] || {name:'Ninja '+(i+1), elem:'ombra', color:'#8a6ad0'};
+      m.name = b.name; m.elem = b.elem; m.color = b.color; m.avatar = '🥷';
+    });
+  },
+  /* back in the room the random bots hide their identity again */
+  hideRandomBots(){
+    R.members.filter(m=>m.random).forEach(m=>{ m.name = 'Casuale'; m.elem = null; m.color = '#8a8f98'; m.avatar = '🎲'; });
   },
   fillBots(n){
     while(R.members.length<Math.min(n, MAX_PLAYERS)) Room.addBot();
@@ -2431,6 +2842,7 @@ const Room = {
   canStart(){ return R.role==='host' && R.phase==='lobby' && R.members.length>=2 && R.members.length<=MAX_PLAYERS; },
   start(){
     if(!Room.canStart()) return;
+    Room.rollRandomBots();
     Host.startGame();
   },
   toLobby(){
@@ -2438,6 +2850,7 @@ const Room = {
     G = null;
     R.phase = 'lobby';
     R.members = R.members.filter(m=>m.connected || m.kind==='bot' || m.isHost);
+    Room.hideRandomBots();
     Room.lobbyChanged();
   }
 };
@@ -2482,7 +2895,7 @@ const Host = {
     const waiting = G.players.some(p=>!p.ready);
     if(!waiting){
       G.phase = 'play';
-      log('La partita inizia!');
+      log(`La partita inizia! ${G.numDecks===1?'1 mazzo (52 carte)':'2 mazzi ('+(104+(G.hasJolly?1:0))+' carte'+(G.hasJolly?', con 1 Jolly':'')+')'} · sboboz con ${G.sbobozThreshold} carte uguali.`);
       Host.afterStep();
     } else {
       G.seq++;
@@ -2493,10 +2906,10 @@ const Host = {
   /* engine state is consistent again: tell everyone, then move on */
   afterStep(){
     if(!G) return;
+    if(G.phase==='play'){ Host.drawResolve(); if(G.phase==='play') checkStalemate(); }
     G.seq++;
     Host.broadcastBatch();
-    if(G.phase==='ended'){ Host.finish(); return; }
-    if(G.phase==='play' && checkStalemate()){ Host.finish(); return; }
+    if(G.phase==='ended' || G.phase==='stalemate'){ Host.finish(); return; }
     Host.drive();
   },
 
@@ -2522,7 +2935,8 @@ const Host = {
     const res = buildResults();
     R.phase = 'results';
     broadcastGuests({t:'results', res});
-    Client.onResults(res, R.myPid, R.online && R.members.filter(m=>m.kind==='human').length>1);
+    try{ Analytics.gameEnd(res, R.online); }catch(e){}
+    Client.onResults(res, R.myPid, !!R.online);
   },
 
   /* one batch of events + a personalised view for every human */
@@ -2575,6 +2989,48 @@ const Host = {
     skipToEnd();
     G.evq = [];
     Host.afterStep();
+  },
+
+  /* ---------- draw (patta) offers ---------- */
+  onDraw(m, act){
+    if(!G || G.phase!=='play') return;
+    const p = G.players[m.pid];
+    if(!p || p.kind!=='human') return;
+    const elig = drawEligible();
+    if(!elig.includes(p)) return;
+    const now = Date.now();
+    if(act==='offer'){
+      if(G.draw || elig.length<2) return;
+      G.drawBlock = G.drawBlock || {};
+      if(G.drawBlock[p.id] && now < G.drawBlock[p.id]){ Room.reply(m, {t:'rej', msg:'Aspetta qualche secondo prima di riproporre la patta.'}); return; }
+      G.draw = {by:p.id, yes:[p.id]};
+      log(`🤝 ${p.name} propone la patta.`);
+    } else if(!G.draw){ return; }
+    else if(act==='yes'){ if(!G.draw.yes.includes(p.id)) G.draw.yes.push(p.id); }
+    else if(act==='no'){
+      if(p.id===G.draw.by){ G.draw = null; }
+      else {
+        G.drawBlock = G.drawBlock || {}; G.drawBlock[G.draw.by] = now + 20000;
+        log(`🤝 ${p.name} rifiuta la patta.`);
+        G.draw = null;
+      }
+    }
+    else if(act==='cancel'){ if(p.id===G.draw.by) G.draw = null; }
+    else return;
+    if(Host.drawResolve()){ Host.afterStep(); return; }
+    G.seq++; Host.broadcastBatch();
+  },
+  /* true when the draw was just agreed (the game is over) */
+  drawResolve(){
+    if(!G.draw) return false;
+    const elig = drawEligible();
+    if(elig.length<2){ G.draw = null; return false; }
+    if(elig.every(p=>G.draw.yes.includes(p.id))){
+      log('🤝 Patta concordata: la partita finisce in parità.');
+      G.drawAgreed = true; G.draw = null; G.phase = 'stalemate';
+      return true;
+    }
+    return false;
   },
 
   /* host ends the game without a ranking: everybody returns to the room */
@@ -2864,6 +3320,32 @@ function animateFlipThenFly(fromRect, toRect, card, cb, small, hold){
   }, 160);
 }
 
+/* A face-up card turns over in place and then flies away face-down. */
+function flipThenFlyBack(card, fromRect, toRect){
+  return new Promise(resolve=>{
+    const layer = document.getElementById('anim-layer');
+    const w1 = document.createElement('div'); w1.innerHTML = cardHtml(card);
+    const face = w1.firstElementChild;
+    positionFixed(face, fromRect);
+    face.style.transition = 'transform .13s ease-in';
+    layer.appendChild(face); face.getBoundingClientRect();
+    requestAnimationFrame(()=>{ face.style.transform = 'scaleX(0)'; });
+    setTimeout(()=>{
+      face.remove();
+      const w2 = document.createElement('div'); w2.innerHTML = '<div class="card-back"></div>';
+      const back = w2.firstElementChild;
+      positionFixed(back, fromRect);
+      back.style.transform = 'scaleX(0)'; back.style.transition = 'transform .13s ease-out';
+      layer.appendChild(back); back.getBoundingClientRect();
+      requestAnimationFrame(()=>{ back.style.transform = 'scaleX(1)'; });
+      setTimeout(()=>{
+        back.remove();
+        flyClone('<div class="card-back"></div>', fromRect, toRect, {rotate:(Math.random()*16-8), hold:true}, resolve);
+      }, 150);
+    }, 140);
+  });
+}
+
 /* Messages are stacked in one column centred on the felt, so several
    at once never overlap each other. */
 function showEffectToast(text){
@@ -2902,12 +3384,16 @@ function fitLayout(){
   const pilesRow = document.getElementById('piles-row');
   const stacks = document.getElementById('human-stacks');
   const hand = document.getElementById('human-hand');
-  const mobile = window.innerWidth <= 640;
-  const wide = window.innerWidth >= 900;
-  const maxW = mobile ? 66 : (wide ? 190 : 84);
+  const land = isLandscapePhone();
+  document.documentElement.classList.toggle('land', land);
+  const mobile = window.innerWidth <= 640 && !land;
+  const wide = window.innerWidth >= 900 && !land;
+  const maxW = mobile ? 66 : (wide ? 190 : (land ? 74 : 84));
+  const humanArea = document.getElementById('human-area');
   const nb = parseInt(gs.getAttribute('data-bots'),10) || 0;
   const minW = 30;
   function fits(){
+    if(land && humanArea.scrollHeight > humanArea.clientHeight + 1) return false;
     if(surface.scrollHeight > surface.clientHeight + 1) return false;
     if(seats.scrollHeight > seats.clientHeight + 1) return false;
     if(gs.scrollHeight > gs.clientHeight + 1) return false;
@@ -2924,6 +3410,7 @@ function fitLayout(){
   function apply(cw){
     root.style.setProperty('--card-w', cw+'px');
     if(!mobile) root.style.setProperty('--card-h', Math.round(cw*1.41)+'px');   // real card proportions
+    else root.style.removeProperty('--card-h');                                   // back to the portrait CSS values
     if(wide){
       // one design for every wide window: all sizes follow the cards, so a smaller
       // window shows exactly the fullscreen layout, just scaled down
@@ -2939,9 +3426,9 @@ function fitLayout(){
     // (or on a wide screen) the seat itself is as wide as its five cards.
     let sw = Math.round(cw*0.8);
     if(!mobile || nb<=2){
-      const k = mobile ? 0.8 : (nb<=1 ? 0.8 : nb===2 ? 0.68 : nb===3 ? 0.58 : 0.5);
+      const k = mobile ? 0.8 : land ? (nb<=1 ? 0.7 : 0.55) : (nb<=1 ? 0.8 : nb===2 ? 0.68 : nb===3 ? 0.58 : 0.5);
       sw = Math.round(cw * k);
-      const perRow = mobile ? 1 : Math.max(1, Math.min(nb, 3));
+      const perRow = mobile ? 1 : (land ? Math.max(1, Math.min(nb, 2)) : Math.max(1, Math.min(nb, 3)));
       const uu = wide ? cw/120 : 1;
       const cap = Math.floor((seats.clientWidth - (24 + perRow*44)*uu) / (5*perRow));
       if(cap>0) sw = Math.min(sw, cap);
@@ -2956,6 +3443,7 @@ function fitLayout(){
     sw = Math.max(18, sw);
     root.style.setProperty('--small-w', sw+'px');
     if(!mobile) root.style.setProperty('--small-h', Math.round(sw*1.41)+'px');
+    else root.style.removeProperty('--small-h');
   }
   let chosen = minW;
   for(let cw=maxW; cw>=minW; cw-=2){
@@ -2974,16 +3462,22 @@ function centerBands(){
   const gs = document.getElementById('game-screen');
   if(!strip || !lab || !gs || gs.style.display==='none') return;
   strip.style.transform = ''; lab.style.transform = '';
+  const landNow = document.documentElement.classList.contains('land');
   const edges = sel=>{
     const els = [...document.querySelectorAll(sel)];
     if(!els.length) return null;
     const r = els.map(e=>e.getBoundingClientRect());
     return {top:Math.min(...r.map(x=>x.top)), bottom:Math.max(...r.map(x=>x.bottom))};
   };
-  const st = edges('#human-stacks .card, #human-stacks .card-back, #human-stacks .slot');
-  const hd = edges('#human-hand .card');
+  // use the rows' own boxes (not the cards inside) so the label never jumps
+  // when the hand is empty / changing size or a card is being flown in
+  const slot = document.querySelector('#human-stacks .stack-slot');
+  const st = slot ? {top:slot.getBoundingClientRect().top, bottom:slot.getBoundingClientRect().bottom} : null;
+  const hdEl = document.getElementById('human-hand');
+  const hdTop = hdEl.getBoundingClientRect().top + (parseFloat(getComputedStyle(hdEl).paddingTop)||0);
+  const hd = {top:hdTop, bottom:hdTop};
   const table = document.getElementById('table-surface').getBoundingClientRect();
-  if(st){
+  if(st && !landNow){
     const sr = strip.getBoundingClientRect();
     const frame = document.getElementById('human-area').getBoundingClientRect();
     const dy = ((table.bottom + frame.top)/2) - (sr.top + sr.bottom)/2;
@@ -2996,9 +3490,14 @@ function centerBands(){
   }
 }
 
+/* a phone held sideways: wide and very short */
+function isLandscapePhone(){ return window.innerWidth > window.innerHeight && window.innerHeight <= 520 && window.innerWidth <= 1000; }
+document.documentElement.classList.toggle('land', isLandscapePhone());
+window.addEventListener('resize', ()=>document.documentElement.classList.toggle('land', isLandscapePhone()));
+
 function scheduleFit(){ clearTimeout(fitTimer); fitTimer = setTimeout(()=>{ if(!animating) fitLayout(); }, 120); }
 window.addEventListener('resize', scheduleFit);
-window.addEventListener('orientationchange', scheduleFit);
+window.addEventListener('orientationchange', ()=>{ scheduleFit(); setTimeout(()=>{ if(!animating) fitLayout(); }, 450); });
 document.addEventListener('fullscreenchange', scheduleFit);
 
 function setAppHeight(){
@@ -3042,9 +3541,10 @@ function fly(html, from, to, opts){ return new Promise(res=>flyClone(html, from,
 
 const Client = {
   V:null, queue:[], busy:false, idleCbs:[], prompt:null, sel:[], acting:false,
-  setupSel:[], results:null, recorded:{}, resultsOnline:false, msg:'',
+  setupSel:[], results:null, recorded:{}, resultsOnline:false, msg:'', epoch:0,
 
   reset(){
+    Client.epoch++;
     Client.V = null; Client.queue = []; Client.busy = false; Client.idleCbs = [];
     Client.prompt = null; Client.sel = []; Client.acting = false; Client.setupSel = [];
     Client.results = null; Client.msg = ''; animating = false; clearHeld();
@@ -3094,14 +3594,17 @@ const Client = {
   async pump(){
     if(Client.busy) return;
     Client.busy = true; animating = true;
+    const ep = Client.epoch;
     while(Client.queue.length){
       const b = Client.queue.shift();
       const fast = Client.queue.length>2 || document.hidden;
       if(!fast){
         for(const ev of (b.events||[])){
           try{ await playEvent(ev); }catch(e){}
+          if(ep!==Client.epoch) return;      // the game was left while animating
         }
       }
+      if(ep!==Client.epoch) return;
       const prevPhase = Client.V ? Client.V.phase : null;
       Client.V = b.view;
       Client.acting = false;
@@ -3179,6 +3682,18 @@ function pileStackHtml(count){
   return `<div style="display:flex;">${html}</div>`;
 }
 
+/* The sboboz pile lies face-up, in the order the cards were played (last one on top). */
+function faceUpPileHtml(cards){
+  if(!cards.length) return `<div class="card-back" style="opacity:0.15;"></div>`;
+  const n = cards.length, layers = Math.min(2, n-1);
+  let html = '<div class="pile-stack">';
+  for(let i=layers;i>=1;i--){
+    html += `<div class="pile-under" style="position:absolute;left:${-3*i}px;top:${-3*i}px;filter:brightness(${1-0.14*i});">${cardHtml(cards[n-1-i])}</div>`;
+  }
+  html += `<div style="position:absolute;left:0;top:0;">${cardHtml(cards[n-1])}</div></div>`;
+  return html;
+}
+
 function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ============================================================
@@ -3213,15 +3728,26 @@ async function playEvent(ev){
       break;
     }
     case 'sboboz': {
-      // the cards played so far stay put while the old table (drawn underneath) is hidden,
-      // then the whole pile flies to the sboboz pile and stays there until the redraw
+      /* 1) the old sboboz turns face-down and goes to the ipersboboz,
+         2) then the table cards (still face-up) go to the sboboz */
       const faces = heldClones.splice(0);
-      const tEl = document.getElementById('table-visual'), sEl = document.getElementById('sboboz-pile-visual');
+      const tEl = document.getElementById('table-visual'), sEl = document.getElementById('sboboz-pile-visual'), pEl = document.getElementById('super-pile-visual');
       if(tEl && sEl){
+        if(ev.oldN>0 && pEl && ev.oldTop && ev.oldTop.length){
+          const from = cardRectIn(sEl), to = cardRectIn(pEl);
+          sEl.style.visibility = 'hidden';
+          const k = Math.min(3, ev.oldN);
+          const jobs = [];
+          for(let i=0;i<k;i++){
+            const card = ev.oldTop[ev.oldTop.length-1-i];
+            jobs.push(wait(i*80).then(()=>flipThenFlyBack(card, from, to)));
+          }
+          await Promise.all(jobs);
+        }
         tEl.style.visibility = 'hidden';
-        const from = tEl.getBoundingClientRect(), to = sEl.getBoundingClientRect();
-        const n = Math.min(ev.n||4, 4);
-        const fl = []; for(let i=0;i<n;i++) fl.push(wait(i*45).then(()=>fly('<div class="card-back"></div>', from, to, {rotate:(Math.random()*20-10), hold:true})));
+        const from = tEl.getBoundingClientRect(), to = cardRectIn(sEl);
+        const cards = (ev.cards||[]);
+        const fl = cards.map((c,i)=>wait(i*60).then(()=>fly(cardHtml(c), from, to, {rotate:0, hold:true})));
         setTimeout(()=>faces.forEach(e=>e.remove()), 90);
         await Promise.all(fl);
       }
@@ -3319,7 +3845,9 @@ function renderPiles(){
     }
   }
   document.getElementById('table-count').innerHTML = `tavolo <b>${V.table.length}</b>`;
-  document.getElementById('sboboz-pile-visual').innerHTML = pileStackHtml(V.sboboz.length);
+  const spv = document.getElementById('sboboz-pile-visual');
+  spv.style.visibility = '';
+  spv.innerHTML = faceUpPileHtml(V.sboboz);
   document.getElementById('sboboz-count').innerHTML = `sboboz <b>${V.sboboz.length}</b>`;
   document.getElementById('super-pile-visual').innerHTML = pileStackHtml(V.superSboboz.length);
   document.getElementById('super-count').innerHTML = `ipersboboz <b>${V.superSboboz.length}</b>`;
@@ -3357,15 +3885,15 @@ function renderOpponents(){
     seat.className = 'opp-seat' + (V.phase==='play' && V.turn===p.id ? ' active-turn':'') + (p.finished ? ' seat-finished':'');
     seat.setAttribute('data-pid', p.id);
     if(p.color){
-      const accent = p.color==='#000000' ? '#000000' : p.color;
-      seat.style.setProperty('--ninja-color', p.color);
-      seat.style.setProperty('--ninja-accent', accent);
-      seat.style.setProperty('--ninja-color-bg', p.color==='#000000' ? 'rgba(255,255,255,.12)' : accent+'2b');
       if(p.color==='#000000') seat.classList.add('black-ninja');
+      const accent = fixColor(p.color);
+      seat.style.setProperty('--ninja-color', accent);
+      seat.style.setProperty('--ninja-accent', accent);
+      seat.style.setProperty('--ninja-color-bg', accent+'2b');
     } else {
       seat.classList.add('human-seat');
     }
-    const elemHtml = p.elem ? `<span class="opp-elem">${esc(p.elem)}</span>` : '';
+    const elemHtml = p.elem ? `<span class="opp-elem" data-elem="${esc(p.elem)}">${esc(p.elem)}</span>` : '';
     if(p.finished){
       seat.innerHTML = `
         <div class="opp-head">
@@ -3493,6 +4021,7 @@ function renderHuman(){
     const step = Math.min(idealStep, Math.max(26, fitStep));
     for(let i=1;i<hc.length;i++) hc[i].style.marginLeft = (step - w) + 'px';
   }
+  hd.style.overflow = hd.scrollWidth > hd.clientWidth + 1 ? '' : 'visible';   // nothing to clip: don't cut shadows / raised cards
   document.getElementById('hand-label').textContent = `la tua mano (${p.hand.length})`;
 
   const pickupBtn = document.getElementById('btn-pickup');
@@ -3543,8 +4072,15 @@ function renderStatusStrip(){
   const la = document.getElementById('last-action');
   if(V.phase==='play'){
     const p = V.players[V.turn];
-    tb.textContent = p.id===V.me ? '● Tocca a te' : `● Turno di ${p.name}`;
+    tb.textContent = p.id===V.me ? 'Tocca a te!' : `Turno di ${p.name}`;
   } else tb.textContent = '';
+  /* make it obvious when it is my turn: glow, pill, tab title, a short buzz */
+  const mineNow = V.phase==='play' && V.turn===V.me && !myPlayer().finished;
+  document.getElementById('game-screen').classList.toggle('my-turn', mineNow);
+  tb.classList.toggle('mine', mineNow);
+  if(mineNow && !Client._wasMine){ try{ if(navigator.vibrate) navigator.vibrate(45); }catch(e){} }
+  Client._wasMine = mineNow;
+  try{ document.title = mineNow ? 'Tocca a te · IlSboboz' : 'IlSboboz'; }catch(e){}
   const g = groupLog(V.log)[0];
   la.textContent = g ? [g.text].concat(g.subs).join(' ') : '';
 }
@@ -3557,7 +4093,7 @@ function groupLog(log){
     if(m.startsWith('↳')){ subs.unshift(m); continue; }
     out.push({text:m, subs}); subs = [];
   }
-  if(subs.length) out.unshift({text:'', subs});
+  if(subs.length) out.push({text:'', subs});   // oldest entries cut off by the log limit: they belong at the END (oldest), never first
   return out;
 }
 
@@ -3773,14 +4309,14 @@ function showResults(){
   const key = res.startedAt+'-'+res.nPlayers+'-'+me;
   if(!Client.recorded[key]){
     Client.recorded[key] = true;
-    Store.record(res, me, online);
+    Store.record(res, me, online, R.code);
   }
   const mine = res.rows.find(r=>r.pid===me);
   const title = document.getElementById('results-title');
   const sub = document.getElementById('results-sub');
   if(res.stalemate){
-    title.textContent = 'Pareggio per stallo';
-    sub.textContent = 'La stessa situazione si è ripetuta 3 volte. Chi aveva già finito mantiene il piazzamento, gli altri sono in parità.';
+    title.textContent = res.draw ? '🤝 Patta concordata' : 'Pareggio per stallo';
+    sub.textContent = (res.draw ? 'Tutti i giocatori hanno accettato la patta.' : 'La stessa situazione si è ripetuta 3 volte.') + ' Chi aveva già finito mantiene il piazzamento, gli altri sono in parità.';
   } else if(mine.place===1){
     title.textContent = '🏆 Hai vinto!'; sub.textContent = 'Classifica finale:';
   } else if(mine.place===res.nPlayers){
@@ -3790,7 +4326,7 @@ function showResults(){
   }
   const humans = res.rows.filter(r=>r.kind==='human').length>1;
   const rows = res.rows.map(r=>{
-    const style = r.color ? ` style="border-left:4px solid ${r.color==='#000000'?'#000':r.color};"` : '';
+    const style = r.color ? ` style="border-left:4px solid ${fixColor(r.color)};"` : '';
     const nm = esc(r.name) + (r.kind==='bot' && humans ? ' <span class="tag-bot">(bot)</span>' : '');
     const st = r.st||{};
     return `<div class="rank-row${r.pid===me?' rank-you':''}"${style}>
@@ -3809,7 +4345,7 @@ function showResults(){
   const a4 = best('kings'); if(a4) aw.push(`👑 Più Re giocati: <b>${esc(a4.r.name)}</b> (${a4.v})`);
   const mm = Math.floor((res.secs||0)/60), ss = (res.secs||0)%60;
   aw.push(`⏱ Durata: ${mm}:${String(ss).padStart(2,'0')} · ${res.turns||0} mosse`);
-  document.getElementById('results-awards').innerHTML = aw.map(x=>`<div class="award">${x}</div>`).join('');
+  document.getElementById('results-awards').innerHTML = aw.map(x=>`<div class="award">${x}</div>`).join('') + (online ? currentRoomBoardHtml(R.code) : '');
 
   const isHost = R.role==='host';
   const acts = document.getElementById('results-actions');
@@ -3824,6 +4360,298 @@ function showResults(){
   if(q('res-lobby')) q('res-lobby').onclick = ()=>{ hideResults(); UI.backToLobby(); };
   if(q('res-home')) q('res-home').onclick = ()=>{ hideResults(); UI.leaveToHome(); };
   document.getElementById('results-overlay').style.display = 'flex';
+}
+
+/* ============================================================
+   STATISTICS SCREEN
+   Everything is computed from Store.data.games, so deleting one game
+   (or filtering by mode / dates) simply recomputes the numbers.
+============================================================ */
+const SF = {tab:'me', mode:'all', range:'all', from:'', to:'', open:null};
+
+function pct(a,b){ return b ? Math.round(100*a/b)+'%' : '—'; }
+function fmtTime(s){ const h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h? `${h} h ${m} min` : `${m} min`; }
+function fmtDur(s){ s = s||0; return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function normPos(place, n){ return n>1 ? 100*(n-place)/(n-1) : 100; }
+
+function sfGames(){
+  let g = Store.data.games.slice().sort((a,b)=>b.ts-a.ts);   // newest first
+  if(SF.mode==='online') g = g.filter(x=>x.online);
+  else if(SF.mode==='bot') g = g.filter(x=>!x.online);
+  const sod = t=>{ const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+  const now = new Date();
+  let from = 0, to = Infinity;
+  if(SF.range==='today') from = sod(now);
+  else if(SF.range==='week') from = sod(now) - ((now.getDay()+6)%7)*864e5;     // da lunedì
+  else if(SF.range==='month') from = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  else if(SF.range==='custom'){
+    if(SF.from) from = sod(SF.from+'T12:00');
+    if(SF.to) to = sod(SF.to+'T12:00') + 864e5 - 1;
+  }
+  return g.filter(x=>x.ts>=from && x.ts<=to);
+}
+
+function aggregate(games){
+  const A = {games:0, wins:0, ties:0, sumPlace:0, sumNorm:0, places:{}, streak:0, bestStreak:0,
+    t:{played:0,pickups:0,taken:0,sboboz:0,sbobozCards:0,sbobozKings:0,kings:0,jollies:0,turns:0,reveals:0,discards:0,jdraws:0,queens:0},
+    maxHand:{1:0,2:0}, secs:0, online:0, solo:0, byN:{}, ninja:{}, rivals:{}, scores:[], stale:0};
+  NINJAGO_POOL.forEach(n=>{ A.ninja[n.name] = {games:0, wins:0, sumPlace:0, sumNorm:0, sboboz:0, played:0, ahead:0, behind:0}; });
+  const chrono = games.slice().reverse();
+  chrono.forEach(g=>{
+    const me = g.rows.find(r=>r.me); if(!me) return;
+    A.games++;
+    const tie = !!me.t, n = g.n || g.rows.length;
+    const nm = normPos(me.pl, n);
+    A.sumPlace += me.pl; A.sumNorm += nm; A.scores.push({norm:nm, win:!tie && me.pl===1, tie, pl:me.pl, n});
+    const key = tie ? 'T' : String(me.pl);
+    A.places[key] = (A.places[key]||0)+1;
+    if(!tie && me.pl===1){ A.wins++; A.streak++; A.bestStreak = Math.max(A.bestStreak, A.streak); } else A.streak = 0;
+    if(tie) A.ties++;
+    if(g.stale) A.stale++;
+    Object.keys(A.t).forEach(k=>{ A.t[k] += (me.st && me.st[k])||0; });
+    const dk = g.decks>=2 ? 2 : 1;
+    A.maxHand[dk] = Math.max(A.maxHand[dk], (me.st && me.st.maxHand)||0);
+    A.secs += g.secs||0;
+    if(g.online) A.online++; else A.solo++;
+    const bn = A.byN[n] || (A.byN[n] = {games:0, wins:0, sumPlace:0});
+    bn.games++; bn.sumPlace += me.pl; if(!tie && me.pl===1) bn.wins++;
+    g.rows.forEach(r=>{
+      if(r.me) return;
+      const cmp = (!tie && !r.t && me.pl!==r.pl) ? (me.pl<r.pl ? 'ahead' : 'behind') : null;   // from MY point of view
+      if(r.k==='b' && A.ninja[r.w]){
+        const a = A.ninja[r.w];
+        a.games++; a.sumPlace += r.pl; a.sumNorm += normPos(r.pl, n); if(!r.t && r.pl===1) a.wins++;
+        a.sboboz += (r.st&&r.st.sboboz)||0; a.played += (r.st&&r.st.played)||0;
+        if(cmp) a[cmp]++;
+      } else if(r.k==='h'){
+        const v = A.rivals[r.w] || (A.rivals[r.w] = {games:0, ahead:0, behind:0});
+        v.games++; if(cmp) v[cmp]++;
+      }
+    });
+  });
+  return A;
+}
+
+/* ---------- small SVG helpers ---------- */
+function svgDonut(frac, label, sub){
+  const R_ = 42, C = 2*Math.PI*R_, f = Math.max(0, Math.min(1, frac));
+  return `<svg class="donut" viewBox="0 0 100 100" role="img" aria-label="${label}">
+    <circle cx="50" cy="50" r="${R_}" fill="none" stroke="rgba(243,236,217,.12)" stroke-width="9"/>
+    <circle cx="50" cy="50" r="${R_}" fill="none" stroke="var(--gold-bright)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>
+    <text x="50" y="50" text-anchor="middle" class="dn-v">${label}</text>
+    <text x="50" y="65" text-anchor="middle" class="dn-s">${sub}</text></svg>`;
+}
+function svgTrend(scores){
+  const pts = scores.slice(-30);
+  if(pts.length<2) return '';
+  const W = 300, H = 90, pad = 8;
+  const x = i=> pad + (W-2*pad)*i/(pts.length-1);
+  const y = v=> H-pad - (H-2*pad)*v/100;
+  // moving average of 5 games
+  const avg = pts.map((p,i)=>{ const sl = pts.slice(Math.max(0,i-4), i+1); return sl.reduce((a,b)=>a+b.norm,0)/sl.length; });
+  const line = avg.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  const dots = pts.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.norm).toFixed(1)}" r="2.6" class="${p.win?'tw':p.tie?'tt':'tl'}"/>`).join('');
+  return `<svg class="trend" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Andamento del punteggio">
+    <line x1="${pad}" x2="${W-pad}" y1="${y(50)}" y2="${y(50)}" class="tg"/>
+    <path d="${line}" class="tline" fill="none" vector-effect="non-scaling-stroke"/>${dots}</svg>
+    <div class="trend-leg"><span><b style="color:var(--gold-bright)">●</b> vittoria</span><span><b style="color:rgba(243,236,217,.6)">●</b> altra partita</span><span>— andamento (media delle ultime 5 partite)</span></div><p class="hint">Ogni punto è una partita: più in alto = piazzamento migliore (100 primo, 0 ultimo). La linea gialla smussa i risultati facendo la media di ogni partita con le 4 precedenti, così vedi se stai migliorando.</p>`;
+}
+
+/* ---------- filters bar ---------- */
+function filtersHtml(){
+  const seg = (name, items)=>`<div class="seg" data-seg="${name}">${items.map(([v,l])=>`<button data-v="${v}" class="${SF[name]===v?'on':''}">${l}</button>`).join('')}</div>`;
+  let h = '<div class="sf">';
+  h += seg('mode', [['all','Tutte'],['bot','Contro bot'],['online','Online']]);
+  h += seg('range', [['all','Sempre'],['today','Oggi'],['week','Settimana'],['month','Mese'],['custom','Date…']]);
+  if(SF.range==='custom') h += `<div class="sf-dates"><label>dal <input type="date" id="sf-from" value="${SF.from}"></label><label>al <input type="date" id="sf-to" value="${SF.to}"></label></div>`;
+  return h + '</div>';
+}
+
+/* ---------- tabs ---------- */
+function statsMe(games){
+  const A = aggregate(games), t = A.t;
+  if(!A.games) return '<p class="muted empty">Nessuna partita in questo periodo.</p>';
+  const avg = A.sumPlace/A.games, nrm = A.sumNorm/A.games;
+  const tile = (v,l,cls)=>`<div class="stat-tile ${cls||''}"><b>${v}</b><span>${l}</span></div>`;
+  let h = `<div class="hero">
+    ${svgDonut(A.wins/A.games, pct(A.wins,A.games), 'vittorie')}
+    <div class="hero-side">
+      <div><b>${A.games}</b><span>partite</span></div>
+      <div><b>${A.wins}</b><span>vinte</span></div>
+      <div><b>${avg.toFixed(2)}</b><span>posizione media</span></div>
+      <div><b>${nrm.toFixed(0)}<small>/100</small></b><span>punteggio posizione</span></div>
+    </div></div>
+    <p class="hint">Il <b>punteggio posizione</b> normalizza il piazzamento sul numero di giocatori: 100 = sempre primo, 0 = sempre ultimo (così una partita in 2 e una in 6 contano allo stesso modo).</p>`;
+  h += `<div class="form-strip">${A.scores.slice(-20).map(s=>`<i class="${s.win?'w':s.tie?'t':s.pl===s.n?'l':'m'}" title="${s.pl}° su ${s.n}">${s.win?'🏆':s.pl}</i>`).join('')}</div>`;
+  h += svgTrend(A.scores);
+  h += `<h4>Numeri</h4><div class="stat-grid">
+    ${tile(A.streak,'serie attuale')}${tile(A.bestStreak,'serie record')}${tile(A.ties+(A.stale?'':''),'pareggi')}
+    ${tile(t.sbobozCards,'sboboz con carte','acc')}${tile(t.sbobozKings,'sboboz con Re','acc')}${tile(t.pickups,'tavoli presi')}
+    ${tile(t.played,'carte giocate')}${tile(t.jollies,'jolly usati')}${tile(t.reveals,'coperte girate')}
+    ${tile(A.maxHand[1]||'—','mano max · 1 mazzo')}${tile(A.maxHand[2]||'—','mano max · 2 mazzi')}${tile(t.discards,'scarti con 5')}
+    ${tile(t.jdraws,'pescate con J')}${tile(A.online,'online')}${tile(fmtTime(A.secs),'tempo di gioco')}
+  </div>`;
+  const maxN = Math.max(1, ...Object.values(A.places));
+  const keys = Object.keys(A.places).sort((a,b)=> (a==='T'?99:+a) - (b==='T'?99:+b));
+  h += `<h4>Piazzamenti</h4><div class="bars">${keys.map(k=>`<div class="bar-row"><span>${k==='T'?'Pari':k+'°'}</span><div class="bar"><i style="width:${Math.round(100*A.places[k]/maxN)}%"></i></div><b>${A.places[k]}</b></div>`).join('')}</div>`;
+  const ns = Object.keys(A.byN).sort((a,b)=>a-b);
+  h += `<h4>Per numero di giocatori</h4><div class="mini-table">${ns.map(n=>{ const b=A.byN[n]; return `<div><span>${n} giocatori · ${b.games} partite</span><b>${b.wins} vinte · pos. ${(b.sumPlace/b.games).toFixed(2)}</b></div>`; }).join('')}</div>`;
+  return h;
+}
+
+function statsNinja(games){
+  const A = aggregate(games);
+  const list = NINJAGO_POOL.map(n=>({n, a:A.ninja[n.name]}));
+  list.sort((x,y)=>{
+    const ax = x.a.games ? x.a.sumNorm/x.a.games : -1, ay = y.a.games ? y.a.sumNorm/y.a.games : -1;
+    return ay-ax;
+  });
+  let h = `<p class="hint">Classifica dei ninja contro di te, dal migliore al peggiore per <b>punteggio posizione</b> (100 = sempre primo). Conta solo le partite che hai giocato tu.</p>`;
+  let rank = 0;
+  h += list.map(({n,a})=>{
+    const has = a.games>0; if(has) rank++;
+    const avg = has ? (a.sumPlace/a.games).toFixed(2) : '—';
+    const nrm = has ? a.sumNorm/a.games : 0;
+    return `<div class="ninja-card ${has?'':'dim'}" style="border-left-color:${n.color}">
+      <div class="nc-head"><span class="nc-rank">${has?rank:'–'}</span><b>${n.name}</b><em class="elem" style="--ec:${n.color==='#000000'?'#c98a4b':n.color}">${n.elem}</em><span class="nc-score">${has?nrm.toFixed(0):'—'}<small>/100</small></span></div>
+      <div class="nc-bar"><i style="width:${nrm.toFixed(0)}%;background:${n.color}"></i></div>
+      <div class="nc-grid">
+        <div><b>${a.games}</b><span>partite</span></div>
+        <div><b>${a.wins}</b><span>vittorie</span></div>
+        <div><b>${avg}</b><span>pos. media</span></div>
+        <div><b>${has? (a.sboboz/a.games).toFixed(1):'—'}</b><span>sboboz/partita</span></div>
+      </div>
+      <div class="nc-vs">Tu contro ${n.name}: davanti <b>${a.ahead}</b> · dietro <b>${a.behind}</b></div>
+    </div>`;
+  }).join('');
+  return h;
+}
+
+function gameCard(g){
+  const me = g.rows.find(r=>r.me) || g.rows[0];
+  const d = new Date(g.ts);
+  const when = d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const open = SF.open===g.id;
+  const win = !me.t && me.pl===1;
+  const tag = g.draw ? '🤝 patta' : g.stale ? 'stallo' : '';
+  let h = `<div class="game ${open?'open':''}" data-id="${esc(g.id)}">
+    <button class="game-head" data-toggle="${esc(g.id)}">
+      <span class="g-when">${when}<small>${g.n} giocatori · ${g.online?'online':'contro bot'}${tag?' · '+tag:''}</small></span>
+      <span class="g-place ${win?'win':''}">${me.t?'Pari':me.pl+'°'}${win?' 🏆':''}</span><span class="g-chev">▾</span>
+    </button>`;
+  if(open){
+    const rows = g.rows.slice().sort((a,b)=>a.pl-b.pl);
+    h += `<div class="game-body">
+      ${g.legacy ? '<p class="muted">Partita importata dalla vecchia versione: dettagli non disponibili.</p>' : `
+      <div class="g-sum"><span>⏱ ${fmtDur(g.secs)}</span><span>🎴 ${g.decks} mazz${g.decks>1?'i':'o'}</span><span>▶ ${g.turns} mosse</span></div>
+      <div class="g-rank">${rows.map(r=>{
+        const st = r.st||{};
+        return `<div class="g-row ${r.me?'me':''}"><span class="g-pl">${r.pl}°${r.t?'=':''}</span><span class="g-nm">${esc(r.me?'Tu':r.w)}${r.k==='b'?' <small>bot</small>':''}</span>
+          <span class="g-st"><i title="carte giocate">🂠${st.played||0}</i><i title="tavoli presi">📥${st.pickups||0}</i><i title="sboboz con carte">💥${st.sbobozCards||0}</i><i title="sboboz con Re">👑${st.sbobozKings||0}</i><i title="mano massima">✋${st.maxHand||0}</i></span></div>`;
+      }).join('')}</div>`}
+      <button class="btn-secondary danger g-del" data-del="${esc(g.id)}">Elimina questa partita</button>
+    </div>`;
+  }
+  return h + '</div>';
+}
+
+function statsHist(games){
+  let h = games.length ? `<div class="games">${games.slice(0,80).map(gameCard).join('')}</div>${games.length>80?`<p class="muted">…e altre ${games.length-80} partite più vecchie.</p>`:''}` : '<p class="muted empty">Nessuna partita registrata in questo periodo.</p>';
+  h += `<h4>Salva o sposta le statistiche</h4>
+      <p class="muted">Le statistiche stanno in questo dispositivo, nel browser che usi. Per portarle su un altro telefono o browser: esporta qui e importa lì.</p>
+      <div class="stat-actions">
+        <button class="btn-secondary" id="st-export">Copia codice</button>
+        <button class="btn-secondary" id="st-download">Scarica file</button>
+        <button class="btn-secondary" id="st-import">Importa</button>
+        <button class="btn-secondary danger" id="st-reset">Azzera</button>
+      </div>`;
+  return h;
+}
+
+/* scoreboard of a set of games played in the same room (humans and bots) */
+function roomRowsHtml(games){
+  const sc = {};
+  games.forEach(g=>g.rows.forEach(r=>{
+    const k = r.me ? 'Tu' : r.w;
+    const o = sc[k] || (sc[k] = {bot:r.k==='b', games:0, wins:0, sum:0, norm:0});
+    o.games++; o.sum += r.pl; o.norm += normPos(r.pl, g.n); if(!r.t && r.pl===1) o.wins++;
+  }));
+  const names = Object.keys(sc).sort((a,b)=> sc[b].wins-sc[a].wins || (sc[b].norm/sc[b].games)-(sc[a].norm/sc[a].games));
+  return names.map((k,i)=>`<div class="lc-row ${k==='Tu'?'me':''}"><span class="lc-pos">${i+1}</span><span class="lc-nm">${esc(k)}${sc[k].bot?' <small>bot</small>':''}</span><span class="lc-w">🏆 ${sc[k].wins}</span><span class="lc-a">pos. ${(sc[k].sum/sc[k].games).toFixed(2)}</span><span class="lc-n">${(sc[k].norm/sc[k].games).toFixed(0)}/100</span></div>`).join('');
+}
+/* the current room's table, shown in the room itself and after each game */
+function currentRoomBoardHtml(code){
+  if(!code) return '';
+  const gs = Store.data.games.filter(g=>g.room===String(code));
+  if(!gs.length) return '';
+  return `<div class="lobby-card room-board"><div class="lc-head"><b>Classifica della stanza</b><span>${gs.length} partit${gs.length>1?'e':'a'} qui</span></div>${roomRowsHtml(gs)}<div class="lc-foot">Vittorie · posizione media · punteggio posizione (100 = sempre primo)</div></div>`;
+}
+
+/* Lobby = one online room (same code); the scoreboard counts the humans */
+function statsLobby(games){
+  const on = games.filter(g=>g.online && g.room);
+  let h = '';
+  const A = aggregate(games);
+  const rv = Object.keys(A.rivals);
+  if(rv.length) h += `<h4>Contro altri giocatori</h4><div class="mini-table">${rv.sort((a,b)=>A.rivals[b].games-A.rivals[a].games).map(n=>`<div><span>${esc(n)} · ${A.rivals[n].games} partite</span><b>davanti ${A.rivals[n].ahead} · dietro ${A.rivals[n].behind}</b></div>`).join('')}</div>`;
+  const groups = [];
+  on.forEach(g=>{
+    const day = new Date(g.ts).toDateString();
+    let gr = groups.find(x=>x.room===g.room && x.day===day);
+    if(!gr){ gr = {room:g.room, day, ts:g.ts, games:[]}; groups.push(gr); }
+    gr.games.push(g);
+  });
+  h += `<h4>Le tue stanze online</h4>`;
+  if(!groups.length) return h + '<p class="muted empty">Nessuna partita online in questo periodo.</p>';
+  h += groups.map(gr=>{
+    const d = new Date(gr.ts).toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    return `<div class="lobby-card"><div class="lc-head"><b>Stanza ${esc(gr.room)}</b><span>${d} · ${gr.games.length} partit${gr.games.length>1?'e':'a'}</span></div>${roomRowsHtml(gr.games)}</div>`;
+  }).join('');
+  return h;
+}
+
+function renderStats(tab){
+  if(tab) SF.tab = tab;
+  document.querySelectorAll('#stats-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===SF.tab));
+  const games = sfGames();
+  let html = filtersHtml();
+  html += SF.tab==='me' ? statsMe(games) : SF.tab==='ninja' ? statsNinja(games) : SF.tab==='lobby' ? statsLobby(games) : statsHist(games);
+  const body = $('stats-body');
+  const keep = body.parentElement.scrollTop;
+  body.innerHTML = html;
+  body.parentElement.scrollTop = keep;
+  wireStats();
+}
+
+function wireStats(){
+  document.querySelectorAll('#stats-body .seg').forEach(seg=>{
+    seg.querySelectorAll('button').forEach(b=>{ b.onclick = ()=>{ SF[seg.dataset.seg] = b.dataset.v; SF.open = null; renderStats(); }; });
+  });
+  if($('sf-from')) $('sf-from').onchange = e=>{ SF.from = e.target.value; renderStats(); };
+  if($('sf-to')) $('sf-to').onchange = e=>{ SF.to = e.target.value; renderStats(); };
+  document.querySelectorAll('#stats-body [data-toggle]').forEach(b=>{ b.onclick = ()=>{ SF.open = SF.open===b.dataset.toggle ? null : b.dataset.toggle; renderStats(); }; });
+  document.querySelectorAll('#stats-body [data-del]').forEach(b=>{
+    b.onclick = ()=>Modal.choice('Eliminare la partita?', 'Sparisce dallo storico e da tutte le statistiche. Non si può annullare.', [['Elimina','y'],['Annulla','n']], v=>{
+      if(v==='y'){ Store.remove(b.dataset.del); SF.open = null; renderStats(); UI.toastTop('Partita eliminata'); }
+    });
+  });
+  if($('st-export')) $('st-export').onclick = ()=>{ copyText(Store.exportString()); UI.toastTop('Codice copiato negli appunti'); };
+  if($('st-download')) $('st-download').onclick = ()=>{
+    const blob = new Blob([Store.exportString()], {type:'text/plain'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ilsboboz-statistiche.txt';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  if($('st-import')) $('st-import').onclick = ()=>{
+    Modal.open(`<h3>Importa statistiche</h3><p>Incolla il codice esportato (sostituisce quelle attuali).</p><textarea id="imp-text" class="text-input" rows="4" placeholder="ILSBOBOZ1:…"></textarea><div class="modal-btns"><button class="btn-primary" id="imp-go">Importa</button><button class="btn-secondary" id="imp-cancel">Annulla</button></div>`);
+    $('imp-cancel').onclick = Modal.close;
+    $('imp-go').onclick = ()=>{
+      if(Store.importString($('imp-text').value)){ Modal.close(); renderStats('hist'); UI.renderHome(); UI.toastTop('Statistiche importate'); }
+      else UI.toastTop('Codice non valido');
+    };
+  };
+  if($('st-reset')) $('st-reset').onclick = ()=>{
+    Modal.choice('Azzerare le statistiche?', 'Questa azione non si può annullare.', [['Sì, azzera','y'],['Annulla','n']], v=>{ if(v==='y'){ Store.reset(); renderStats('hist'); } });
+  };
 }
 
 /* ============================================================
@@ -3846,6 +4674,7 @@ const UI = {
       if(el) el.style.display = (s===name) ? 'flex' : 'none';
     });
     if(name!=='home') MUSIC_STOP();
+    if(name!=='game'){ const db=$('draw-banner'); if(db){ db.classList.remove('show'); db._k=null; } }
     if(name==='game'){ requestAnimationFrame(()=>{ fitLayout(); }); }
     if(name==='home'){ UI.renderHome(); }
     if(prev==='game' && name!=='game'){ $('react-tray').classList.remove('open'); }
@@ -3981,28 +4810,30 @@ const UI = {
     html += `<div class="seat-list">`;
     L.members.forEach(m=>{
       const me = m.mid===myMid;
-      const ava = m.kind==='bot'
-        ? `<span class="s-ava bot" style="--c:${m.color==='#000000'?'#000':m.color}">${esc(m.name[0]||'N')}</span>`
+      const ava = m.random ? `<span class="s-ava">🎲</span>` : m.kind==='bot'
+        ? `<span class="s-ava bot" style="--c:${fixColor(m.color)}">${esc(m.name[0]||'N')}</span>`
         : `<span class="s-ava">${esc(m.avatar||'🥷')}</span>`;
       const tags = [];
       if(m.isHost) tags.push('<em class="t host">Host</em>');
       if(me) tags.push('<em class="t me">Tu</em>');
-      if(m.kind==='bot') tags.push('<em class="t bot">Bot</em>');
+      if(m.kind==='bot') tags.push(m.random ? '<em class="t bot">Bot casuale</em>' : '<em class="t bot">Bot</em>');
       const ed = me ? '<button class="s-edit" id="btn-edit-me" title="Cambia nome e avatar">✎ Nome</button>' : '';
+      const rnd = (isHost && m.kind==='bot') ? `<button class="s-rnd${m.random?' on':''}" data-rnd="${m.mid}" title="${m.random?'Bot casuale: cambia ninja a ogni partita':'Rendi casuale'}">🎲</button>` : '';
       const rm = (isHost && !m.isHost) ? `<button class="s-x" data-rm="${m.mid}" title="${m.kind==='bot'?'Rimuovi bot':'Espelli'}">✕</button>` : '';
       html += `<div class="seat-row${me?' mine':''}">
         ${ava}
         <span class="s-name">${esc(m.name)}</span>
         <span class="s-tags">${tags.join('')}</span>
-        ${ed}
+        ${ed}${rnd}
         <span class="s-dot ${m.connected?'on':'off'}"></span>
         ${rm}
       </div>`;
     });
     if(n<MAX_PLAYERS){
-      html += `<div class="seat-row empty">${isHost ? '<button class="btn-add-bot" id="btn-add-bot">＋ Aggiungi un bot</button>' : '<span class="s-wait">In attesa di altri giocatori…</span>'}</div>`;
+      html += `<div class="seat-row empty">${isHost ? '<button class="btn-add-bot" id="btn-add-bot">＋ Aggiungi un bot</button><button class="btn-add-bot rnd" id="btn-add-rnd">🎲 Bot casuale</button>' : '<span class="s-wait">In attesa di altri giocatori…</span>'}</div>`;
     }
     html += `</div>`;
+    html += currentRoomBoardHtml(L.code);
 
     // settings
     html += `<div class="settings-card">
@@ -4045,6 +4876,8 @@ const UI = {
     };
     if(q('btn-edit-me')) q('btn-edit-me').onclick = openProfile;
     if(q('btn-add-bot')) q('btn-add-bot').onclick = ()=>Room.addBot();
+    if(q('btn-add-rnd')) q('btn-add-rnd').onclick = ()=>Room.addBot(true);
+    document.querySelectorAll('[data-rnd]').forEach(b=>{ b.onclick = ()=>Room.toggleRandom(+b.dataset.rnd); });
     document.querySelectorAll('[data-rm]').forEach(b=>{ b.onclick = ()=>Room.removeMember(+b.dataset.rm); });
     if(q('st-plus')) q('st-plus').onclick = ()=>Room.fillBots(R.members.length+1);
     if(q('st-minus')) q('st-minus').onclick = ()=>{
@@ -4245,88 +5078,6 @@ function openProfile(){
 /* ============================================================
    STATISTICS
 ============================================================ */
-function pct(a,b){ return b ? Math.round(100*a/b)+'%' : '—'; }
-function fmtTime(s){ const h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h? `${h} h ${m} min` : `${m} min`; }
-
-function renderStats(tab){
-  const s = Store.data.stats;
-  document.querySelectorAll('#stats-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
-  let html = '';
-  if(tab==='me'){
-    const placed = Object.keys(s.places).filter(k=>k!=='T');
-    let sum=0, cnt=0; placed.forEach(k=>{ sum += (+k)*s.places[k]; cnt += s.places[k]; });
-    const t = s.totals;
-    const tile = (v,l)=>`<div class="stat-tile"><b>${v}</b><span>${l}</span></div>`;
-    html += `<div class="stat-grid">
-      ${tile(s.games,'partite')}${tile(s.wins,'vittorie')}${tile(pct(s.wins,s.games),'vittorie %')}
-      ${tile(cnt? (sum/cnt).toFixed(2):'—','posizione media')}${tile(s.streak,'serie attuale')}${tile(s.bestStreak,'serie record')}
-      ${tile(t.sboboz,'sboboz fatti')}${tile(t.pickups,'tavoli presi')}${tile(t.played,'carte giocate')}
-      ${tile(t.kings,'Re giocati')}${tile(t.jollies,'jolly usati')}${tile(s.maxHand,'mano più grande')}
-      ${tile(t.reveals,'coperte girate')}${tile(t.discards,'scarti con 5')}${tile(t.jdraws,'pescate con J')}
-      ${tile(s.online,'partite online')}${tile(s.solo,'contro i bot')}${tile(fmtTime(t.secs),'tempo di gioco')}
-    </div>`;
-    // distribution of places
-    const maxN = Math.max(1, ...Object.values(s.places));
-    const keys = Object.keys(s.places).sort((a,b)=> (a==='T'?99:+a) - (b==='T'?99:+b));
-    html += `<h4>Piazzamenti</h4><div class="bars">${keys.length? keys.map(k=>`<div class="bar-row"><span>${k==='T'?'Pari':k+'°'}</span><div class="bar"><i style="width:${Math.round(100*s.places[k]/maxN)}%"></i></div><b>${s.places[k]}</b></div>`).join('') : '<p class="muted">Ancora nessuna partita finita.</p>'}</div>`;
-    const ns = Object.keys(s.byN).sort((a,b)=>a-b);
-    if(ns.length) html += `<h4>Per numero di giocatori</h4><div class="mini-table">${ns.map(n=>`<div><span>${n} giocatori</span><b>${s.byN[n].wins}/${s.byN[n].games} vittorie</b></div>`).join('')}</div>`;
-  } else if(tab==='ninja'){
-    html += `<p class="muted">Statistiche dei ninja nelle partite che hai giocato tu, e il tuo confronto diretto.</p>`;
-    html += NINJAGO_POOL.map(n=>{
-      const a = s.ninja[n.name], v = s.vs[n.name] || {games:0, ahead:0, behind:0};
-      const col = n.color==='#000000' ? '#000' : n.color;
-      const avg = a.games ? (a.placeSum/a.games).toFixed(2) : '—';
-      return `<div class="ninja-card" style="border-left-color:${col}">
-        <div class="nc-head"><b>${n.name}</b><em>${n.elem}</em></div>
-        <div class="nc-grid">
-          <div><b>${a.games}</b><span>partite</span></div>
-          <div><b>${a.wins}</b><span>vittorie</span></div>
-          <div><b>${avg}</b><span>pos. media</span></div>
-          <div><b>${a.games? (a.sboboz/a.games).toFixed(1):'—'}</b><span>sboboz/partita</span></div>
-        </div>
-        <div class="nc-vs">Tu contro ${n.name}: davanti <b>${v.ahead}</b> · dietro <b>${v.behind}</b></div>
-      </div>`;
-    }).join('');
-  } else {
-    html += `<h4>Ultime partite</h4>`;
-    html += s.history.length ? `<div class="mini-table">${s.history.map(h=>{
-      const d = new Date(h.ts);
-      const when = d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-      return `<div><span>${when} · ${h.n} giocatori${h.online?' · online':''}</span><b>${h.tie?'Pari':h.place+'°'}${!h.tie && h.place===1?' 🏆':''}</b></div>`;
-    }).join('')}</div>` : '<p class="muted">Nessuna partita registrata.</p>';
-    const rv = Object.keys(s.rivals);
-    if(rv.length){
-      html += `<h4>Contro altri giocatori</h4><div class="mini-table">${rv.map(n=>`<div><span>${esc(n)} · ${s.rivals[n].games} partite</span><b>davanti ${s.rivals[n].ahead} · dietro ${s.rivals[n].behind}</b></div>`).join('')}</div>`;
-    }
-    html += `<h4>Salva o sposta le statistiche</h4>
-      <p class="muted">Le statistiche stanno in questo dispositivo, nel browser che usi. Per portarle su un altro telefono o browser: esporta qui e importa lì.</p>
-      <div class="stat-actions">
-        <button class="btn-secondary" id="st-export">Copia codice</button>
-        <button class="btn-secondary" id="st-download">Scarica file</button>
-        <button class="btn-secondary" id="st-import">Importa</button>
-        <button class="btn-secondary danger" id="st-reset">Azzera</button>
-      </div>`;
-  }
-  $('stats-body').innerHTML = html;
-  if($('st-export')) $('st-export').onclick = ()=>{ copyText(Store.exportString()); UI.toastTop('Codice copiato negli appunti'); };
-  if($('st-download')) $('st-download').onclick = ()=>{
-    const blob = new Blob([Store.exportString()], {type:'text/plain'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ilsboboz-statistiche.txt';
-    document.body.appendChild(a); a.click(); a.remove();
-  };
-  if($('st-import')) $('st-import').onclick = ()=>{
-    const box = Modal.open(`<h3>Importa statistiche</h3><p>Incolla il codice esportato (sostituisce quelle attuali).</p><textarea id="imp-text" class="text-input" rows="4" placeholder="ILSBOBOZ1:…"></textarea><div class="modal-btns"><button class="btn-primary" id="imp-go">Importa</button><button class="btn-secondary" id="imp-cancel">Annulla</button></div>`);
-    $('imp-cancel').onclick = Modal.close;
-    $('imp-go').onclick = ()=>{
-      if(Store.importString($('imp-text').value)){ Modal.close(); renderStats('hist'); UI.renderHome(); UI.toastTop('Statistiche importate'); }
-      else UI.toastTop('Codice non valido');
-    };
-  };
-  if($('st-reset')) $('st-reset').onclick = ()=>{
-    Modal.choice('Azzerare le statistiche?', 'Questa azione non si può annullare.', [['Sì, azzera','y'],['Annulla','n']], v=>{ if(v==='y'){ Store.reset(); renderStats('hist'); } });
-  };
-}
 
 /* ============================================================
    RULES / ABOUT / LOG
@@ -4337,18 +5088,116 @@ function closableModal(title, bodyHtml, wide){
   return box;
 }
 
+/* Tap an opponent: a big view of their five piles and hand size */
+function openPlayerZoom(pid){
+  const V = Client.V; if(!V) return;
+  const p = V.players[pid]; if(!p) return;
+  const handN = Array.isArray(p.hand) ? p.hand.length : (p.hand && p.hand.length) || 0;
+  const slotsHtml = p.slots.map(slot=>{
+    if(slot.up){
+      const under = slot.down ? '<div class="card-back stack-under"></div>' : '';
+      const top = cardHtml(slot.up).replace('class="card', 'class="stack-top card');
+      return `<div class="stack-slot">${under}${top}</div>`;
+    }
+    if(slot.down) return '<div class="stack-slot"><div class="card-back stack-top"></div></div>';
+    return '<div class="stack-slot empty"></div>';
+  }).join('');
+  const ups = p.slots.filter(s=>s.up).length, downs = p.slots.filter(s=>s.down).length;
+  const fan = handN>0 ? Array.from({length:Math.min(handN,12)}).map(()=>'<div class="card-back"></div>').join('') : '';
+  const color = p.color ? fixColor(p.color) : 'var(--gold-bright)';
+  const title = `<span style="border-left:4px solid ${color};padding-left:8px;">${displayName(p)}${p.elem?` <small class="zoom-elem">${esc(p.elem)}</small>`:''}</span>`;
+  const zbox = closableModal(title, `
+    <div class="zoom-stacks">${slotsHtml}</div>
+    <div class="zoom-info">
+      <span><b>${ups}</b> scoperte</span><span><b>${downs}</b> coperte</span><span><b>${handN}</b> in mano</span>
+      ${p.finished ? `<span class="zoom-fin">🏁 ${p.place}° posto</span>` : ''}
+    </div>
+    ${handN>0 ? `<div class="zoom-hand">${fan}</div>` : ''}
+    <div class="zoom-note">Le carte coperte sono quelle sotto le scoperte.</div>`, true);
+  const zs = zbox.querySelector('.zoom-stacks');
+  if(zs){ const w = zs.clientWidth || 300; zs.style.setProperty('--zw', Math.max(38, Math.min(104, Math.floor(w/5.7)))+'px'); }
+}
+
 function showRules(){
+  const card = (r, t)=>`<div class="rule-card"><b>${r}</b><span>${t}</span></div>`;
   closableModal('Regole', `
-    <p class="rules">
-    <b>Obiettivo.</b> Finire tutte le tue carte: mano, scoperte e coperte. Vince chi finisce per primo; si prosegue finché la classifica è completa.<br><br>
-    <b>Come si gioca.</b> Seleziona una o più carte dello stesso valore (dalla mano o dalle scoperte se non hai carte in mano) e tocca il <b>tavolo</b>: devono valere pari o più della carta in cima, oppure essere un jolly. Se non puoi giocare prendi tutto il tavolo (puoi farlo anche volontariamente). Dopo uno sboboz o dopo aver preso il tavolo, tocca di nuovo a te. Finito il mazzo e la mano si passa alle scoperte, poi alle coperte (una per turno, alla cieca).<br><br>
-    <b>Effetti.</b> <b>2</b> jolly universale, sempre giocabile. <b>3</b> è la carta più bassa e segue le regole normali, ma riporta sul tavolo l’ultimo sboboz. <b>4</b> da scoperta rivela la coperta sotto. <b>5</b> da mano fa scartare un’altra carta nell’ipersboboz. <b>7</b> annulla l’effetto della carta successiva. <b>8</b> impone più alta/più bassa. <b>9</b> impone con/senza effetto (se la stessa giocata completa uno sboboz, nessun vincolo viene chiesto): conta l’effetto che la carta avrebbe <i>davvero</i> in quel momento, quindi un 4 senza coperta sotto, un 5 senza altre carte in mano, un 3 senza sboboz, un J con l’ipersboboz vuoto o un 7/8/9 che completa uno sboboz valgono come senza effetto. <b>J</b> ti fa scegliere una carta qualsiasi dall’ipersboboz. <b>Q</b> da coperta non è mai giocabile: torna in mano e, se non sarebbe stata legale, prendi anche il tavolo. <b>K</b> fa sboboz immediato. Il vincolo di 8/9 sostituisce il normale confronto di valore per la sola carta successiva.<br><br>
-    <b>Sboboz.</b> Con esattamente 4 (1 mazzo) o 6 (2 mazzi) carte uguali di fila in cima al tavolo, anche di giocatori diversi, la pila va nello sboboz e il vecchio sboboz nell’ipersboboz. Le carte oltre il numero esatto restano sul tavolo.<br><br>
-    <b>Mazzi.</b> 2–3 giocatori: 1 mazzo (a scelta anche 2). 4–6: 2 mazzi. 7: 2 mazzi + 1 Jolly. Il Jolly diventa la carta che scegli (valida) o si unisce a un gruppo; quando torna in una mano ridiventa libero.<br><br>
-    <b>Pile.</b> Ognuno ha 5 pile: una coperta con sopra una scoperta scelta all’inizio. Le coperte si girano solo quando hai finito mano e scoperte.<br><br>
-    <b>Online.</b> Crea una stanza, condividi il codice o il QR; gli altri entrano da «Entra in una stanza» (o aprendo il link del QR). Puoi aggiungere bot fino a 7 giocatori.<br><br>
-    <b>Stallo.</b> Se la stessa identica situazione si ripete 3 volte è pareggio tra chi è ancora in gioco.
-    </p>`, true);
+    <div class="rules-doc">
+    <p class="rd-lead">Sboboz è un gioco di carte per 2–7 giocatori. Vince chi si libera per primo di tutte le sue carte: mano, scoperte e coperte.</p>
+
+    <h4>Preparazione</h4>
+    <ul>
+      <li><b>Mazzi.</b> 2–3 giocatori: 1 mazzo da 52 carte (l’host può scegliere anche 2 mazzi). 4–6 giocatori: 2 mazzi. 7 giocatori: 2 mazzi più 1 Jolly.</li>
+      <li><b>Distribuzione.</b> Ognuno riceve 5 carte coperte, messe in fila, e 10 carte in mano. Le carte rimaste formano il <b>mazzo</b> (con 7 giocatori non ne resta nessuna).</li>
+      <li><b>Scoperte.</b> Ognuno sceglie 5 carte dalla sua mano e le mette scoperte, una sopra ogni coperta: sono le sue 5 <b>pile</b>. Le scoperte le vedono tutti. Le altre 5 carte restano in mano.</li>
+      <li>Inizia un giocatore a caso e si gioca in senso orario.</li>
+    </ul>
+
+    <h4>Le pile al centro</h4>
+    <ul>
+      <li><b>Tavolo</b>: dove si giocano le carte. Conta sempre la carta in cima.</li>
+      <li><b>Sboboz</b>: le carte tolte dal tavolo con l’ultimo sboboz, scoperte (l’ultima giocata in cima).</li>
+      <li><b>Ipersboboz</b>: le carte degli sboboz precedenti e gli scarti del 5, coperte.</li>
+    </ul>
+
+    <h4>Il tuo turno</h4>
+    <p>Hai due possibilità: giocare delle carte oppure prendere il tavolo.</p>
+    <ul>
+      <li><b>Giocare.</b> Scegli una o più carte <i>dello stesso valore</i> (i semi non contano) che valgano <b>quanto o più</b> della carta in cima al tavolo. La scala va da 3 a Asso: 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · J · Q · K · A. Su un tavolo vuoto, o dopo un 2, puoi giocare qualsiasi carta. Il <b>2</b> si può giocare sempre.</li>
+      <li><b>Dopo aver giocato dalla mano</b> ripeschi dal mazzo fino ad avere di nuovo 5 carte (se ne hai già di più, non peschi). Poi tocca al giocatore successivo.</li>
+      <li><b>Prendere il tavolo.</b> Se non puoi giocare nulla devi prendere <b>tutte</b> le carte del tavolo in mano. Puoi farlo anche se hai mosse valide, purché il tavolo non sia vuoto. Dopo aver preso il tavolo <b>tocca ancora a te</b>.</li>
+    </ul>
+
+    <h4>Mano, scoperte, coperte</h4>
+    <ul>
+      <li><b>Finché hai carte in mano</b> giochi quelle (anche più carte insieme). Le scoperte restano ferme.</li>
+      <li><b>A mano e mazzo finiti</b> giochi le scoperte, <b>una carta alla volta</b>. Se prendi il tavolo, le carte prese finiscono in mano e giochi prima quelle.</li>
+      <li><b>Finite le scoperte</b> giri le coperte, una per turno, alla cieca. La carta girata si gioca se è valida: finisce sul tavolo e fa il suo effetto. Se non è valida torna nella tua mano e <b>prendi anche tutto il tavolo</b>; poi continui il turno.</li>
+    </ul>
+
+    <h4>Lo sboboz</h4>
+    <p>Quando in cima al tavolo ci sono <b>esattamente 4 carte uguali di fila</b> (1 mazzo) o <b>6</b> (2 mazzi) scatta lo sboboz. Le carte possono venire da turni e giocatori diversi: contano tutte quelle consecutive dello stesso valore.</p>
+    <ul>
+      <li>Tutto il tavolo va nello sboboz; il vecchio sboboz scivola, coperto, nell’ipersboboz.</li>
+      <li>Chi ha fatto lo sboboz <b>gioca ancora</b>.</li>
+      <li><b>Troppe carte.</b> Se giochi più carte del necessario (per esempio 7 carte uguali con soglia 6) lo sboboz si forma con le prime; le altre vengono giocate subito dopo, restano sul tavolo e fanno il loro effetto. In questo caso il turno non continua.</li>
+      <li><b>Il Re</b> fa sboboz da solo, subito, con qualunque numero di Re.</li>
+      <li>Le carte riportate sul tavolo da un 3 non contano mai per un nuovo sboboz.</li>
+    </ul>
+
+    <h4>Carte speciali</h4>
+    <p>Un effetto si attiva solo se la carta lo ha <i>davvero</i> in quel momento: un 5 con la mano vuota, un 3 senza sboboz, un J con l’ipersboboz vuoto o un 4 senza coperta sotto contano come carte normali.</p>
+    <div class="rule-cards">
+      ${card('2','Sempre giocabile. Dopo un 2 si può giocare qualsiasi carta.')}
+      ${card('3','Carta normale (la più bassa). Riporta sul tavolo, sotto di sé, tutte le carte dello sboboz.')}
+      ${card('4','Giocato dalle scoperte: la coperta sotto diventa scoperta. Dalla mano è una carta normale.')}
+      ${card('5','Giocato dalla mano: scarti una carta a scelta dalla tua mano nell’ipersboboz (prima di ripescare). Con più 5 insieme se ne scarta una sola.')}
+      ${card('7','Annulla l’effetto della carta giocata subito dopo. Se anche questa è un 7, l’annullamento prosegue.')}
+      ${card('8','Scegli “più alta” o “più bassa”: la prossima carta dovrà esserlo rispetto all’8. Un 8 si può sempre coprire con un altro 8.')}
+      ${card('9','Scegli “con effetto” o “senza effetto”: la prossima carta dovrà essere così. Un 9 si può sempre coprire con un altro 9.')}
+      ${card('J','Prendi in mano una carta a tua scelta dall’ipersboboz (una sola, anche con più J).')}
+      ${card('Q','Carta normale. Girata dalle coperte non si gioca: torna sempre in mano. Se avrebbe potuto essere giocata (anche per il vincolo di un 9) non prendi il tavolo e il turno passa; altrimenti prendi anche il tavolo.')}
+      ${card('K','Sboboz immediato.')}
+      ${card('A','La carta più alta.')}
+      ${card('🃏','Solo con 7 giocatori. Diventa la carta che scegli (deve essere valida) e può unirsi a un gruppo. Quando torna in una mano è di nuovo libero.')}
+    </div>
+    <p><b>Con o senza effetto (9).</b> Hanno effetto: 2, K, 7, 8, 9, il 3 se c’è uno sboboz da riportare, il 4 dalle scoperte con una coperta sotto, il 5 dalla mano se resta almeno una carta, il J con l’ipersboboz non vuoto e la Q girata dalle coperte. Tutto il resto no. Un 7, 8 o 9 che completa uno sboboz non impone né annulla nulla.</p>
+    <p><b>Vincoli.</b> Il vincolo di 8 e 9 vale solo per la carta successiva e sostituisce il normale confronto di valore. Il 2 è sempre ammesso. Un vincolo o un 7 sparisce se qualcuno prende il tavolo.</p>
+
+    <h4>Fine della partita</h4>
+    <ul>
+      <li>Chi finisce tutte le carte esce dalla partita e prende il posto successivo (1° il primo, e così via). Gli altri continuano.</li>
+      <li>La partita finisce quando resta un solo giocatore: è l’ultimo in classifica.</li>
+    </ul>
+
+    <h4>Stallo e patta</h4>
+    <ul>
+      <li><b>Stallo.</b> Se la stessa identica situazione si ripete 3 volte, la partita finisce in pareggio: chi aveva già finito mantiene il suo posto, gli altri sono pari. Alla 2ª ripetizione compare un avviso.</li>
+      <li><b>Patta.</b> Con almeno 2 giocatori umani ancora in gara, uno può proporla in qualsiasi momento con il pulsante 🤝. Se tutti gli umani rimasti accettano, la partita finisce in parità; i bot accettano sempre. Contro i soli bot non è disponibile.</li>
+    </ul>
+
+    <h4>Online</h4>
+    <p>L’host crea la stanza e condivide codice o QR; gli altri entrano da «Entra in una stanza». Si può completare la stanza con bot, fino a 7 giocatori. Un giocatore che si disconnette viene sostituito da un bot finché non torna.</p>
+    </div>`, true);
 }
 
 function showAbout(){
@@ -4358,7 +5207,9 @@ function showAbout(){
       <p>Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>, l’assistente AI di Anthropic.</p>
       <div class="about-disc"><b>Disclaimer per i creatori di Sboboz</b><br>Questa non è la versione originale di Sboboz: è una versione avanzata creata a partire dalla versione originale di Sboboz.</div>
       <p class="muted">Le partite online viaggiano direttamente tra i dispositivi (peer-to-peer); il gioco non ha un server proprio. Per l’accoppiamento iniziale si usa il servizio pubblico PeerJS. Ogni stanza accetta solo la stessa versione del gioco (impronta <code>${BUILD_SHORT}</code>) e l’host controlla ogni mossa.</p>
+      ${Analytics.configured() ? `<p class="muted"><b>Privacy.</b> Si raccolgono solo statistiche d’uso anonime (visite, tempo di utilizzo, dati di base delle partite) con Umami, <b>senza cookie</b> e senza nomi o dati personali. <label class="an-opt"><input type="checkbox" id="an-off" ${Analytics.optedOut()?'checked':''} ${navigator.doNotTrack==='1'?'disabled':''}> non inviare statistiche da questo dispositivo</label></p>` : ''}
     </div>`);
+  const off = $('an-off'); if(off) off.onchange = ()=>Analytics.setOptOut(off.checked);
 }
 
 function showLog(){
@@ -4370,6 +5221,7 @@ function showLog(){
     return `<div class="live-row${p.id===V.me?' you':''}"><span>${esc(p.name)}${nameTag(p)}</span><i>🂠 ${st.played||0}</i><i>📥 ${st.pickups||0}</i><i>💥 ${st.sboboz||0}</i></div>`;
   }).join('');
   const box = closableModal('Diario e statistiche', `
+    <div class="deck-info">🎴 <b>${V.numDecks===1?'1 mazzo (52 carte)':'2 mazzi ('+(104+(V.hasJolly?1:0))+' carte'+(V.hasJolly?', con 1 Jolly':'')+')'}</b> · sboboz con <b>${V.sbobozThreshold}</b> carte uguali</div>
     <h4>Questa partita</h4><div class="live-stats">${rows}</div><div class="live-legend">🂠 carte giocate · 📥 tavoli presi · 💥 sboboz</div>
     <h4>Mosse</h4>${entries}`);
   box.style.textAlign = 'left';
@@ -4394,6 +5246,7 @@ function startSolo(){
 }
 
 function wireUp(){
+  { const v = $('app-version'); if(v) v.textContent = 'v' + ((window.SBOBOZ_CONFIG && SBOBOZ_CONFIG.version) || '1.0.0'); }
   if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
     window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
   }
@@ -4404,7 +5257,7 @@ function wireUp(){
       mb.textContent = au.paused ? '▶' : '❚❚';
       mb.setAttribute('aria-label', au.paused?'Riproduci musica':'Metti in pausa');
       box.classList.toggle('playing', !au.paused);
-      if(au.currentTime>0) box.classList.add('started');
+      if(!au.paused || au.currentTime>0) box.classList.add('started');
     };
     const prog=()=>{ if(au.duration>0) fill.style.width = (100*au.currentTime/au.duration)+'%'; };
     mb.onclick=()=>{
@@ -4425,6 +5278,7 @@ function wireUp(){
   $('btn-join').onclick = ()=>{ $('join-msg').textContent=''; $('btn-join-go').disabled=false; UI.show('join'); setTimeout(()=>$('join-code').focus(), 50); };
   $('btn-stats').onclick = ()=>{ renderStats('me'); UI.show('stats'); };
   $('btn-rules').onclick = showRules;
+  $('opponent-seats').addEventListener('click', e=>{ const seat = e.target.closest('.opp-seat'); if(seat && seat.dataset.pid!==undefined) openPlayerZoom(+seat.dataset.pid); });
   $('btn-about').onclick = showAbout;
   $('profile-chip').onclick = openProfile;
   document.querySelectorAll('.fs-toggle, #btn-fullscreen-game').forEach(b=>b.addEventListener('click', toggleFullscreen));
@@ -4455,6 +5309,10 @@ function wireUp(){
     Client.act({t:'pickup'});
   });
   $('btn-log').onclick = showLog;
+  $('btn-draw').onclick = ()=>{
+    Modal.choice('Proporre la patta?', 'Se tutti gli altri giocatori (non bot) ancora in gara accettano, la partita finisce in parità.', [['Proponi','y'],['Annulla','n']], v=>{ if(v==='y') sendToHost({t:'draw', a:'offer'}); });
+  };
+  $('draw-banner').addEventListener('click', e=>{ const b = e.target.closest('button[data-d]'); if(b) sendToHost({t:'draw', a:b.dataset.d}); });
   $('btn-react').onclick = ()=>$('react-tray').classList.toggle('open');
   $('btn-end').onclick = ()=>{
     if(R.role==='host'){
@@ -4466,6 +5324,30 @@ function wireUp(){
   buildReactTray();
 }
 
+/* ---------- patta (draw) offers + repetition warning ---------- */
+function renderDraw(V){
+  const btn = $('btn-draw'), bn = $('draw-banner');
+  btn.style.display = (V.phase==='play' && V.drawOk && !V.draw) ? '' : 'none';
+  if(V.phase==='play' && V.rep>=2 && Client._repSeq!==V.seq){
+    Client._repSeq = V.seq;
+    UI.toastTop('⚠️ Situazione ripetuta 2 volte: alla terza è stallo.');
+  }
+  if(!(V.phase==='play' && V.draw)){ bn.classList.remove('show'); bn.innerHTML=''; bn._k=null; return; }
+  const by = V.players[V.draw.by];
+  const waiting = V.players.filter(p=>p.kind==='human' && !p.finished && p.connected && !V.draw.yes.includes(p.id));
+  let html = '';
+  if(V.draw.by===V.me){
+    html = `🤝 Hai proposto la patta.<br><small>In attesa di ${waiting.map(p=>'<b>'+esc(p.name)+'</b>').join(', ')||'…'}</small><div class="db-btns"><button data-d="cancel">Annulla</button></div>`;
+  } else if(V.drawOk && !V.draw.yes.includes(V.me)){
+    html = `🤝 <b>${esc(by.name)}</b> propone la patta.<br><small>Se tutti accettano la partita finisce in parità.</small><div class="db-btns"><button class="yes" data-d="yes">Accetta</button><button data-d="no">Rifiuta</button></div>`;
+  } else {
+    html = `🤝 Patta proposta da <b>${esc(by.name)}</b>.<br><small>Hai accettato: in attesa di ${waiting.map(p=>'<b>'+esc(p.name)+'</b>').join(', ')||'…'}</small>`;
+  }
+  const key = html;
+  if(bn._k!==key){ bn.innerHTML = html; bn._k = key; }
+  bn.classList.add('show');
+}
+
 /* shown only when more than one human is around */
 const _origRender = render;
 render = function(){
@@ -4474,11 +5356,13 @@ render = function(){
   if(V){
     $('btn-react').style.display = multiHuman() ? '' : 'none';
     $('btn-end').textContent = R.role==='host' ? 'Termina' : 'Esci';
+    renderDraw(V);
   }
 };
 
 wireUp();
 UI.show('home');
+try{ Analytics.init(); }catch(e){}
 UI.renderHome();
 updateFullscreenButtons();
 
@@ -4495,7 +5379,7 @@ updateFullscreenButtons();
   }catch(e){}
 })();
 
-window.__dbg={isLegalRank,hasEffectContextual,hasAnyLegalInHand,humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
+window.__dbg={Eng:{aiStep,resolvePendingByAI,initGame,aiChooseFaceUp,skipToEnd,buildResults,aiPlayHand,aiPlayFaceUp,currentZone,resolvePlay,pickUpTable,checkAutoSboboz,applyEffect,log},isLegalRank,hasEffectContextual,hasAnyLegalInHand,humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
 
 })();
 </script>

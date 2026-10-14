@@ -2,7 +2,7 @@
   "id": "./",
   "name": "IlSboboz",
   "short_name": "IlSboboz",
-  "description": "Il gioco di carte Sboboz con i ninja di Ninjago: contro i bot o online con gli amici.",
+  "description": "Il gioco di carte Sboboz come non lo hai mai visto prima. I tuoi amici ti aspettano, ma contro i ninja non hai speranza!",
   "lang": "it",
   "dir": "ltr",
   "start_url": "./",
@@ -21,22 +21,10 @@
   ],
   "icons": [
     {
-      "src": "icona-192.png",
-      "sizes": "192x192",
+      "src": "icona.png",
+      "sizes": "1024x1024",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icona-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icona-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
