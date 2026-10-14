@@ -805,6 +805,8 @@
     #game-screen .action-msg{ text-align:left; }
     #setup-hand{ max-width:100%; }
     /* phone turned clockwise: hand on the left, table and bots on the right */
+    html.flip #home-screen .home-top, html.flip #home-screen .home-hero, html.flip #home-screen .home-foot{ grid-column:2; }
+    html.flip #home-screen .home-menu{ grid-column:1; }
     html.flip #game-screen[style*="flex"]{ grid-template-columns:minmax(0,54fr) minmax(0,46fr); }
     html.flip #game-screen #opponent-seats, html.flip #game-screen #table-surface, html.flip #game-screen .status-strip{ grid-column:2; }
     html.flip #game-screen #human-area{ grid-column:1; }
@@ -1030,7 +1032,7 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.0.3',   // mostrata in fondo alla home
+  version: '1.0.4',   // mostrata in fondo alla home
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
