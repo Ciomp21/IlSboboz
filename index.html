@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#05130d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="IlSboboz: il gioco di carte Sboboz con i ninja di Ninjago, contro i bot o online con gli amici.">
+<meta name="description" content="Il gioco di carte Sboboz come non lo hai mai visto prima. I tuoi amici ti aspettano, ma contro i ninja non hai speranza!">
 <meta name="application-name" content="IlSboboz">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -137,7 +137,7 @@
   .hand-count{font-size:0.74rem; color:rgba(243,236,217,.8); display:inline-flex; align-items:center; gap:calc(4 * var(--u)); font-weight:600;}
   .mini-card-icon{ display:inline-block; width:calc(9 * var(--u)); height:calc(12 * var(--u)); border-radius:calc(2 * var(--u)); background:var(--cream); box-shadow:2px 2px 0 rgba(243,236,217,.35); }
   .hand-count-empty{font-size:0.66rem; color:rgba(243,236,217,.4); font-style:italic;}
-  .opp-stacks-row{display:flex; gap:calc(3 * var(--u)); flex-wrap:nowrap;}
+  .opp-stacks-row{display:flex; gap:calc(3 * var(--u)); flex-wrap:nowrap; padding-bottom:calc(4 * var(--u));}
 
   #piles-row{
     flex:0 0 auto;
@@ -239,7 +239,7 @@
   #btn-pickup{ flex:0 0 auto; min-height:calc(36 * var(--u)); white-space:nowrap; }
 
   /* Modal */
-  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:50; padding:calc(18 * var(--u)); }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:65; padding:calc(18 * var(--u)); }
   .modal-box{ background:var(--felt-1); border:1px solid var(--gold-bright); border-radius:calc(14 * var(--u)); padding:calc(20 * var(--u)) calc(20 * var(--u)); max-width:calc(420 * var(--u)); width:100%; text-align:center; max-height:calc(var(--app-height) - (48 * var(--u))); overflow-y:auto; }
   .modal-box-wide{ max-width:calc(620 * var(--u)); }
   .modal-scroll-body{ max-height:65vh; overflow-y:auto; }
@@ -692,13 +692,18 @@
   /* ---- whose turn is it? ---- */
   @keyframes myturnGlow{ 0%,100%{ box-shadow:0 0 0 1px var(--gold-bright), 0 0 8px rgba(232,192,95,.25); } 50%{ box-shadow:0 0 0 2px var(--gold-bright), 0 0 22px rgba(232,192,95,.62); } }
   @keyframes pillPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.07); } }
-  #game-screen.my-turn #human-area{ border-color:var(--gold-bright); background:rgba(232,192,95,.07); animation:myturnGlow 1.5s ease-in-out infinite; }
-  #game-screen:not(.my-turn) #human-area{ filter:saturate(.8) brightness(.9); }
+  #game-screen.my-turn #human-area{ border-color:var(--gold-bright); background:rgba(232,192,95,.07); }
+  #game-screen:not(.my-turn) .human-zones{ opacity:.88; }
   #turn-banner.mine{ background:var(--gold-bright); color:#2a1a05; padding:1px 11px; border-radius:20px; animation:pillPulse 1.3s ease-in-out infinite; }
   @keyframes seatGlow{ 0%,100%{ box-shadow:0 0 0 1px var(--ninja-accent, var(--gold-bright)), 0 0 8px var(--ninja-color-bg, rgba(232,192,95,.3)); } 50%{ box-shadow:0 0 0 2px var(--ninja-accent, var(--gold-bright)), 0 0 20px var(--ninja-accent, rgba(232,192,95,.55)); } }
-  .opp-seat.active-turn{ animation:seatGlow 1.5s ease-in-out infinite; }
+  /* the pulse only animates the opacity of a pseudo-element (GPU friendly), not box-shadow */
+  @keyframes glowPulse{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+  #game-screen.my-turn #human-area, .opp-seat.active-turn{ position:relative; }
+  #game-screen.my-turn #human-area::after, .opp-seat.active-turn::after{ content:''; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; box-shadow:inset 0 0 0 1px var(--ninja-accent, var(--gold-bright)), inset 0 0 14px var(--ninja-accent, rgba(232,192,95,.6)), 0 0 12px var(--ninja-accent, rgba(232,192,95,.5)); opacity:.25; animation:glowPulse 1.5s ease-in-out infinite; }
+  #game-screen.my-turn #human-area::after{ --ninja-accent:var(--gold-bright); }
+  .opp-seat.active-turn::after{ left:calc(-5 * var(--u)); }
   .opp-seat:not(.active-turn):not(.seat-finished){ opacity:.92; }
-  @media (prefers-reduced-motion:reduce){ #game-screen.my-turn #human-area, #turn-banner.mine, .opp-seat.active-turn{ animation:none; } }
+  @media (prefers-reduced-motion:reduce){ #game-screen.my-turn #human-area::after, #turn-banner.mine, .opp-seat.active-turn::after{ animation:none; } }
   .seat-row.empty .btn-add-bot{ width:auto; flex:1 1 45%; }
 
   /* zoom on a player's cards */
@@ -830,6 +835,181 @@
   .lc-nm small{ opacity:.5; font-size:.62rem; }
   .deck-info{ margin:2px 0 8px; padding:8px 10px; border-radius:10px; background:rgba(232,192,95,.1); border:1px solid rgba(232,192,95,.3); font-size:.8rem; text-align:center; }
 
+  /* ---- privacy opt-out (same on phone and desktop) ---- */
+  .privacy-box{ margin-top:6px; }
+  .an-opt{ display:flex; align-items:center; gap:10px; margin-top:8px; padding:9px 12px; border:1px solid rgba(232,192,95,.3); border-radius:10px; background:rgba(0,0,0,.2); cursor:pointer; font-size:.82rem; line-height:1.25; }
+  .an-opt input{ flex:0 0 auto; width:18px; height:18px; margin:0; accent-color:var(--gold-bright); }
+  .an-opt span{ flex:1; min-width:0; }
+
+  /* ================= PARTY MODE ================= */
+  .party-board{ margin-top:12px; padding:10px 12px; border-radius:14px; background:rgba(0,0,0,.28); border:1px solid rgba(232,192,95,.3); text-align:left; }
+  .party-board h4{ margin:0 0 6px; font-family:'Fraunces',serif; font-size:.95rem; color:var(--gold-bright); }
+  .pb-row{ display:flex; align-items:center; gap:8px; padding:4px 4px; border-radius:8px; font-size:.82rem; }
+  .pb-row.me{ background:rgba(232,192,95,.1); }
+  .pb-row.won{ background:rgba(232,192,95,.2); }
+  .pb-ava.bot{ background:var(--c); color:#000; font-family:'Fraunces',serif; font-weight:700; }
+  .pb-ava.bot[style*="#000000"]{ color:#fff3e0; }
+  .pb-ava{ width:24px; height:24px; border-radius:50%; background:rgba(232,192,95,.2); display:flex; align-items:center; justify-content:center; font-size:.9rem; flex:0 0 auto; }
+  .pb-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pb-crowns{ font-size:.75rem; letter-spacing:-1px; } .pb-crowns b{ letter-spacing:0; margin-left:4px; color:var(--gold-bright); font-size:.9rem; }
+  .pb-row em{ min-width:1.7em; text-align:right; font-style:normal; font-weight:700; color:#ffe9a0; font-size:.78rem; }
+
+  .set-sub{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0 2px; }
+  .stepper{ display:flex; align-items:center; gap:10px; }
+  .stepper button{ width:34px; height:34px; border-radius:50%; border:1px solid var(--gold-bright); background:rgba(232,192,95,.12); color:var(--gold-bright); font-size:1.2rem; font-weight:700; cursor:pointer; line-height:1; }
+  .stepper button:disabled{ opacity:.35; cursor:default; }
+  .stepper b{ min-width:26px; text-align:center; font-size:1.2rem; font-family:'Fraunces',serif; }
+  .party-note{ font-size:.72rem; color:rgba(243,236,217,.65); margin-top:4px; line-height:1.35; }
+  .party-note.warn{ color:#ffcf8a; }
+  .set-row.disabled{ opacity:.5; }
+
+  #party-overlay{ position:fixed; inset:0; z-index:62; display:none; align-items:stretch; justify-content:center; opacity:0; transition:opacity .45s ease;
+    background:radial-gradient(ellipse at 50% 20%, #12503c 0%, #07201a 55%, #030b08 100%); color:var(--cream); }
+  #party-overlay.on{ opacity:1; }
+  #party-fx{ position:fixed; inset:0; z-index:4; pointer-events:none; }
+  #party-stage{ position:relative; z-index:2; width:100%; max-width:640px; height:100%; overflow-y:auto; overflow-x:hidden; box-sizing:border-box;
+    padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 64px); display:flex; flex-direction:column; align-items:center; text-align:center; -webkit-overflow-scrolling:touch; }
+  #party-stage.flash{ animation:psFlash .7s ease-out; }
+  #party-skip{ position:fixed; right:12px; bottom:calc(env(safe-area-inset-bottom,0px) + 12px); z-index:5; padding:7px 14px; font-size:.78rem; opacity:.85; }
+
+  .pa{ width:34px; height:34px; border-radius:50%; background:rgba(232,192,95,.2); display:inline-flex; align-items:center; justify-content:center; font-size:1.15rem; flex:0 0 auto; }
+  .pa.sm{ width:28px; height:28px; font-size:1rem; }
+  .pa.xl{ width:60px; height:60px; font-size:1.9rem; }
+  .pa.unk{ background:rgba(255,255,255,.1); color:var(--gold-bright); font-family:'Fraunces',serif; }
+  .pa.bot{ background:var(--c); color:#000; font-family:'Fraunces',serif; font-weight:700; }
+  .pa.bot[style*="#000000"]{ color:#fff3e0; }
+
+  .ps-intro{ margin:auto 0; width:100%; }
+  .ps-bigemoji{ font-size:3.6rem; animation:psBounce 1.2s ease-in-out infinite; }
+  .ps-intro h1, .ps-ptitle{ margin:6px 0 4px; font-family:'Fraunces',serif; font-size:1.9rem; color:var(--gold-bright); text-shadow:0 2px 14px rgba(232,192,95,.4); }
+  .ps-intro p{ margin:6px 0; opacity:.85; font-size:.92rem; }
+  .ps-next{ margin-top:14px !important; font-size:.95rem !important; }
+  .ps-next b{ color:var(--gold-bright); }
+
+  .ps-board{ width:100%; margin-top:14px; padding:8px 10px; border-radius:14px; background:rgba(0,0,0,.32); border:1px solid rgba(232,192,95,.25); text-align:left; box-sizing:border-box; }
+  .ps-board.big{ margin-top:12px; }
+  .ps-btitle{ font-size:.68rem; letter-spacing:.09em; text-transform:uppercase; opacity:.65; margin-bottom:4px; }
+  .ps-brow{ display:flex; align-items:center; gap:8px; padding:3px 4px; border-radius:8px; font-size:.86rem; }
+  .ps-brow.me{ background:rgba(232,192,95,.12); }
+  .ps-brow.bump{ animation:psBump .8s ease-out; }
+  .ps-bname{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ps-bcr{ font-weight:800; font-size:1rem; color:var(--gold-bright); } .ps-bcr em{ font-style:normal; margin-left:3px; font-size:.8rem; } .ps-bcr i{ font-style:normal; display:inline-block; min-width:.8em; animation:psBlink 1s infinite; }
+
+  .ps-head{ margin-top:4px; }
+  .ps-badge{ display:inline-block; padding:4px 14px; border-radius:20px; background:rgba(232,192,95,.16); border:1px solid rgba(232,192,95,.5); font-size:.78rem; letter-spacing:.05em; color:var(--gold-bright); }
+  .ps-card{ perspective:1000px; width:min(88%, 380px); height:190px; margin:14px auto 12px; transition:height .6s ease; flex:0 0 auto; }
+  .ps-card.small{ height:84px; margin-bottom:8px; }
+  .ps-card-in{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .9s cubic-bezier(.3,1.35,.5,1); }
+  .ps-card.flip .ps-card-in{ transform:rotateY(180deg); }
+  .ps-face{ position:absolute; inset:0; border-radius:18px; backface-visibility:hidden; -webkit-backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 16px; box-sizing:border-box; }
+  .ps-back{ background:linear-gradient(135deg,#e8c05f,#a77a22); font-size:4.2rem; color:#3a2417; box-shadow:0 0 28px rgba(232,192,95,.5); animation:psGlow 1.1s ease-in-out infinite alternate; }
+  .ps-front{ transform:rotateY(180deg); background:linear-gradient(160deg,#124a37,#0a2e24); border:2px solid var(--gold-bright); box-shadow:0 0 30px rgba(232,192,95,.35); }
+  .ps-emoji{ font-size:2.8rem; line-height:1; }
+  .ps-front h2{ margin:6px 0 2px; font-family:'Fraunces',serif; font-size:1.35rem; color:var(--gold-bright); }
+  .ps-front p{ margin:0; font-size:.8rem; opacity:.8; }
+  .ps-card.small .ps-front{ flex-direction:row; gap:12px; text-align:left; justify-content:flex-start; }
+  .ps-card.small .ps-front p{ display:none; }
+  .ps-card.small .ps-emoji{ font-size:2rem; } .ps-card.small .ps-front h2{ font-size:1.1rem; margin:0; }
+
+  .ps-rows{ width:100%; display:flex; flex-direction:column; gap:6px; }
+  .ps-row{ display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:12px; background:rgba(0,0,0,.32); border:1px solid rgba(232,192,95,.2); opacity:0; transform:translateX(-24px); transition:opacity .35s ease, transform .35s ease, background .4s, box-shadow .4s, border-color .4s; text-align:left; }
+  .ps-row.in{ opacity:1; transform:none; }
+  .ps-row.me{ border-color:rgba(232,192,95,.55); }
+  .ps-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
+  .ps-val{ min-width:70px; text-align:right; font-weight:800; font-size:1.05rem; opacity:.55; }
+  .ps-row.rev .ps-val{ opacity:1; color:var(--gold-bright); animation:psPop .45s ease-out; }
+  .ps-rows.drum .ps-row:not(.rev) .ps-val{ animation:psBlink .45s infinite; }
+  .ps-rows.drum2 .ps-row:not(.rev){ animation:psShake .1s infinite; border-color:#f08a3c; box-shadow:0 0 14px rgba(240,138,60,.45); }
+  .ps-row.won{ background:linear-gradient(90deg,rgba(232,192,95,.38),rgba(232,192,95,.1)); border-color:var(--gold-bright); box-shadow:0 0 22px rgba(232,192,95,.55); transform:scale(1.03); }
+  .ps-gain{ font-weight:800; color:#ffe9a0; animation:psDrop .7s cubic-bezier(.3,1.5,.5,1) both; white-space:nowrap; }
+  .ps-tie{ margin-top:8px; font-size:.82rem; color:#ffe9a0; animation:psPop .5s ease-out; }
+
+  .ps-podium-wrap{ width:100%; display:flex; flex-direction:column; align-items:center; margin:auto 0; }
+  .ps-psub{ margin:2px 0 10px; min-height:1.4em; font-size:.98rem; opacity:.9; }
+  .ps-psub b{ color:var(--gold-bright); }
+  .ps-rest{ width:100%; display:flex; flex-direction:column; gap:5px; margin-top:10px; }
+  .ps-rrow{ display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:10px; background:rgba(0,0,0,.3); border:1px solid rgba(232,192,95,.18); animation:psSlide .5s ease-out both; text-align:left; }
+  .ps-rrow.me{ border-color:rgba(232,192,95,.55); }
+  .ps-rnk{ width:26px; font-weight:800; color:var(--gold-bright); }
+  .ps-rcr{ font-weight:800; color:var(--gold-bright); }
+  .ps-podium{ position:relative; display:flex; align-items:flex-end; justify-content:center; gap:6px; width:100%; margin-top:12px; transition:filter .6s; }
+  .ps-podium.dim{ filter:brightness(.55); }
+  .ps-spot{ position:absolute; left:-6%; right:-6%; top:-30%; bottom:0; background:radial-gradient(ellipse at 50% 0%, rgba(255,243,176,.4), transparent 62%); opacity:0; transition:opacity 1.2s; pointer-events:none; }
+  .ps-podium.final .ps-spot{ opacity:1; }
+  .ps-col{ flex:1 1 0; min-width:0; max-width:190px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; position:relative; }
+  .ps-col.c1{ flex:1.25 1 0; max-width:230px; }
+  .ps-people{ display:flex; gap:6px; justify-content:center; align-items:flex-end; opacity:0; transform:translateY(-70px) scale(.7); transition:opacity .5s ease, transform .8s cubic-bezier(.3,1.7,.5,1); min-height:20px; width:100%; }
+  .ps-people.in{ opacity:1; transform:none; }
+  .ps-person{ position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 2px 6px; min-width:0; max-width:100%; }
+  .ps-hat{ position:absolute; top:-34px; font-size:2rem; animation:psHat 1.1s cubic-bezier(.3,1.5,.5,1) .5s both; }
+  .ps-pname{ font-weight:700; font-size:.92rem; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:4px; }
+  .ps-pcr{ font-weight:800; font-size:1.1rem; color:var(--gold-bright); }
+  .ps-pdet{ font-size:.62rem; opacity:.7; }
+  .ps-step{ width:100%; height:0; overflow:hidden; display:flex; align-items:flex-start; justify-content:center; border-radius:10px 10px 0 0; transition:height 1.1s cubic-bezier(.2,.9,.3,1.08); box-shadow:inset 0 3px 0 rgba(255,255,255,.35); }
+  .ps-step b{ margin-top:8px; font:900 1.7rem 'Fraunces',serif; color:rgba(0,0,0,.45); }
+  .ps-step.s1{ background:linear-gradient(#f2cf6b,#a77a22); } .ps-step.s2{ background:linear-gradient(#d7dde2,#86909a); } .ps-step.s3{ background:linear-gradient(#dba06a,#85542a); }
+  .ps-step.s1.up{ height:min(150px,22vh); } .ps-step.s2.up{ height:min(108px,16vh); } .ps-step.s3.up{ height:min(78px,11.5vh); }
+  .ps-step.empty{ opacity:.35; }
+  .ps-podium.final .ps-step.s1{ animation:psGlow 1.2s ease-in-out infinite alternate; }
+  .ps-actions{ display:flex; flex-direction:column; gap:8px; width:100%; max-width:380px; margin-top:20px; }
+  .ps-detail{ width:100%; margin-top:18px; text-align:left; }
+  .ps-detail h3{ margin:0 0 8px; font-family:'Fraunces',serif; color:var(--gold-bright); font-size:1.05rem; text-align:center; }
+  .ps-drow{ padding:8px 10px; border-radius:10px; background:rgba(0,0,0,.28); border:1px solid rgba(232,192,95,.18); margin-bottom:6px; }
+  .ps-drow.me{ border-color:rgba(232,192,95,.55); }
+  .ps-dhead{ display:flex; align-items:center; gap:8px; } .ps-dhead b{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ps-dhead span{ font-weight:800; color:var(--gold-bright); }
+  .ps-dbody{ font-size:.74rem; opacity:.8; margin-top:3px; line-height:1.4; }
+
+  @keyframes psBounce{ 0%,100%{ transform:translateY(0) rotate(-6deg); } 50%{ transform:translateY(-10px) rotate(6deg); } }
+  @keyframes psBump{ 0%{ background:rgba(232,192,95,.55); transform:scale(1.04); } 100%{ background:transparent; transform:none; } }
+  @keyframes psPop{ 0%{ transform:scale(.4); opacity:0; } 60%{ transform:scale(1.25); } 100%{ transform:scale(1); opacity:1; } }
+  @keyframes psBlink{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+  @keyframes psShake{ 0%{ transform:translateX(-2px); } 50%{ transform:translateX(2px); } 100%{ transform:translateX(-2px); } }
+  @keyframes psDrop{ 0%{ transform:translateY(-40px) scale(2); opacity:0; } 100%{ transform:none; opacity:1; } }
+  @keyframes psHat{ 0%{ transform:translateY(-120px) rotate(-40deg) scale(1.8); opacity:0; } 100%{ transform:none; opacity:1; } }
+  @keyframes psFlash{ 0%{ background:rgba(255,243,176,.45); } 100%{ background:rgba(255,243,176,0); } }
+  @keyframes psGlow{ 0%{ box-shadow:0 0 14px rgba(232,192,95,.35); } 100%{ box-shadow:0 0 38px rgba(255,226,130,.85); } }
+  @keyframes psSlide{ 0%{ transform:translateX(-40px); opacity:0; } 100%{ transform:none; opacity:1; } }
+  @media (prefers-reduced-motion:reduce){ .ps-bigemoji, .ps-back, .ps-rows.drum .ps-row, .ps-rows.drum2 .ps-row, .ps-bcr i{ animation:none !important; } }
+  @media (orientation:landscape) and (max-height:520px) and (max-width:1000px){
+    #party-stage{ max-width:820px; padding-top:calc(env(safe-area-inset-top,0px) + 8px); }
+    .ps-card{ height:120px; margin:8px auto; } .ps-card.small{ height:62px; }
+    .ps-emoji{ font-size:2rem; } .ps-front h2{ font-size:1.1rem; }
+    .ps-intro h1, .ps-ptitle{ font-size:1.4rem; } .ps-bigemoji{ font-size:2.4rem; }
+    .ps-row{ padding:4px 10px; } .pa.xl{ width:44px; height:44px; font-size:1.4rem; }
+    .ps-step.s1.up{ height:min(110px,26vh); } .ps-step.s2.up{ height:min(80px,19vh); } .ps-step.s3.up{ height:min(58px,14vh); }
+  }
+
+  .ps-cols{ width:100%; display:flex; flex-direction:column; align-items:stretch; }
+  @media (orientation:landscape) and (max-height:520px) and (max-width:1000px){
+    .ps-cols{ flex-direction:row; gap:12px; align-items:flex-start; }
+    .ps-cols .ps-rows{ flex:1.2 1 0; } .ps-cols .ps-board{ flex:1 1 0; margin-top:0; }
+  }
+
+  /* ---- news / update notes ---- */
+  .news-entry{ padding:10px 12px; margin-bottom:8px; border-radius:12px; background:rgba(0,0,0,.24); border:1px solid rgba(232,192,95,.18); text-align:left; }
+  .news-entry.major{ border-color:rgba(232,192,95,.5); background:rgba(232,192,95,.08); }
+  .news-head{ display:flex; gap:10px; align-items:baseline; } .news-head b{ color:var(--gold-bright); font-family:'Fraunces',serif; font-size:1.1rem; } .news-head span{ font-weight:700; }
+  .news-when{ font-size:.68rem; opacity:.6; margin:2px 0 6px; }
+  .news-entry ul{ margin:6px 0 0; padding-left:18px; font-size:.84rem; line-height:1.4; } .news-entry li{ margin:4px 0; }
+  .news-entry.minor{ display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline; font-size:.82rem; padding:7px 12px; }
+  .news-entry.minor b{ color:var(--gold-bright); } .news-entry.minor em{ margin-left:auto; font-style:normal; font-size:.64rem; opacity:.55; }
+  .news-foot{ text-align:center; font-size:.68rem; }
+
+  .ps-dstats{ display:grid; grid-template-columns:repeat(2,1fr); gap:3px 10px; margin-top:6px; font-size:.74rem; opacity:.9; text-align:left; }
+  .ps-dstats span{ display:flex; justify-content:space-between; gap:6px; border-bottom:1px solid rgba(255,255,255,.06); padding:1px 0; }
+  .ps-dstats b{ color:var(--gold-bright); font-weight:600; white-space:nowrap; }
+  .ps-dsum{ font-size:.78rem; opacity:.85; margin-bottom:8px; }
+  .ps-podium{ margin-top:30px; }
+
+  .form-strip i.last{ outline:2px solid var(--gold-bright); outline-offset:2px; }
+  .form-leg{ display:flex; justify-content:space-between; font-size:.68rem; opacity:.6; margin:4px 2px 8px; }
+
+  #party-fast{ position:fixed; left:12px; bottom:calc(env(safe-area-inset-bottom,0px) + 12px); z-index:5; padding:7px 14px; font-size:.78rem; opacity:.85; }
+  .ps-nextwrap{ margin:14px auto 70px; text-align:center; } .ps-nextwrap .btn-primary{ width:auto; padding:10px 22px; }
+  .ps-waithost{ font-size:.85rem; opacity:.7; animation:psBlink 1.4s infinite; }
+
+  .g-nm small.g-sub{ display:block; white-space:normal; margin-top:1px; }
+
 </style>
 </head>
 <body>
@@ -940,6 +1120,7 @@
   <div class="tabs" id="stats-tabs">
     <button data-tab="me" class="active">Io</button>
     <button data-tab="ninja">Ninja</button>
+    <button data-tab="party">Party</button>
     <button data-tab="hist">Storico</button>
     <button data-tab="lobby">Lobby</button>
   </div>
@@ -1023,6 +1204,13 @@
   </div>
 </div>
 
+<div id="party-overlay" aria-live="polite">
+  <canvas id="party-fx"></canvas>
+  <div id="party-stage"></div>
+  <button id="party-fast" class="btn-secondary" style="display:none">Vai al risultato ⏩</button>
+  <button id="party-skip" class="btn-secondary">Salta tutto ⏭</button>
+</div>
+
 <div id="draw-banner" role="alert"></div>
 <div id="toast-host"></div>
 <div id="anim-layer"></div>
@@ -1032,7 +1220,8 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.0.6',   // mostrata in fondo alla home
+  version: '1.1.3',   // mostrata in fondo alla home
+  buildTime: '2026-10-15T14:32',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -1129,7 +1318,7 @@ function pub(c){ return {uid:c.uid, rank:c.rank, suit:c.suit, wasJolly:!!c.wasJo
 let G = null;
 
 function newStats(){
-  return {played:0, pickups:0, taken:0, sboboz:0, sbobozCards:0, sbobozKings:0, kings:0, jollies:0, turns:0, reveals:0, discards:0, jdraws:0, maxHand:0, queens:0};
+  return {played:0, pickups:0, taken:0, sboboz:0, sbobozCards:0, sbobozKings:0, kings:0, jollies:0, turns:0, reveals:0, discards:0, jdraws:0, maxHand:0, queens:0, counters:0, badReveals:0};
 }
 
 function newPlayer(id, m){
@@ -1162,7 +1351,7 @@ function initGame(members, opts){
     numDecks, hasJolly,
     pending:null, pendingCb:null, promptSeq:0,
     evq:[], quiet:false, seq:0, actor:-1,
-    startedAt: Date.now(), turnsCount:0, startingTurn:0
+    startedAt: Date.now(), turnsCount:0, rounds:1, startingTurn:0
   };
   G.startingTurn = G.turn;
   players.forEach(p=>{ p.st.maxHand = p.hand.length; });
@@ -1443,10 +1632,12 @@ function refillHand(p){
 function nextTurn(){
   const n = G.players.length;
   let tries = 0;
+  const before = G.turn;
   do{
     G.turn = (G.turn+1) % n;
     tries++;
   } while(G.players[G.turn].finished && tries<=n);
+  if(G.turn <= before) G.rounds++;   // the pointer wrapped around: a new lap of the table
 }
 
 function peekNextPlayer(){
@@ -1501,10 +1692,22 @@ function pingPongPick(best, other){
   return Math.random() < Math.max(0.25, 0.9 - 0.2*chain) ? best : other;
 }
 
+/* The cards the next player is about to play from, as far as we know them:
+   their hand when every card in it is known, the face-up cards once the hand is
+   empty. null = unknown (a hand we do not remember): decide by chance. */
+function knownPlayableCards(target){
+  if(target.hand.length>0){
+    const known = target.hand.filter(c=>target.known.has(c.uid));
+    return known.length===target.hand.length ? known : null;
+  }
+  const up = target.slots.filter(sl=>sl.up).map(sl=>sl.up);
+  return up.length ? up : null;
+}
+
 function aiChoose8Mode(){
   const target = peekNextPlayer();
   if(target && !target.finished){
-    const vis = visibleCardsOf(target).cards.filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='8');
+    const vis = (knownPlayableCards(target)||[]).filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='8');
     if(vis.length){
       const higher = vis.filter(c=>rankValue(c.rank)>8).length;
       const lower = vis.filter(c=>rankValue(c.rank)<8).length;
@@ -1517,7 +1720,7 @@ function aiChoose8Mode(){
 function aiChoose9Mode(){
   const target = peekNextPlayer();
   if(target && !target.finished){
-    const vis = visibleCardsOf(target).cards.filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='9');
+    const vis = (knownPlayableCards(target)||[]).filter(c=>c.rank!=='2' && c.rank!=='JOLLY' && c.rank!=='9');
     if(vis.length){
       const eff = vis.filter(c=>hasEffectContextual(G, c.rank, currentZone(target)==='hand' && target.hand.includes(c) ? 'hand':'faceup', {p:target, n:1, uid:c.uid, future:true})).length;
       const non = vis.length - eff;
@@ -1593,8 +1796,9 @@ function aiChooseSuperCard(player){
   let best = null, bestScore = -Infinity;
   for(const c of pile){
     let score = rankValue(c.rank) / 100;
-    if(c.rank==='J'){ score = -1000; }               // taking a J with a J is pointless
-    else if(c.rank!=='JOLLY' && !c.wasJolly){
+    if(c.rank==='JOLLY' || c.wasJolly){ score = 2000; }          // the jolly is the best card there is
+    else if(c.rank==='J'){ score = -1000; }               // taking a J with a J is pointless
+    else {
       const gap = sbobozGap(hand, c.rank, 1);
       if(gap.pure<=0) score = 1000 + rankValue(c.rank);          // 4th card in hand: a sboboz by itself
       else if(gap.withStreak<=0) score = 900 + rankValue(c.rank); // completes with the table streak
@@ -1602,7 +1806,6 @@ function aiChooseSuperCard(player){
     }
     if(score<800 && score>-500){
       if(c.rank==='K') score = 500;
-      else if(c.rank==='JOLLY' || c.wasJolly) score = 400;
       else if(c.rank==='2') score = 300;
     }
     if(score>bestScore){ bestScore = score; best = c; }
@@ -1665,8 +1868,13 @@ function applyEffect(rank, player, zone, playedCards, onDone, slotIndex, sbobozI
         const restored = G.sboboz;
         G.sboboz = [];
         const insertAt = G.table.length - playedCards.length;
-        restored.forEach(c=>{ c.restored = true; });
+        /* the returned cards no longer count for sboboz streaks -- except a run of 3s
+           right under the played 3: those really are 3s in a row with it */
+        let keep = 0;
+        while(keep<restored.length && restored[restored.length-1-keep].rank==='3') keep++;
+        restored.forEach((c,i)=>{ c.restored = i < restored.length-keep; });
         G.table.splice(insertAt, 0, ...restored);
+        player.st.counters++;
         toast('↩️ Sboboz annullato');
         log(`↳ la pila sboboz (${restored.length} carte) torna sul tavolo.`);
       } else {
@@ -1953,6 +2161,7 @@ function processFacedownCard(player, card, afterAll){
     continueFacedownLegal(player, card, afterAll);
   } else {
     log(`↳ non è giocabile: torna in mano.`);
+    player.st.badReveals++;
     player.hand.push(card); player.known.add(card.uid);
     player.st.maxHand = Math.max(player.st.maxHand, player.hand.length);
     pickUpTable(player);
@@ -2004,7 +2213,12 @@ function aiPlayHand(p){
     }
     // A 5 played from the hand also throws away a card: with a 3 or a 4 in
     // the hand (the hardest cards to get rid of) play the 5 first.
-    if(!sabotage && !completesNowEarly && legalRanks.includes('5') && bestRank!=='5'){
+    const completesStreak = legalRanks.some(r=>{
+      if(r==='K') return false;       // a K can wait: it is always playable later
+      const topStreak = (topOfTable(G) && topOfTable(G).rank===r) ? currentTopStreak(G) : 0;
+      return topStreak + groups[r].length >= G.sbobozThreshold;
+    });
+    if(!sabotage && !completesStreak && legalRanks.includes('5') && bestRank!=='5'){
       const hardCards = p.hand.filter(c=>c.rank==='3' || c.rank==='4').length;
       if(hardCards>0 && p.hand.length>=2) bestRank = '5';   // all the legal 5s go down together
     }
@@ -2018,6 +2232,8 @@ function aiPlayHand(p){
       });
       if(!completesNow) bestRank = 'J';
     }
+    // a 5 that leaves exactly one card (which is then discarded) empties the hand: always take it
+    if(legalRanks.includes('5') && bestRank!=='5' && p.hand.length - legalN['5'] === 1) bestRank = '5';
     let group = groups[bestRank].slice(0, legalN[bestRank]);
     // The jolly is only worth spending on a group when it completes a
     // sboboz that the group alone would not (or when it empties the hand).
@@ -2208,7 +2424,7 @@ function buildResults(){
   return {
     stalemate: G.phase==='stalemate',
     draw: !!G.drawAgreed,
-    numDecks: G.numDecks, nPlayers: G.players.length, turns: G.turnsCount,
+    numDecks: G.numDecks, nPlayers: G.players.length, turns: G.turnsCount, rounds: G.rounds,
     secs: Math.round((Date.now()-G.startedAt)/1000),
     startedAt: G.startedAt,
     rows: rows.map(r=>{
@@ -2258,14 +2474,17 @@ const LS_KEY = 'ilsboboz.profile.v1';
 const NINJA_NAMES = NINJAGO_POOL.map(n=>n.name);
 
 const MAX_GAMES = 600;
-const ST_KEYS = ['played','pickups','taken','sboboz','sbobozCards','sbobozKings','kings','jollies','turns','reveals','discards','jdraws','maxHand','queens'];
+const MAX_PARTIES = 150;
+const ST_KEYS = ['played','pickups','taken','sboboz','sbobozCards','sbobozKings','kings','jollies','turns','reveals','discards','jdraws','maxHand','queens','counters','badReveals'];
 
 function defaultProfile(){
   return {
     v:2,
     clientId: 'u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36),
     name:'', avatar:'🥷',
-    games:[]      // every finished game; all the statistics are computed from these
+    games:[],     // every finished game; all the statistics are computed from these
+    parties:[],   // every finished party (series of games with crowns)
+    seenVer:''    // last version whose news the player has read
   };
 }
 
@@ -2286,6 +2505,8 @@ const Store = {
     if(typeof d.clientId==='string') out.clientId = d.clientId;
     if(typeof d.name==='string') out.name = d.name.slice(0,24);
     if(typeof d.avatar==='string') out.avatar = d.avatar.slice(0,16);
+    if(typeof d.seenVer==='string') out.seenVer = d.seenVer.slice(0,12);
+    if(Array.isArray(d.parties)) out.parties = d.parties.filter(p=>p && typeof p==='object' && Array.isArray(p.rows)).slice(0,MAX_PARTIES);
     if(Array.isArray(d.games)){
       out.games = d.games.filter(g=>g && typeof g==='object' && Array.isArray(g.rows)).slice(0,MAX_GAMES);
     } else if(d.stats && Array.isArray(d.stats.history)){
@@ -2303,7 +2524,7 @@ const Store = {
   },
   /* Store one finished game (the `results` the host broadcasts).
      `me` is my seat number in that game. */
-  record(res, me, online, roomId){
+  record(res, me, online, roomId, party){
     const mine = res.rows.find(r=>r.pid===me);
     if(!mine) return;
     online = res.rows.filter(r=>r.kind==='human').length >= 2;   // online only with 2+ human players
@@ -2318,11 +2539,25 @@ const Store = {
     this.data.games.unshift({
       id, ts:res.startedAt||Date.now(), secs:res.secs||0, turns:res.turns||0, n:res.nPlayers,
       decks:res.numDecks||1, online:!!online, stale:!!res.stalemate, draw:!!res.draw,
-      room: roomId ? String(roomId) : null, rows
+      room: roomId ? String(roomId) : null, rows,
+      rounds: res.rounds||0, pty: party ? {id:party.id, k:party.k, total:party.total} : null
     });
     if(this.data.games.length>MAX_GAMES) this.data.games.length = MAX_GAMES;
     this.save();
   },
+  /* a finished party: standings, crowns and which bonuses everybody won */
+  recordParty(data, me, online, roomId){
+    if(!data || this.data.parties.some(p=>p.id===data.id)) return;
+    const rows = data.final.map(f=>({w:f.name, k:f.kind==='bot'?'b':'h', pl:f.rank, cr:f.total, wins:f.wins, bo:f.bonusIds, avg:f.avgPlace, ...(f.mid===me?{me:1}:{})}));
+    this.data.parties.unshift({
+      id:data.id, ts:data.startedAt, secs:data.secs||0, n:data.final.length, games:data.total,
+      online:!!online, room: roomId ? String(roomId) : null,
+      moves:data.moves||0, rounds:data.rounds||0, rows
+    });
+    if(this.data.parties.length>MAX_PARTIES) this.data.parties.length = MAX_PARTIES;
+    this.save();
+  },
+  removeParty(id){ this.data.parties = this.data.parties.filter(p=>p.id!==id); this.save(); },
   remove(id){
     this.data.games = this.data.games.filter(g=>g.id!==id);
     this.save();
@@ -2347,9 +2582,9 @@ const Store = {
     return true;
   },
   reset(){
-    const keep = {name:this.data.name, avatar:this.data.avatar, id:this.data.clientId};
+    const keep = {name:this.data.name, avatar:this.data.avatar, id:this.data.clientId, seen:this.data.seenVer};
     this.data = defaultProfile();
-    this.data.name = keep.name; this.data.avatar = keep.avatar; this.data.clientId = keep.id;
+    this.data.name = keep.name; this.data.avatar = keep.avatar; this.data.clientId = keep.id; this.data.seenVer = keep.seen;
     this.save();
   }
 };
@@ -2418,7 +2653,8 @@ const Analytics = (function(){
       const d = {
         v: (SBOBOZ_CONFIG.version||''), mode: humans>=2 ? 'online' : 'bot',
         players: res.nPlayers, humans, bots: res.nPlayers-humans, decks: res.numDecks,
-        duration_s: res.secs||0, turns: res.turns||0,
+        duration_s: res.secs||0, moves: res.turns||0, rounds: res.rounds||0,
+        party: !!res.party, party_game: res.party ? res.party.k : 0, party_games: res.party ? res.party.total : 0,
         result: res.draw ? 'patta' : (res.stalemate ? 'stallo' : 'normale'),
         winner: ({human:'umano', bot:'bot'})[(rows.find(r=>r.place===1 && !r.tie)||{}).kind] || 'nessuno'
       };
@@ -2428,9 +2664,32 @@ const Analytics = (function(){
         sboboz: sum('sboboz'), sboboz_cards: sum('sbobozCards'), sboboz_kings: sum('sbobozKings'),
         tables_taken: sum('pickups'), cards_played: sum('played'), jokers: sum('jollies'),
         reveals: sum('reveals'), discards_5: sum('discards'), draws_j: sum('jdraws'),
+        counters_3: sum('counters'), queens: sum('queens'), bad_reveals: sum('badReveals'),
         max_hand: Math.max(0, ...rows.map(r=>(r.st&&r.st.maxHand)||0))
       });
       A.track('game_end', d);
+    },
+    /* una sola chiamata per party concluso (le statistiche di ogni partita sono già negli eventi game_end) */
+    partyEnd(d){
+      if(!A.enabled() || !d) return;
+      const top = d.final.filter(f=>f.rank===1);
+      const crowns = d.final.map(f=>f.total);
+      const t = d.totals || {};
+      A.track('party_end', {
+        v: (SBOBOZ_CONFIG.version||''), mode: d.nHumans>=2 ? 'online' : 'bot',
+        players: d.nPlayers, humans: d.nHumans, bots: d.nPlayers-d.nHumans, decks: d.decks,
+        games: d.total, duration_s: d.secs||0, moves: d.moves||0, rounds: d.rounds||0,
+        winner: d.winnerKind, shared_win: top.length>1,
+        winner_crowns: top.length ? top[0].total : 0,
+        game_crowns_total: d.final.reduce((s,f)=>s+f.wins,0),
+        bonus_crowns: d.bonuses.reduce((s,b)=>s+b.holders.length,0), bonus_types: d.bonuses.length,
+        max_crowns: Math.max(0, ...crowns), min_crowns: Math.min(...crowns),
+        human_wins: d.humanWins, bot_wins: d.botWins, stalemates: d.stalemates,
+        sboboz: t.sboboz||0, sboboz_cards: t.sbobozCards||0, sboboz_kings: t.sbobozKings||0,
+        tables_taken: t.pickups||0, cards_played: t.played||0, jokers: t.jollies||0,
+        reveals: t.reveals||0, discards_5: t.discards||0, draws_j: t.jdraws||0,
+        counters_3: t.counters||0, queens: t.queens||0, bad_reveals: t.badReveals||0, max_hand: t.maxHand||0
+      });
     },
     /* secondi di utilizzo attivo (scheda visibile), inviati a blocchi */
     _active:{since:0, acc:0, lastSent:0},
@@ -2543,7 +2802,7 @@ function tabToken(){
 
 const R = {
   role:'none',          // 'none' | 'host' | 'guest'
-  code:'', members:[], settings:{twoDecks:false},
+  code:'', members:[], settings:{twoDecks:false, party:false, partyGames:null}, party:null,
   phase:'lobby',        // 'lobby' | 'game' | 'results'
   net:'off',            // 'off' | 'connecting' | 'ready' | 'error'
   netErr:'', online:false,
@@ -2592,7 +2851,7 @@ const Room = {
   /* ---------- create / destroy ---------- */
   create(online){
     Room.destroy();
-    R.role = 'host'; R.phase = 'lobby'; R.members = []; R.settings = {twoDecks:false};
+    R.role = 'host'; R.phase = 'lobby'; R.members = []; R.settings = {twoDecks:false, party:false, partyGames:null}; R.party = null;
     R.code = genCode(); R.online = !!online; R.net = 'off'; R.netErr = '';
     const prof = Store.data;
     const me = newMember('human', prof.name || 'Giocatore', prof.avatar, {isHost:true, token:tabToken()});
@@ -2604,7 +2863,7 @@ const Room = {
   destroy(){
     if(R.peer){ try{ R.peer.destroy(); }catch(e){} R.peer = null; }
     if(Room._ping){ clearInterval(Room._ping); Room._ping = null; }
-    R.role = 'none'; R.members = []; R.net = 'off'; R.phase = 'lobby'; R.online = false;
+    R.role = 'none'; R.members = []; R.net = 'off'; R.phase = 'lobby'; R.online = false; R.party = null;
     G = null;
   },
   openNet(attempt){
@@ -2843,11 +3102,19 @@ const Room = {
     Room.lobbyChanged();
   },
   setTwoDecks(v){ R.settings.twoDecks = !!v; Room.lobbyChanged(); },
+  setParty(v){ R.settings.party = !!v && R.members.length>=PARTY_MIN_PLAYERS; R.party = null; Room.lobbyChanged(); },
+  /* +1 / -1 on the number of games; going back to the suggested number makes it "automatic" again */
+  stepPartyGames(d){
+    const cur = Party.gamesFor(R.settings, R.members.length);
+    const next = Math.max(PARTY_MIN_GAMES, Math.min(PARTY_MAX_GAMES, cur+d));
+    R.settings.partyGames = next;
+    Room.lobbyChanged();
+  },
   updateMyProfile(){
     const me = R.members.find(m=>m.isHost);
     if(me){ me.name = uniqueName(Store.data.name||'Giocatore', me.mid); me.avatar = Store.data.avatar; }
   },
-  canStart(){ return R.role==='host' && R.phase==='lobby' && R.members.length>=2 && R.members.length<=MAX_PLAYERS; },
+  canStart(){ return R.role==='host' && R.phase==='lobby' && R.members.length>=(R.settings.party ? PARTY_MIN_PLAYERS : 2) && R.members.length<=MAX_PLAYERS; },
   start(){
     if(!Room.canStart()) return;
     Room.rollRandomBots();
@@ -2855,9 +3122,10 @@ const Room = {
   },
   toLobby(){
     // after a game: everyone back to the room screen
-    G = null;
+    G = null; R.party = null;
     R.phase = 'lobby';
     R.members = R.members.filter(m=>m.connected || m.kind==='bot' || m.isHost);
+    if(R.members.length<PARTY_MIN_PLAYERS) R.settings.party = false;
     Room.hideRandomBots();
     Room.lobbyChanged();
   }
@@ -2871,6 +3139,7 @@ const Host = {
 
   startGame(){
     R.phase = 'game';
+    if(R.settings.party && R.members.length>=PARTY_MIN_PLAYERS){ if(!R.party) Party.init(); } else R.party = null;
     // seating order is random, not the lobby order
     const order = R.members.slice();
     for(let i=order.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [order[i],order[j]] = [order[j],order[i]]; }
@@ -2941,6 +3210,8 @@ const Host = {
   finish(){
     clearTimeout(Host.aiTimer);
     const res = buildResults();
+    res.rows.forEach(r=>{ const m = R.members.find(x=>x.pid===r.pid); r.mid = m ? m.mid : -1; });
+    if(R.party){ try{ res.party = Party.addGame(res); }catch(e){ R.party = null; } }
     R.phase = 'results';
     broadcastGuests({t:'results', res});
     try{ Analytics.gameEnd(res, R.online); }catch(e){}
@@ -3159,6 +3430,8 @@ const Guest = {
       case 'batch': Client.onBatch(msg); break;
       case 'prompt': Client.onPrompt(msg); break;
       case 'results': Client.onResults(msg.res, Client.V ? Client.V.me : 0, true); break;
+      case 'partyEnd': Client.onPartyEnd(msg.data); break;
+      case 'partyAdv': PartyShow.onAdv(msg); break;
       case 'rej': Client.onHostMessage(msg); break;
       case 'react': Client.onReact(msg); break;
       case 'aborted': Client.onAborted(); break;
@@ -3177,6 +3450,171 @@ function sendToHost(msg){
     Guest.send(msg);
   }
 }
+
+/* ============================================================
+   PARTY MODE (host side)
+   A party is a series of games played back to back by the same
+   players. Every win is worth a crown; at the end some random
+   "bonus crowns" are handed out for records over the whole party
+   (most sboboz, best average place, ...). Most crowns wins.
+   Everything here is computed by the host only; the clients just
+   play the ceremony from the final data the host sends.
+============================================================ */
+const PARTY_MIN_PLAYERS = 3;
+const PARTY_MIN_GAMES = 4;
+const PARTY_MAX_GAMES = 10;
+const PARTY_MAX_BONUS = 8;
+
+/* the 20 possible bonus crowns. `group` = the same record seen from the other side
+   (most / fewest): only one of a pair is drawn in the same party. */
+const PARTY_BONUSES = [
+  {id:1,  group:'avg',    dir:'min', emoji:'🥇', title:'Miglior piazzamento medio',  desc:'Chi ha chiuso le partite, in media, nelle posizioni più alte', fmt:'avg', get:a=>a.avgPlace},
+  {id:2,  group:'avg',    dir:'max', emoji:'🐢', title:'Peggior piazzamento medio',  desc:'Chi ha chiuso le partite, in media, nelle posizioni più basse: una corona di consolazione!', fmt:'avg', get:a=>a.avgPlace},
+  {id:3,  group:'hand',   dir:'max', emoji:'✋', title:'Mano più grande',            desc:'Chi ha tenuto in mano più carte tutte insieme, almeno una volta', fmt:'n', unit:'carte', get:a=>a.maxHand},
+  {id:4,  group:'played', dir:'max', emoji:'🂠', title:'Più carte giocate',          desc:'Chi ha giocato più carte in tutto il party', fmt:'n', get:a=>a.played},
+  {id:5,  group:'played', dir:'min', emoji:'🪶', title:'Meno carte giocate',         desc:'Chi ha giocato meno carte in tutto il party', fmt:'n', get:a=>a.played},
+  {id:6,  group:'sboboz', dir:'max', emoji:'💥', title:'Più sboboz',                 desc:'Chi ha fatto più sboboz', fmt:'n', get:a=>a.sboboz},
+  {id:7,  group:'sboboz', dir:'min', emoji:'🤫', title:'Meno sboboz',                desc:'Chi ha fatto meno sboboz', fmt:'n', get:a=>a.sboboz},
+  {id:8,  group:'disc',   dir:'max', emoji:'🗑️', title:'Più scarti con il 5',        desc:'Chi ha scartato più carte con il 5 (contano solo gli scarti validi)', fmt:'n', get:a=>a.discards},
+  {id:9,  group:'disc',   dir:'min', emoji:'🧹', title:'Meno scarti con il 5',       desc:'Chi ha scartato meno carte con il 5 (contano solo gli scarti validi)', fmt:'n', get:a=>a.discards},
+  {id:10, group:'jdraw',  dir:'max', emoji:'🎴', title:'Più pescate con il J',       desc:'Chi ha pescato più carte dall’ipersboboz con il J (contano solo le pescate valide)', fmt:'n', get:a=>a.jdraws},
+  {id:11, group:'jdraw',  dir:'min', emoji:'🙅', title:'Meno pescate con il J',      desc:'Chi ha pescato meno carte dall’ipersboboz con il J (contano solo le pescate valide)', fmt:'n', get:a=>a.jdraws},
+  {id:12, group:'cnt',    dir:'max', emoji:'↩️', title:'Più controsboboz con il 3',  desc:'Chi ha annullato più sboboz con il 3 (contano solo quelli validi)', fmt:'n', get:a=>a.counters},
+  {id:13, group:'cnt',    dir:'min', emoji:'🚫', title:'Meno controsboboz con il 3', desc:'Chi ha annullato meno sboboz con il 3 (contano solo quelli validi)', fmt:'n', get:a=>a.counters},
+  {id:14, group:'queen',  dir:'max', emoji:'👸', title:'Più Regine attivate',        desc:'Chi ha attivato più volte l’effetto della Regina', fmt:'n', get:a=>a.queens},
+  {id:15, group:'unlucky',dir:'max', emoji:'🍀', title:'Il più sfortunato',          desc:'Chi ha girato più carte coperte non valide', fmt:'n', get:a=>a.badReveals},
+  {id:16, group:'pick',   dir:'max', emoji:'📥', title:'Più tavoli presi',           desc:'Chi ha preso il tavolo più volte', fmt:'n', get:a=>a.pickups},
+  {id:17, group:'pick',   dir:'min', emoji:'🧘', title:'Meno tavoli presi',          desc:'Chi ha preso il tavolo meno volte', fmt:'n', get:a=>a.pickups},
+  {id:18, group:'jolly',  dir:'max', emoji:'🤡', title:'Più Jolly usati',            desc:'Chi ha giocato più Jolly (solo con 7 giocatori)', fmt:'n', get:a=>a.jollies, only7:true},
+  {id:19, group:'jolly',  dir:'min', emoji:'🃏', title:'Meno Jolly usati',           desc:'Chi ha giocato meno Jolly (solo con 7 giocatori)', fmt:'n', get:a=>a.jollies, only7:true},
+  {id:20, group:'fast',   dir:'min', emoji:'⚡', title:'Vittoria più rapida',        desc:'Chi ha vinto una partita nel minor numero di turni (conta solo chi ha vinto)', fmt:'n', unit:'turni', get:a=>a.winTurns}
+];
+
+const Party = {
+  /* how many games by default / allowed */
+  defaultGames(n){ return Math.max(PARTY_MIN_GAMES, Math.min(PARTY_MAX_GAMES, n+1)); },
+  gamesFor(settings, n){
+    const g = settings && settings.partyGames;
+    return (typeof g==='number') ? Math.max(PARTY_MIN_GAMES, Math.min(PARTY_MAX_GAMES, g)) : Party.defaultGames(n);
+  },
+  bonusCount(n, games){ return Math.max(0, Math.min(n+1, games, PARTY_MAX_BONUS)); },
+
+  /* start a new party with the players now in the room */
+  init(){
+    const n = R.members.length;
+    const total = Party.gamesFor(R.settings, n);
+    R.party = {
+      id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+      total, k:0, startedAt:Date.now(), online:!!R.online, hist:[],
+      members:R.members.map(m=>({mid:m.mid, name:m.name, avatar:m.avatar, kind:m.kind, color:m.color, elem:m.elem})),
+      moves:0, rounds:0, decks:0, hasJolly:false, finalData:null
+    };
+  },
+
+  crownsNow(){
+    const P = R.party;
+    return P.members.map(m=>({mid:m.mid, name:m.name, avatar:m.avatar, kind:m.kind, color:m.color,
+      c:P.hist.reduce((t,g)=>t+(g.winners.includes(m.mid)?1:0),0)}));
+  },
+
+  /* a game of the party just ended: store it and return what the clients must see */
+  addGame(res){
+    const P = R.party;
+    const rows = res.rows.map(r=>({mid:r.mid, place:r.place, tie:!!r.tie, st:Object.assign({}, r.st)}));
+    const winners = res.stalemate ? [] : rows.filter(r=>r.place===1 && !r.tie).map(r=>r.mid);
+    P.hist.push({rows, winners, stalemate:!!res.stalemate, turns:res.turns||0, rounds:res.rounds||0, secs:res.secs||0});
+    P.k = P.hist.length;
+    P.moves += res.turns||0; P.rounds += res.rounds||0;
+    P.decks = res.numDecks||1; P.hasJolly = P.hasJolly || res.nPlayers>=7;
+    return {id:P.id, k:P.k, total:P.total, last:P.k>=P.total, crowns:Party.crownsNow(), winners};
+  },
+
+  /* totals of one member over the whole party */
+  aggregate(mid){
+    const P = R.party;
+    const a = {mid, games:0, avgPlace:0, maxHand:0, played:0, sboboz:0, discards:0, jdraws:0, counters:0, queens:0,
+               badReveals:0, pickups:0, jollies:0, winTurns:null, wins:0};
+    let sumPlace = 0;
+    P.hist.forEach(g=>{
+      const r = g.rows.find(x=>x.mid===mid); if(!r) return;
+      a.games++; sumPlace += r.place;
+      const s = r.st||{};
+      a.maxHand = Math.max(a.maxHand, s.maxHand||0);
+      a.played += s.played||0; a.sboboz += s.sboboz||0; a.discards += s.discards||0; a.jdraws += s.jdraws||0;
+      a.counters += s.counters||0; a.queens += s.queens||0; a.badReveals += s.badReveals||0;
+      a.pickups += s.pickups||0; a.jollies += s.jollies||0;
+      if(g.winners.includes(mid)){ a.wins++; a.winTurns = a.winTurns===null ? (s.turns||0) : Math.min(a.winTurns, s.turns||0); }
+    });
+    a.avgPlace = a.games ? sumPlace/a.games : 0;
+    return a;
+  },
+
+  /* who holds each record, and is the record worth a crown? */
+  evalBonus(def, aggs){
+    const values = {}; let valued = [];
+    aggs.forEach(a=>{
+      const v = def.get(a);
+      values[a.mid] = (v===null || v===undefined) ? null : v;
+      if(values[a.mid]!==null) valued.push(a.mid);
+    });
+    if(valued.length<2) return null;
+    const vs = valued.map(m=>values[m]);
+    const best = def.dir==='max' ? Math.max(...vs) : Math.min(...vs);
+    const holders = valued.filter(m=>Math.abs(values[m]-best)<1e-9);
+    if(holders.length===valued.length) return null;          // everybody equal: nothing to award
+    return {id:def.id, emoji:def.emoji, title:def.title, desc:def.desc, dir:def.dir, fmt:def.fmt, unit:def.unit||'',
+            values, holders, shared:holders.length>1};
+  },
+
+  pickBonuses(aggs, want, n){
+    const pool = PARTY_BONUSES.filter(d=>!d.only7 || n>=7);
+    const evald = shuffle(pool.slice()).map(d=>({d, e:Party.evalBonus(d, aggs)})).filter(x=>x.e);
+    // every valid bonus has the same chance (complementary ones, e.g. most/fewest, can both come out)
+    const out = evald.slice(0, want).map(x=>x.e);
+    return shuffle(out);   // the order of the reveal is random too
+  },
+
+  /* final data for the ceremony: bonuses, crown totals, ranking */
+  finalize(){
+    const P = R.party;
+    if(P.finalData) return P.finalData;
+    const n = P.members.length;
+    const aggs = P.members.map(m=>Party.aggregate(m.mid));
+    const bonuses = Party.pickBonuses(aggs, Party.bonusCount(n, P.total), n);
+    const final = P.members.map(m=>{
+      const a = aggs.find(x=>x.mid===m.mid);
+      const won = bonuses.filter(b=>b.holders.includes(m.mid)).map(b=>b.id);
+      return {mid:m.mid, name:m.name, avatar:m.avatar, kind:m.kind, color:m.color, elem:m.elem,
+              wins:a.wins, bonusIds:won, bonusCount:won.length, total:a.wins+won.length, avgPlace:a.avgPlace, stats:a};
+    });
+    // order: crowns, then game wins, then average place; still equal = shared rank
+    const cmp = (x,y)=> (y.total-x.total) || (y.wins-x.wins) || (x.avgPlace-y.avgPlace);
+    final.sort(cmp);
+    final.forEach((f,i)=>{ f.rank = (i>0 && cmp(final[i-1], f)===0) ? final[i-1].rank : i+1; });
+    const top = final.filter(f=>f.rank===1);
+    const winnerKind = top.length===1 ? top[0].kind : (top.every(f=>f.kind==='bot') ? 'bot' : (top.every(f=>f.kind==='human') ? 'umano' : 'misto'));
+    // sums over the whole party for the statistics
+    const sum = k=>P.hist.reduce((t,g)=>t+g.rows.reduce((u,r)=>u+((r.st&&r.st[k])||0),0),0);
+    const totals = {};
+    ['played','pickups','sboboz','sbobozCards','sbobozKings','jollies','reveals','discards','jdraws','counters','queens','badReveals']
+      .forEach(k=>{ totals[k] = sum(k); });
+    totals.maxHand = Math.max(0, ...P.hist.map(g=>Math.max(0, ...g.rows.map(r=>(r.st&&r.st.maxHand)||0))));
+    const humanWins = P.hist.filter(g=>g.winners.length && P.members.find(m=>m.mid===g.winners[0]).kind==='human').length;
+    const botWins = P.hist.filter(g=>g.winners.length && P.members.find(m=>m.mid===g.winners[0]).kind==='bot').length;
+    P.finalData = {
+      id:P.id, startedAt:P.startedAt, secs:Math.round((Date.now()-P.startedAt)/1000), total:P.total,
+      moves:P.moves, rounds:P.rounds, online:P.online, decks:P.decks, nPlayers:n,
+      nHumans:P.members.filter(m=>m.kind==='human').length,
+      bonuses, final, winnerKind, totals, humanWins, botWins,
+      stalemates:P.hist.filter(g=>g.stalemate).length,
+      games:P.hist.map((g,i)=>({k:i+1, winners:g.winners, stalemate:g.stalemate}))
+    };
+    return P.finalData;
+  },
+
+  /* current crowns table (for the results of a single game) as final rank order */
+  reset(){ R.party = null; }
+};
 
 function positionFixed(el, rect){
   el.style.position = 'fixed';
@@ -3513,12 +3951,24 @@ function syncLand(){
 function isLandscapePhone(){ return window.innerWidth > window.innerHeight && window.innerHeight <= 520 && window.innerWidth <= 1000; }
 syncLand();
 window.addEventListener('resize', syncLand);
-try{ screen.orientation.addEventListener('change', ()=>{ syncLand(); scheduleFit(); }); }catch(e){}
+try{ screen.orientation.addEventListener('change', ()=>{ syncLand(); scheduleFitSettled(); }); }catch(e){}
 
-function scheduleFit(){ clearTimeout(fitTimer); fitTimer = setTimeout(()=>{ if(!animating) fitLayout(); }, 120); }
+/* re-fit after a resize: quickly, and again once the browser has really settled
+   (rotation / fullscreen change the size in several steps). A fit never gets lost
+   because an animation is running: it just waits for it to end. */
+let fitTries = 0;
+function runFit(){
+  if(animating && fitTries++ < 40){ clearTimeout(fitTimer); fitTimer = setTimeout(runFit, 150); return; }
+  fitTries = 0; fitLayout();
+}
+function scheduleFit(){ clearTimeout(fitTimer); fitTries = 0; fitTimer = setTimeout(runFit, 40); }
+function scheduleFitSettled(){
+  scheduleFit();
+  [250, 600, 1200].forEach(ms=>setTimeout(()=>{ syncLand(); if(!animating) fitLayout(); }, ms));
+}
 window.addEventListener('resize', scheduleFit);
-window.addEventListener('orientationchange', ()=>{ scheduleFit(); setTimeout(()=>{ if(!animating) fitLayout(); }, 450); });
-document.addEventListener('fullscreenchange', scheduleFit);
+window.addEventListener('orientationchange', scheduleFitSettled);
+document.addEventListener('fullscreenchange', scheduleFitSettled);
 
 function setAppHeight(){
   document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
@@ -3569,6 +4019,7 @@ const Client = {
     Client.prompt = null; Client.sel = []; Client.acting = false; Client.setupSel = [];
     Client.results = null; Client.msg = ''; animating = false; clearHeld();
     hideResults();
+    if(typeof PartyShow!=='undefined') PartyShow.stop();
     Modal.close();
   },
 
@@ -3592,6 +4043,12 @@ const Client = {
   onResults(res, me, online){
     Client.results = {res, me, online};
     Client.whenIdle(()=>showResults());
+  },
+  /* the host closed the party: play the final ceremony */
+  onPartyEnd(data){
+    Client.partyData = data;
+    hideResults();
+    PartyShow.play(data, Client.results ? Client.results.me : (Client.V ? Client.V.me : -1));
   },
   onAborted(){
     Client.queue = []; Client.prompt = null; Client.acting = false;
@@ -4322,6 +4779,15 @@ function hideResults(){
   if(o) o.style.display = 'none';
 }
 
+/* crowns table shown under the ranking of every party game */
+function partyBoardHtml(pty, me){
+  const sorted = pty.crowns.slice().sort((a,b)=>b.c-a.c);
+  const won = new Set(pty.winners||[]);
+  const myMid = (()=>{ const r = Client.results && Client.results.res.rows.find(x=>x.pid===me); return r ? r.mid : -2; })();
+  return `<div class="party-board"><h4>👑 Corone dopo ${pty.k} partit${pty.k>1?'e':'a'} su ${pty.total}</h4>` + sorted.map(c=>
+    `<div class="pb-row${c.mid===myMid?' me':''}${won.has(c.mid)?' won':''}">${c.kind==='bot' && c.color && c.avatar!=='🎲' ? `<span class="pb-ava bot" style="--c:${fixColor(c.color)}">${esc(c.name[0]||'N')}</span>` : `<span class="pb-ava">${esc(c.avatar||'🥷')}</span>`}<span class="pb-name">${esc(c.name)}</span><span class="pb-crowns">${'👑'.repeat(Math.min(c.c,10))}${c.c>10?'+':''} <b>${c.c}</b></span><em>${won.has(c.mid)?'+1':''}</em></div>`).join('') + `</div>`;
+}
+
 function showResults(){
   const R_ = Client.results;
   if(!R_) return;
@@ -4329,9 +4795,11 @@ function showResults(){
   const key = res.startedAt+'-'+res.nPlayers+'-'+me;
   if(!Client.recorded[key]){
     Client.recorded[key] = true;
-    Store.record(res, me, online, online ? R.code : null);
+    Store.record(res, me, online, online ? R.code : null, res.party);
   }
   const mine = res.rows.find(r=>r.pid===me);
+  const pty = res.party || null;
+  if(pty) Client.partyLive = {k:pty.k, total:pty.total, crowns:pty.crowns};
   const title = document.getElementById('results-title');
   const sub = document.getElementById('results-sub');
   if(res.stalemate){
@@ -4346,36 +4814,50 @@ function showResults(){
   }
   const humans = res.rows.filter(r=>r.kind==='human').length>1;
   const rows = res.rows.map(r=>{
-    const style = r.color ? ` style="border-left:4px solid ${fixColor(r.color)};"` : '';
+    const style = ` style="border-left:4px solid ${r.color ? fixColor(r.color) : 'var(--gold-bright)'};"`;
     const nm = esc(r.name) + (r.kind==='bot' && humans ? ' <span class="tag-bot">(bot)</span>' : '');
     const st = r.st||{};
+    const av = (r.kind==='bot' && r.color && r.avatar!=='🎲')
+      ? `<span class="pa sm bot" style="--c:${fixColor(r.color)}">${esc((r.name||'N')[0])}</span>`
+      : `<span class="pa sm">${esc(r.avatar||'🥷')}</span>`;
     return `<div class="rank-row${r.pid===me?' rank-you':''}"${style}>
-      <span class="rank-name"><span class="rank-num">${r.place}°${r.tie?'=':''}</span>${nm}</span>
-      <span class="rank-stats"><i title="carte giocate">🂠 ${st.played||0}</i><i title="volte che ha preso il tavolo">📥 ${st.pickups||0}</i><i title="sboboz fatti">💥 ${st.sboboz||0}</i></span>
+      <span class="rank-name"><span class="rank-num">${r.place}°${r.tie?'=':''}</span>${av} ${nm}</span>
+      ${pty ? '' : `<span class="rank-stats"><i title="carte giocate">🂠 ${st.played||0}</i><i title="volte che ha preso il tavolo">📥 ${st.pickups||0}</i><i title="sboboz fatti">💥 ${st.sboboz||0}</i></span>`}
     </div>`;
   }).join('');
-  document.getElementById('results-rows').innerHTML = rows;
+  if(pty) sub.textContent = `Partita ${pty.k} di ${pty.total} · ` + sub.textContent;
+  document.getElementById('results-rows').innerHTML = rows + (pty ? partyBoardHtml(pty, me) : '');
 
   // little awards
   const aw = [];
   const best = (key)=>{ let b=null; res.rows.forEach(r=>{ const v=(r.st&&r.st[key])||0; if(v>0 && (!b || v>b.v)) b={v, r}; }); return b; };
-  const a1 = best('sboboz'); if(a1) aw.push(`💥 Re dello sboboz: <b>${esc(a1.r.name)}</b> (${a1.v})`);
-  const a2 = best('pickups'); if(a2) aw.push(`📥 Più tavoli presi: <b>${esc(a2.r.name)}</b> (${a2.v})`);
-  const a3 = best('maxHand'); if(a3) aw.push(`✋ Mano più grande: <b>${esc(a3.r.name)}</b> (${a3.v} carte)`);
-  const a4 = best('kings'); if(a4) aw.push(`👑 Più Re giocati: <b>${esc(a4.r.name)}</b> (${a4.v})`);
+  const a1 = pty ? null : best('sboboz'); if(a1) aw.push(`💥 Re dello sboboz: <b>${esc(a1.r.name)}</b> (${a1.v})`);
+  const a2 = pty ? null : best('pickups'); if(a2) aw.push(`📥 Più tavoli presi: <b>${esc(a2.r.name)}</b> (${a2.v})`);
+  const a3 = pty ? null : best('maxHand'); if(a3) aw.push(`✋ Mano più grande: <b>${esc(a3.r.name)}</b> (${a3.v} carte)`);
+  const a4 = pty ? null : best('kings'); if(a4) aw.push(`👑 Più Re giocati: <b>${esc(a4.r.name)}</b> (${a4.v})`);
   const mm = Math.floor((res.secs||0)/60), ss = (res.secs||0)%60;
   aw.push(`⏱ Durata: ${mm}:${String(ss).padStart(2,'0')} · ${res.turns||0} mosse`);
-  document.getElementById('results-awards').innerHTML = aw.map(x=>`<div class="award">${x}</div>`).join('') + (online ? currentRoomBoardHtml(R.code) : '');
+  document.getElementById('results-awards').innerHTML = aw.map(x=>`<div class="award">${x}</div>`).join('') + (online && !pty ? currentRoomBoardHtml(R.code) : '');
 
   const isHost = R.role==='host';
   const acts = document.getElementById('results-actions');
-  acts.innerHTML = isHost
+  const ptyBtns = !pty ? '' : (pty.last
+    ? `<button class="btn-primary" id="res-party-final">🏆 Vai alla premiazione</button>`
+    : `<button class="btn-primary" id="res-party-next">Prossima partita (${pty.k+1}/${pty.total})</button>`);
+  acts.innerHTML = pty
+    ? (isHost
+      ? `${ptyBtns}<button class="btn-secondary" id="res-party-stop">Termina il party</button>`
+      : `<div class="results-wait">In attesa che l’host ${pty.last ? 'avvii la premiazione' : 'avvii la prossima partita'}…</div><button class="btn-secondary" id="res-home">Esci</button>`)
+    : isHost
     ? `<button class="btn-primary" id="res-rematch">Rivincita</button>
        <button class="btn-secondary" id="res-lobby">Torna alla stanza</button>
        <button class="btn-secondary" id="res-home">Esci</button>`
     : `<div class="results-wait">In attesa che l’host scelga cosa fare…</div>
        <button class="btn-secondary" id="res-home">Esci</button>`;
   const q = id=>document.getElementById(id);
+  if(q('res-party-next')) q('res-party-next').onclick = ()=>{ hideResults(); UI.partyNext(); };
+  if(q('res-party-final')) q('res-party-final').onclick = ()=>{ UI.partyFinale(); };
+  if(q('res-party-stop')) q('res-party-stop').onclick = ()=>{ Modal.choice('Terminare il party?', 'Nessuna premiazione: si torna alla stanza.', [['Termina','y'],['Continua','n']], v=>{ if(v==='y'){ hideResults(); UI.backToLobby(); } }); };
   if(q('res-rematch')) q('res-rematch').onclick = ()=>{ hideResults(); UI.rematch(); };
   if(q('res-lobby')) q('res-lobby').onclick = ()=>{ hideResults(); UI.backToLobby(); };
   if(q('res-home')) q('res-home').onclick = ()=>{ hideResults(); UI.leaveToHome(); };
@@ -4383,11 +4865,367 @@ function showResults(){
 }
 
 /* ============================================================
+   PARTY CEREMONY (every device plays it from the host's final data)
+   1) the crowns won in the games so far
+   2) the bonus crowns, one at a time, with a drum roll before each winner
+   3) the podium, from the last place up to the winner
+   Tap anywhere = hurry the current pause, "Salta" = jump ahead.
+============================================================ */
+const PartyShow = {
+  tok:0, adv:0, advAll:false, advRes:null, speed:1, timeScale:1, data:null, parts:[], raf:0, cancel:null, phase:'', skipBonus:false,
+
+  el(id){ return document.getElementById(id); },
+  reduced(){ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } },
+  buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} },
+
+  stop(){
+    PartyShow.tok++; PartyShow.cancel = null; PartyShow.advRes = null; PartyShow.parts = []; PartyShow.phase = '';
+    cancelAnimationFrame(PartyShow.raf); PartyShow.raf = 0;
+    const o = PartyShow.el('party-overlay');
+    if(o){ o.style.display = 'none'; o.classList.remove('on'); }
+    const st = PartyShow.el('party-stage'); if(st) st.innerHTML = '';
+  },
+
+  /* pause that can be cut short by a tap; rejects when the show was stopped */
+  wait(ms, tok){
+    return new Promise((res, rej)=>{
+      if(PartyShow.tok!==tok) return rej('x');
+      let t = null;
+      const done = ()=>{ clearTimeout(t); PartyShow.cancel = null; PartyShow.tok===tok ? res() : rej('x'); };
+      t = setTimeout(done, Math.max(0, ms/(PartyShow.speed*PartyShow.timeScale)));
+      PartyShow.cancel = done;
+    });
+  },
+
+  fastBtn(on){ const b = PartyShow.el('party-fast'); if(b) b.style.display = on ? '' : 'none'; },
+  /* the host decides when to go on; the guests follow */
+  waitNext(i, last, tok, st){
+    return new Promise((res, rej)=>{
+      if(PartyShow.tok!==tok) return rej('x');
+      const go = ()=>{ PartyShow.advRes = null; PartyShow.tok===tok ? res() : rej('x'); };
+      PartyShow.fastBtn(false);
+      if(PartyShow.advAll || PartyShow.skipBonus || PartyShow.adv>i) return go();
+      PartyShow.advRes = go;
+      const host = R.role==='host';
+      const w = document.createElement('div'); w.className = 'ps-nextwrap';
+      w.innerHTML = host ? `<button class="btn-primary" id="ps-next">${last ? '🏆 Vai alla premiazione' : 'Prossima corona bonus ▶'}</button>` : `<div class="ps-waithost">In attesa dell’host…</div>`;
+      st.appendChild(w);
+      try{ w.scrollIntoView({behavior:'smooth', block:'end'}); }catch(e){}
+      if(host) w.querySelector('button').onclick = ()=>{ try{ broadcastGuests({t:'partyAdv', i}); }catch(e){} go(); };
+    });
+  },
+  onAdv(msg){
+    if(msg.all) PartyShow.advAll = true; else PartyShow.adv = Math.max(PartyShow.adv, (msg.i|0)+1);
+    if(PartyShow.advRes) PartyShow.advRes();
+  },
+
+  /* ---------- small helpers ---------- */
+  ava(f, cls){
+    return f.kind==='bot'
+      ? `<span class="pa bot ${cls||''}" style="--c:${fixColor(f.color||'#8a8f98')}">${esc((f.name||'N')[0])}</span>`
+      : `<span class="pa ${cls||''}">${esc(f.avatar||'🥷')}</span>`;
+  },
+  fmtVal(b, v){
+    if(v===null || v===undefined) return '—';
+    if(b.fmt==='avg') return v.toFixed(2).replace('.',',')+'°';
+    return String(v) + (b.unit ? ' '+b.unit : '');
+  },
+  board(data, crowns, hide, bump){
+    const rows = data.final.slice().sort((a,b)=> hide ? (a.mid-b.mid) : ((crowns[b.mid]-crowns[a.mid]) || (a.mid-b.mid)));
+    return `<div class="ps-btitle">👑 Corone${hide?' · totali nascosti!':''}</div>` + rows.map(f=>
+      `<div class="ps-brow${bump && bump.includes(f.mid)?' bump':''}${f.mid===R.myMid?' me':''}">${PartyShow.ava(f,'sm')}<span class="ps-bname">${esc(f.name)}</span><span class="ps-bcr">${hide?'<i>?</i>':`${crowns[f.mid]}`}<em>👑</em></span></div>`).join('');
+  },
+  countUp(elm, text, v, tok){
+    // numbers climb quickly to their value; anything else just appears
+    if(typeof v!=='number' || !isFinite(v) || v<=0 || v>200 || String(text).includes('°')){ elm.textContent = text; return; }
+    const steps = Math.min(10, Math.max(3, v)), t0 = 330/PartyShow.speed;
+    let i = 0;
+    const tick = ()=>{
+      if(PartyShow.tok!==tok) return;
+      i++;
+      const cur = i>=steps ? v : Math.round(v*i/steps);
+      elm.textContent = String(text).replace(String(v), String(cur));
+      if(i<steps) setTimeout(tick, t0/steps);
+    };
+    tick();
+  },
+
+  /* ---------- confetti / sparks on a canvas ---------- */
+  fxSize(){
+    const c = PartyShow.el('party-fx'); if(!c) return;
+    const dpr = Math.min(2, window.devicePixelRatio||1);
+    c.width = Math.round(window.innerWidth*dpr); c.height = Math.round(window.innerHeight*dpr);
+    c.style.width = window.innerWidth+'px'; c.style.height = window.innerHeight+'px';
+    c._dpr = dpr;
+  },
+  burst(x, y, n, o){
+    if(PartyShow.reduced()) return;
+    o = o || {};
+    const cols = o.colors || ['#e8c05f','#fff3b0','#f08a3c','#7be0a4','#8ec5ff','#ff8fa3'];
+    for(let i=0;i<n;i++){
+      const a = Math.random()*Math.PI*2, s = (o.speed||7)*(0.35+Math.random());
+      PartyShow.parts.push({x, y, vx:Math.cos(a)*s, vy:Math.sin(a)*s-(o.up||2), g:o.g||0.22, life:60+Math.random()*50, max:110,
+        c:cols[(Math.random()*cols.length)|0], w:5+Math.random()*6, h:3+Math.random()*5, r:Math.random()*6, vr:(Math.random()-.5)*.4});
+    }
+    PartyShow.loop();
+  },
+  rain(ms, tok){
+    if(PartyShow.reduced()) return;
+    const end = Date.now()+ms;
+    const drop = ()=>{
+      if(PartyShow.tok!==tok || Date.now()>end) return;
+      for(let k=0;k<3;k++) PartyShow.burst(Math.random()*window.innerWidth, -10, 1, {speed:2, up:-2, g:.12});
+      setTimeout(drop, 70);
+    };
+    drop();
+  },
+  loop(){
+    if(PartyShow.raf) return;
+    const step = ()=>{
+      const c = PartyShow.el('party-fx'); if(!c){ PartyShow.raf = 0; return; }
+      const ctx = c.getContext('2d'), d = c._dpr||1;
+      ctx.clearRect(0,0,c.width,c.height);
+      PartyShow.parts = PartyShow.parts.filter(p=>p.life>0 && p.y<window.innerHeight+30);
+      PartyShow.parts.forEach(p=>{
+        p.vy += p.g; p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.r += p.vr; p.life--;
+        ctx.save(); ctx.globalAlpha = Math.min(1, p.life/30);
+        ctx.translate(p.x*d, p.y*d); ctx.rotate(p.r); ctx.fillStyle = p.c;
+        ctx.fillRect(-p.w*d/2, -p.h*d/2, p.w*d, p.h*d); ctx.restore();
+      });
+      if(PartyShow.parts.length) PartyShow.raf = requestAnimationFrame(step);
+      else { PartyShow.raf = 0; ctx.clearRect(0,0,c.width,c.height); }
+    };
+    PartyShow.raf = requestAnimationFrame(step);
+  },
+  burstAt(elm, n, o){
+    if(!elm) return;
+    const r = elm.getBoundingClientRect();
+    PartyShow.burst(r.left+r.width/2, r.top+r.height/2, n, o);
+  },
+
+  /* ---------- the show ---------- */
+  async play(data, myMid){
+    PartyShow.stop();
+    const tok = ++PartyShow.tok;
+    PartyShow.data = data; PartyShow.speed = 1; PartyShow.skipBonus = false; PartyShow.adv = 0; PartyShow.advAll = false; PartyShow.advRes = null;
+    // saved once, as soon as the show starts (even if somebody skips it)
+    try{ Store.recordParty(data, R.myMid, data.nHumans>=2, (Client.results && Client.results.online) ? R.code : null); }catch(e){}
+    const o = PartyShow.el('party-overlay');
+    o.style.display = 'flex';
+    PartyShow.fxSize();
+    PartyShow.el('party-skip').style.display = '';
+    PartyShow.fastBtn(false);
+    requestAnimationFrame(()=>o.classList.add('on'));
+    const crowns = {}; data.final.forEach(f=>{ crowns[f.mid] = f.wins; });
+    try{
+      await PartyShow.intro(data, crowns, tok);
+      await PartyShow.bonuses(data, crowns, tok);
+      await PartyShow.podium(data, tok);
+      PartyShow.finish(data, tok);
+    }catch(e){ if(e!=='x') console.error(e); }
+  },
+
+  async intro(data, crowns, tok){
+    PartyShow.phase = 'intro';
+    const st = PartyShow.el('party-stage');
+    st.innerHTML = `<div class="ps-intro"><div class="ps-bigemoji">🎉</div><h1>Il party è finito!</h1>
+      <p>${data.total} partite giocate. Ecco le corone vinte sul tavolo…</p>
+      <div class="ps-board big" id="ps-board">${PartyShow.board(data, crowns, false)}</div>
+      <p class="ps-next">${data.bonuses.length ? `Ora le <b>${data.bonuses.length} corone bonus</b>: chiunque può ancora ribaltare tutto!` : 'Nessuna corona bonus in questo party.'}</p></div>`;
+    PartyShow.buzz(30);
+    await PartyShow.wait(4200, tok);
+  },
+
+  async bonuses(data, crowns, tok){
+    PartyShow.phase = 'bonus';
+    const st = PartyShow.el('party-stage');
+    const N = data.bonuses.length;
+    for(let i=0;i<N;i++){
+      if(PartyShow.skipBonus){ data.bonuses.slice(i).forEach(b=>b.holders.forEach(m=>{ crowns[m]++; })); break; }
+      PartyShow.speed = 1; PartyShow.fastBtn(true);
+      const b = data.bonuses[i];
+      const hide = true;                        // crown totals stay secret until the podium
+      const last = i===N-1;
+      st.innerHTML = `<div class="ps-head"><span class="ps-badge">🎁 Corona bonus ${i+1} di ${N}</span></div>
+        <div class="ps-card" id="ps-card"><div class="ps-card-in">
+          <div class="ps-face ps-back">❓</div>
+          <div class="ps-face ps-front"><div class="ps-emoji">${b.emoji}</div><h2>${esc(b.title)}</h2><p>${esc(b.desc)}</p></div>
+        </div></div>
+        <div class="ps-cols"><div class="ps-rows" id="ps-rows"></div>
+        <div class="ps-board" id="ps-board">${PartyShow.board(data, crowns, hide)}</div></div>`;
+      const card = PartyShow.el('ps-card'), rowsEl = PartyShow.el('ps-rows'), boardEl = PartyShow.el('ps-board');
+      await PartyShow.wait(1600, tok);
+      card.classList.add('flip'); PartyShow.buzz(25);
+      await PartyShow.wait(4200, tok);
+      card.classList.add('small');
+
+      // players, from the worst to the best at this record: the holders come last
+      const val = f=>b.values[f.mid];
+      const order = data.final.slice().sort((x,y)=>{
+        const vx = val(x), vy = val(y);
+        if(vx===null && vy===null) return 0; if(vx===null) return -1; if(vy===null) return 1;
+        return b.dir==='max' ? vx-vy : vy-vx;
+      });
+      rowsEl.innerHTML = order.slice().reverse().map(f=>`<div class="ps-row" data-mid="${f.mid}"><span class="pa sm unk">?</span><span class="ps-name">???</span><span class="ps-val">…</span></div>`).join('');
+      const rowEl = f=>rowsEl.querySelector(`[data-mid="${f.mid}"]`);
+      for(const f of order){ rowEl(f).classList.add('in'); await PartyShow.wait(140, tok); }
+      await PartyShow.wait(500, tok);
+
+      const hs = new Set(b.holders);
+      const nonH = order.filter(f=>!hs.has(f.mid)), H = order.filter(f=>hs.has(f.mid));
+      const reveal = f=>{
+        const r = rowEl(f), v = val(f), t = PartyShow.fmtVal(b, v);
+        r.classList.add('rev'); if(f.mid===R.myMid) r.classList.add('me');
+        const av = r.querySelector('.pa'); if(av) av.outerHTML = PartyShow.ava(f,'sm');
+        r.querySelector('.ps-name').textContent = f.name;
+        PartyShow.countUp(r.querySelector('.ps-val'), t, v, tok);
+      };
+      const body = nonH.slice(0, -1), runnerUp = nonH.length ? nonH[nonH.length-1] : null;
+      for(const f of body){ reveal(f); await PartyShow.wait(520, tok); }
+      // drum roll, then the runner-up and the holders come out together
+      rowsEl.classList.add('drum'); PartyShow.buzz([40,60,40,60,40]);
+      await PartyShow.wait(last ? 2400 : 1600, tok);
+      rowsEl.classList.add('drum2'); PartyShow.buzz([60,40,60,40,60,40,120]);
+      await PartyShow.wait(last ? 2800 : 1900, tok);
+      rowsEl.classList.remove('drum','drum2');
+      if(runnerUp) reveal(runnerUp);
+      H.forEach(f=>reveal(f));
+      st.classList.add('flash'); setTimeout(()=>st.classList.remove('flash'), 600);
+      PartyShow.buzz(180);
+      await PartyShow.wait(500, tok);
+      H.forEach(f=>{
+        const r = rowEl(f); r.classList.add('won');
+        r.insertAdjacentHTML('beforeend', '<span class="ps-gain">👑 +1</span>');
+        PartyShow.burstAt(r, last ? 90 : 60, {speed:8});
+        crowns[f.mid]++;
+      });
+      boardEl.innerHTML = PartyShow.board(data, crowns, hide, b.holders);
+      if(b.shared){ rowsEl.insertAdjacentHTML('beforeend', '<div class="ps-tie">Pari merito: la corona va a tutti!</div>'); }
+      PartyShow.speed = 1;
+      await PartyShow.wait(1500, tok);
+      await PartyShow.waitNext(i, last, tok, st);
+    }
+    PartyShow.speed = 1; PartyShow.fastBtn(false);
+  },
+
+  async podium(data, tok){
+    PartyShow.phase = 'podium'; PartyShow.speed = 1;
+    const st = PartyShow.el('party-stage');
+    const fin = data.final;
+    const rest = fin.filter(f=>f.rank>3).sort((a,b)=>b.rank-a.rank || b.mid-a.mid);
+    const byRank = r=>fin.filter(f=>f.rank===r);
+    const col = (r)=>`<div class="ps-col c${r}" data-rank="${r}"><div class="ps-people" id="pp${r}"></div><div class="ps-step s${r}" id="st${r}"><b>${r}°</b></div></div>`;
+    st.innerHTML = `<div class="ps-podium-wrap"><h1 class="ps-ptitle">🏆 La premiazione</h1>
+      <p class="ps-psub" id="ps-psub">I voti sono chiusi… chi avrà vinto il party?</p>
+      <div class="ps-podium" id="ps-podium"><div class="ps-spot" id="ps-spot"></div>${col(2)}${col(1)}${col(3)}</div>
+      <div class="ps-rest" id="ps-rest"></div></div>`;
+    const sub = PartyShow.el('ps-psub');
+    await PartyShow.wait(2600, tok);
+    // 4th place and below
+    const restEl = PartyShow.el('ps-rest');
+    for(const f of rest){
+      restEl.insertAdjacentHTML('afterbegin', `<div class="ps-rrow${f.mid===R.myMid?' me':''}">${PartyShow.ava(f,'sm')}<span class="ps-rnk">${f.rank}°</span><span class="ps-name">${esc(f.name)}</span><span class="ps-rcr">${f.total} 👑</span></div>`);
+      PartyShow.buzz(20);
+      await PartyShow.wait(1500, tok);
+    }
+    const place = async (r, big, also)=>{
+      const group = byRank(r), stepEl = PartyShow.el('st'+r), pp = PartyShow.el('pp'+r);
+      if(!group.length){ stepEl.classList.add('up','empty'); await PartyShow.wait(500, tok); return; }
+      stepEl.classList.add('up');
+      await PartyShow.wait(big ? 1800 : 1100, tok);
+      pp.innerHTML = group.map(f=>`<div class="ps-person${f.mid===R.myMid?' me':''}">${r===1?'<span class="ps-hat">👑</span>':''}${PartyShow.ava(f,'xl')}<span class="ps-pname">${esc(f.name)}</span><span class="ps-pcr">${f.total} 👑</span><span class="ps-pdet">${f.wins} vittori${f.wins===1?'a':'e'} + ${f.bonusCount} bonus</span></div>`).join('');
+      requestAnimationFrame(()=>pp.classList.add('in'));
+      PartyShow.buzz(r===1 ? [120,60,120,60,260] : 60);
+      PartyShow.burstAt(pp, r===1 ? 140 : 40, {speed:r===1?11:6});
+      if(group.length>1) sub.textContent = r===1 ? 'Pari merito: si vince in due!' : sub.textContent;
+      if(also) for(const r2 of also){
+        const g2 = byRank(r2), p2 = PartyShow.el('pp'+r2);
+        if(!g2.length){ PartyShow.el('st'+r2).classList.add('up','empty'); continue; }
+        PartyShow.el('st'+r2).classList.add('up');
+        p2.innerHTML = g2.map(f=>`<div class="ps-person${f.mid===R.myMid?' me':''}">${PartyShow.ava(f,'xl')}<span class="ps-pname">${esc(f.name)}</span><span class="ps-pcr">${f.total} 👑</span><span class="ps-pdet">${f.wins} vittori${f.wins===1?'a':'e'} + ${f.bonusCount} bonus</span></div>`).join('');
+        requestAnimationFrame(()=>p2.classList.add('in'));
+        PartyShow.burstAt(p2, 40, {speed:6});
+      }
+      await PartyShow.wait(r===1 ? 2000 : 2200, tok);
+    };
+    sub.textContent = 'Sul gradino più basso del podio…';
+    await place(3, false);
+    // the big moment: first and second place come out together
+    sub.textContent = 'E ora il vincitore del party…';
+    PartyShow.el('ps-podium').classList.add('dim');
+    PartyShow.buzz([60,40,60,40,60,40,60,40,200]);
+    await PartyShow.wait(4200, tok);
+    PartyShow.el('ps-podium').classList.remove('dim');
+    PartyShow.el('ps-podium').classList.add('final');
+    const win = byRank(1);
+    PartyShow.el('st2').classList.add('up');
+    await place(1, true, [2]);
+    sub.innerHTML = win.length>1 ? `🎉 <b>${win.map(w=>esc(w.name)).join(' e ')}</b> vincono il party!` : `🎉 <b>${esc(win[0].name)}</b> vince il party!`;
+    PartyShow.rain(6500, tok);
+    await PartyShow.wait(1800, tok);
+  },
+
+  statsHtml(a, jolly){
+    if(!a) return '';
+    const it = [['Piazz. medio', a.avgPlace.toFixed(2).replace('.',',')+'°'],['Carte giocate',a.played],['Tavoli presi',a.pickups],['Sboboz',a.sboboz],['Mano max',a.maxHand],
+      ['Scarti con il 5',a.discards],['Pescate con il J',a.jdraws],['Controsboboz (3)',a.counters],['Regine',a.queens],['Coperte non valide',a.badReveals]];
+    if(jolly) it.push(['Jolly',a.jollies]);
+    it.push(['Vittoria più rapida', a.winTurns===null ? '—' : a.winTurns+' turni']);
+    return `<div class="ps-dstats">${it.map(x=>`<span>${x[0]}<b>${x[1]}</b></span>`).join('')}</div>`;
+  },
+
+  finish(data, tok){
+    PartyShow.phase = 'end'; PartyShow.cancel = null;
+    const st = PartyShow.el('party-stage');
+    const isHost = R.role==='host';
+    const bmap = {}; PARTY_BONUSES.forEach(b=>{ bmap[b.id] = b; });
+    const det = data.final.map(f=>`<div class="ps-drow${f.mid===R.myMid?' me':''}"><div class="ps-dhead">${PartyShow.ava(f,'sm')}<b>${f.rank}° ${esc(f.name)}</b><span>${f.total} 👑</span></div>
+      <div class="ps-dbody">${f.wins} vittori${f.wins===1?'a':'e'}${f.bonusIds.length ? ' · ' + f.bonusIds.map(id=>`${bmap[id].emoji} ${esc(bmap[id].title)}`).join(' · ') : ' · nessun bonus'}</div>${PartyShow.statsHtml(f.stats, data.nPlayers>=7)}</div>`).join('');
+    const acts = document.createElement('div');
+    acts.className = 'ps-actions';
+    acts.innerHTML = (isHost
+      ? `<button class="btn-primary" id="ps-again">🎉 Nuovo party</button><button class="btn-secondary" id="ps-lobby">Torna alla stanza</button>`
+      : `<div class="results-wait">L’host può avviare un nuovo party…</div>`)
+      + `<button class="btn-secondary" id="ps-home">Esci</button>`;
+    const box = document.createElement('div');
+    box.className = 'ps-detail';
+    box.innerHTML = `<h3>Dettaglio e statistiche</h3><div class="ps-dsum">⏱ ${fmtDur(data.secs)} · ▶ ${data.moves||0} mosse · 🔄 ${data.rounds||0} giri · ${data.total} partite</div>${det}`;
+    st.querySelector('.ps-podium-wrap').appendChild(acts);
+    st.querySelector('.ps-podium-wrap').appendChild(box);
+    const q = id=>document.getElementById(id);
+    if(q('ps-again')) q('ps-again').onclick = ()=>{ PartyShow.stop(); UI.partyAgain(); };
+    if(q('ps-lobby')) q('ps-lobby').onclick = ()=>{ PartyShow.stop(); UI.backToLobby(); };
+    if(q('ps-home')) q('ps-home').onclick = ()=>{ PartyShow.stop(); UI.leaveToHome(); };
+    PartyShow.el('party-skip').style.display = 'none';
+    st.scrollTo({top:0, behavior:'smooth'});
+  }
+};
+
+(function(){
+  const o = document.getElementById('party-overlay');
+  const skip = document.getElementById('party-skip');
+  if(o) o.addEventListener('click', e=>{ if(e.target.closest('button,a')) return; if(PartyShow.cancel) PartyShow.cancel(); });
+  if(skip) skip.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(PartyShow.phase==='intro' || PartyShow.phase==='bonus'){
+      PartyShow.skipBonus = true; PartyShow.speed = 8;
+      if(R.role==='host'){ try{ broadcastGuests({t:'partyAdv', all:true}); }catch(err){} }
+    }
+    else PartyShow.speed = 6;
+    if(PartyShow.cancel) PartyShow.cancel();
+    if(PartyShow.advRes) PartyShow.advRes();
+  });
+  const fast = document.getElementById('party-fast');
+  if(fast) fast.addEventListener('click', e=>{ e.stopPropagation(); PartyShow.speed = 14; if(PartyShow.cancel) PartyShow.cancel(); });
+  window.addEventListener('resize', ()=>{ if(o && o.style.display!=='none') PartyShow.fxSize(); });
+})();
+
+/* ============================================================
    STATISTICS SCREEN
    Everything is computed from Store.data.games, so deleting one game
    (or filtering by mode / dates) simply recomputes the numbers.
 ============================================================ */
-const SF = {tab:'me', mode:'all', range:'all', from:'', to:'', open:null};
+const SF = {tab:'me', mode:'all', kind:'all', range:'all', from:'', to:'', open:null};
 
 function pct(a,b){ return b ? Math.round(100*a/b)+'%' : '—'; }
 function fmtTime(s){ const h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h? `${h} h ${m} min` : `${m} min`; }
@@ -4398,6 +5236,17 @@ function sfGames(){
   let g = Store.data.games.slice().sort((a,b)=>b.ts-a.ts);   // newest first
   if(SF.mode==='online') g = g.filter(x=>x.online);
   else if(SF.mode==='bot') g = g.filter(x=>!x.online);
+  if(SF.kind==='party') g = g.filter(x=>x.pty);
+  else if(SF.kind==='normal') g = g.filter(x=>!x.pty);
+  return inRange(g);
+}
+function sfParties(){
+  let p = Store.data.parties.slice().sort((a,b)=>b.ts-a.ts);
+  if(SF.mode==='online') p = p.filter(x=>x.online);
+  else if(SF.mode==='bot') p = p.filter(x=>!x.online);
+  return inRange(p);
+}
+function inRange(g){
   const sod = t=>{ const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
   const now = new Date();
   let from = 0, to = Infinity;
@@ -4413,13 +5262,13 @@ function sfGames(){
 
 function aggregate(games){
   const A = {games:0, wins:0, ties:0, sumPlace:0, sumNorm:0, places:{}, streak:0, bestStreak:0,
-    t:{played:0,pickups:0,taken:0,sboboz:0,sbobozCards:0,sbobozKings:0,kings:0,jollies:0,turns:0,reveals:0,discards:0,jdraws:0,queens:0},
+    party:0, t:{played:0,pickups:0,taken:0,sboboz:0,sbobozCards:0,sbobozKings:0,kings:0,jollies:0,turns:0,reveals:0,discards:0,jdraws:0,queens:0},
     maxHand:{1:0,2:0}, secs:0, online:0, solo:0, byN:{}, ninja:{}, rivals:{}, scores:[], stale:0};
   NINJAGO_POOL.forEach(n=>{ A.ninja[n.name] = {games:0, wins:0, sumPlace:0, sumNorm:0, sboboz:0, played:0, ahead:0, behind:0}; });
   const chrono = games.slice().reverse();
   chrono.forEach(g=>{
     const me = g.rows.find(r=>r.me); if(!me) return;
-    A.games++;
+    A.games++; if(g.pty) A.party++;
     const tie = !!me.t, n = g.n || g.rows.length;
     const nm = normPos(me.pl, n);
     A.sumPlace += me.pl; A.sumNorm += nm; A.scores.push({norm:nm, win:!tie && me.pl===1, tie, pl:me.pl, n});
@@ -4482,6 +5331,7 @@ function filtersHtml(){
   const seg = (name, items)=>`<div class="seg" data-seg="${name}">${items.map(([v,l])=>`<button data-v="${v}" class="${SF[name]===v?'on':''}">${l}</button>`).join('')}</div>`;
   let h = '<div class="sf">';
   h += seg('mode', [['all','Tutte'],['bot','Contro bot'],['online','Online']]);
+  if(SF.tab!=='party') h += seg('kind', [['all','Tutte le modalità'],['normal','Normali'],['party','Party 🎉']]);
   h += seg('range', [['all','Sempre'],['today','Oggi'],['week','Settimana'],['month','Mese'],['custom','Date…']]);
   if(SF.range==='custom') h += `<div class="sf-dates"><label>dal <input type="date" id="sf-from" value="${SF.from}"></label><label>al <input type="date" id="sf-to" value="${SF.to}"></label></div>`;
   return h + '</div>';
@@ -4502,7 +5352,9 @@ function statsMe(games){
       <div><b>${nrm.toFixed(0)}<small>/100</small></b><span>punteggio posizione</span></div>
     </div></div>
     <p class="hint">Il <b>punteggio posizione</b> normalizza il piazzamento sul numero di giocatori: 100 = sempre primo, 0 = sempre ultimo (così una partita in 2 e una in 6 contano allo stesso modo).</p>`;
-  h += `<div class="form-strip">${A.scores.slice(-20).map(s=>`<i class="${s.win?'w':s.tie?'t':s.pl===s.n?'l':'m'}" title="${s.pl}° su ${s.n}">${s.win?'🏆':s.pl}</i>`).join('')}</div>`;
+  { const L = A.scores.slice(-20);
+    h += `<div class="form-strip">${L.map((s,i)=>`<i class="${s.win?'w':s.tie?'t':s.pl===s.n?'l':'m'}${i===L.length-1?' last':''}" title="${s.pl}° su ${s.n}">${s.win?'🏆':s.pl}</i>`).join('')}</div>
+    <div class="form-leg"><span>← meno recente</span><span>più recente →</span></div>`; }
   h += svgTrend(A.scores);
   h += `<h4>Numeri</h4><div class="stat-grid">
     ${tile(A.streak,'serie attuale')}${tile(A.bestStreak,'serie record')}${tile(A.ties+(A.stale?'':''),'pareggi')}
@@ -4553,7 +5405,7 @@ function gameCard(g){
   const when = d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
   const open = SF.open===g.id;
   const win = !me.t && me.pl===1;
-  const tag = g.draw ? '🤝 patta' : g.stale ? 'stallo' : '';
+  const tag = (g.draw ? '🤝 patta' : g.stale ? 'stallo' : '') + (g.pty ? ((g.draw||g.stale)?' · ':'') + `🎉 party ${g.pty.k}/${g.pty.total}` : '');
   let h = `<div class="game ${open?'open':''}" data-id="${esc(g.id)}">
     <button class="game-head" data-toggle="${esc(g.id)}">
       <span class="g-when">${when}<small>${g.n} giocatori · ${g.online?'online':'contro bot'}${tag?' · '+tag:''}</small></span>
@@ -4563,7 +5415,7 @@ function gameCard(g){
     const rows = g.rows.slice().sort((a,b)=>a.pl-b.pl);
     h += `<div class="game-body">
       ${g.legacy ? '<p class="muted">Partita importata dalla vecchia versione: dettagli non disponibili.</p>' : `
-      <div class="g-sum"><span>⏱ ${fmtDur(g.secs)}</span><span>🎴 ${g.decks} mazz${g.decks>1?'i':'o'}</span><span>▶ ${g.turns} mosse</span></div>
+      <div class="g-sum"><span>⏱ ${fmtDur(g.secs)}</span><span>🎴 ${g.decks} mazz${g.decks>1?'i':'o'}</span><span>▶ ${g.turns} mosse</span>${g.rounds?`<span>🔄 ${g.rounds} giri</span>`:''}</div>
       <div class="g-rank">${rows.map(r=>{
         const st = r.st||{};
         return `<div class="g-row ${r.me?'me':''}"><span class="g-pl">${r.pl}°${r.t?'=':''}</span><span class="g-nm">${esc(r.me?'Tu':r.w)}${r.k==='b'?' <small>bot</small>':''}</span>
@@ -4571,6 +5423,69 @@ function gameCard(g){
       }).join('')}</div>`}
       <button class="btn-secondary danger g-del" data-del="${esc(g.id)}">Elimina questa partita</button>
     </div>`;
+  }
+  return h + '</div>';
+}
+
+function statsParty(){
+  const ps = sfParties();
+  if(!ps.length) return '<p class="muted empty">Nessun party concluso in questo periodo. Attiva la modalità party nella stanza: parte dalle 3 persone in su!</p>';
+  const tile = (v,l,cls)=>`<div class="stat-tile ${cls||''}"><b>${v}</b><span>${l}</span></div>`;
+  const mine = p=>p.rows.find(r=>r.me) || null;
+  let won = 0, crowns = 0, maxCr = 0, myParties = 0, secs = 0, games = 0, bonus = 0, humanWon = 0, botWon = 0;
+  const places = {}, bonusCount = {}, winCrowns = [];
+  ps.forEach(p=>{
+    const m = mine(p);
+    secs += p.secs||0; games += p.games||0;
+    const top = p.rows.filter(r=>r.pl===1);
+    if(top.length) winCrowns.push(top[0].cr);
+    if(top.length && top.every(r=>r.k==='b')) botWon++; else if(top.length && top.every(r=>r.k==='h')) humanWon++;
+    p.rows.forEach(r=>{ (r.bo||[]).forEach(id=>{ if(r.me){ bonusCount[id] = (bonusCount[id]||0)+1; } }); });
+    if(!m) return;
+    myParties++; crowns += m.cr; maxCr = Math.max(maxCr, m.cr); bonus += (m.bo||[]).length;
+    if(m.pl===1) won++;
+    places[m.pl] = (places[m.pl]||0)+1;
+  });
+  const avgWin = winCrowns.length ? (winCrowns.reduce((a,b)=>a+b,0)/winCrowns.length) : 0;
+  const best = Object.keys(bonusCount).sort((a,b)=>bonusCount[b]-bonusCount[a])[0];
+  const bdef = best ? PARTY_BONUSES.find(b=>b.id===+best) : null;
+  const on = ps.filter(p=>p.online).length;
+  const f1 = x=>String(Math.round(x*10)/10).replace('.',',');
+  let h = `<p class="hint">Qui ci sono solo i party conclusi con la premiazione. Le singole partite giocate nei party le trovi anche nello Storico (filtro “Party”) e contano nelle altre schede.</p>
+    <h4>Numeri</h4><div class="stat-grid">
+    ${tile(ps.length,'party giocati')}${tile(won,'party vinti','acc')}${tile(pct(won, myParties),'% vittorie')}
+    ${tile(crowns,'corone totali')}${tile(maxCr||'—','record di corone')}${tile(myParties?f1(crowns/myParties):'—','corone medie')}
+    ${tile(winCrowns.length?f1(avgWin):'—','corone medie per vincere')}${tile(ps.length?f1(games/ps.length):'—','partite per party')}${tile(bonus,'corone bonus vinte')}
+    ${tile(on,'party online')}${tile(ps.length-on,'party contro bot')}${tile(fmtTime(secs),'tempo di party')}
+    ${tile(humanWon,'vinti da umani')}${tile(botWon,'vinti da bot')}${tile(ps.length?fmtDur(Math.round(secs/ps.length)):'—','durata media')}
+  </div>`;
+  if(bdef) h += `<p class="hint">Bonus che vinci più spesso: <b>${bdef.emoji} ${esc(bdef.title)}</b> (${bonusCount[best]} volte).</p>`;
+  const keys = Object.keys(places).map(Number).sort((a,b)=>a-b);
+  if(keys.length){
+    const mx = Math.max(...keys.map(k=>places[k]));
+    h += `<h4>I tuoi piazzamenti nei party</h4><div class="bars">${keys.map(k=>`<div class="bar-row"><span>${k}°</span><div class="bar"><i style="width:${Math.max(6,100*places[k]/mx)}%"></i></div><b>${places[k]}</b></div>`).join('')}</div>`;
+  }
+  h += `<h4>Ultimi party</h4><div class="games">${ps.slice(0,40).map(partyCard).join('')}</div>`;
+  return h;
+}
+
+function partyCard(p){
+  const me = p.rows.find(r=>r.me);
+  const d = new Date(p.ts);
+  const when = d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const open = SF.open===p.id;
+  const win = me && me.pl===1;
+  const bmap = id=>{ const b = PARTY_BONUSES.find(x=>x.id===id); return b ? b.emoji+' '+b.title : ''; };
+  let h = `<div class="game ${open?'open':''}">
+    <button class="game-head" data-toggle="${esc(p.id)}">
+      <span class="g-when">${when}<small>${p.n} giocatori · ${p.games} partite · ${p.online?'online':'contro bot'}</small></span>
+      <span class="g-place ${win?'win':''}">${me?me.pl+'°':'—'}${win?' 🏆':''}</span><span class="g-chev">▾</span>
+    </button>`;
+  if(open){
+    const rows = p.rows.slice().sort((a,b)=>a.pl-b.pl);
+    h += `<div class="game-body"><div class="g-sum"><span>⏱ ${fmtDur(p.secs)}</span><span>▶ ${p.moves||0} mosse</span>${p.rounds?`<span>🔄 ${p.rounds} giri</span>`:''}</div>
+      <div class="g-rank">${rows.map(r=>`<div class="g-row ${r.me?'me':''}"><span class="g-pl">${r.pl}°</span><span class="g-nm">${esc(r.me?'Tu':r.w)}${r.k==='b'?' <small>bot</small>':''}<small class="g-sub">${r.wins} vittori${r.wins===1?'a':'e'}${(r.bo&&r.bo.length)?' · '+r.bo.map(bmap).join(' · '):''}</small></span><span class="g-st"><i>${r.cr} 👑</i></span></div>`).join('')}</div>
+      <button class="btn-secondary danger g-del" data-delp="${esc(p.id)}">Elimina questo party</button></div>`;
   }
   return h + '</div>';
 }
@@ -4635,7 +5550,7 @@ function renderStats(tab){
   document.querySelectorAll('#stats-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===SF.tab));
   const games = sfGames();
   let html = filtersHtml();
-  html += SF.tab==='me' ? statsMe(games) : SF.tab==='ninja' ? statsNinja(games) : SF.tab==='lobby' ? statsLobby(games) : statsHist(games);
+  html += SF.tab==='me' ? statsMe(games) : SF.tab==='ninja' ? statsNinja(games) : SF.tab==='lobby' ? statsLobby(games) : SF.tab==='party' ? statsParty() : statsHist(games);
   const body = $('stats-body');
   const keep = body.parentElement.scrollTop;
   body.innerHTML = html;
@@ -4650,6 +5565,11 @@ function wireStats(){
   if($('sf-from')) $('sf-from').onchange = e=>{ SF.from = e.target.value; renderStats(); };
   if($('sf-to')) $('sf-to').onchange = e=>{ SF.to = e.target.value; renderStats(); };
   document.querySelectorAll('#stats-body [data-toggle]').forEach(b=>{ b.onclick = ()=>{ SF.open = SF.open===b.dataset.toggle ? null : b.dataset.toggle; renderStats(); }; });
+  document.querySelectorAll('#stats-body [data-delp]').forEach(b=>{
+    b.onclick = ()=>Modal.choice('Eliminare il party?', 'Sparisce dalle statistiche dei party (le singole partite restano nello Storico). Non si può annullare.', [['Elimina','y'],['Annulla','n']], v=>{
+      if(v==='y'){ Store.removeParty(b.dataset.delp); SF.open = null; renderStats(); UI.toastTop('Party eliminato'); }
+    });
+  });
   document.querySelectorAll('#stats-body [data-del]').forEach(b=>{
     b.onclick = ()=>Modal.choice('Eliminare la partita?', 'Sparisce dallo storico e da tutte le statistiche. Non si può annullare.', [['Elimina','y'],['Annulla','n']], v=>{
       if(v==='y'){ Store.remove(b.dataset.del); SF.open = null; renderStats(); UI.toastTop('Partita eliminata'); }
@@ -4673,6 +5593,69 @@ function wireStats(){
     Modal.choice('Azzerare le statistiche?', 'Questa azione non si può annullare.', [['Sì, azzera','y'],['Annulla','n']], v=>{ if(v==='y'){ Store.reset(); renderStats('hist'); } });
   };
 }
+
+/* ============================================================
+   UPDATE NOTES ("Novità")
+   major (2nd number changes) = real news, listed in detail;
+   minor (3rd number changes) = one short line.
+   The popup appears once, the first time the game is opened after
+   an update. Dates/times are when each file was produced.
+============================================================ */
+const CHANGELOG = [
+  {v:'1.1.3', d:'__BUILD__'},
+  {v:'1.1.2', d:'2026-10-15'},
+  {v:'1.1.1', d:'2026-10-15'},
+  {v:'1.1.0', major:true, d:'2026-10-15', title:'Modalità party', items:[
+    'Aggiunta la <b>modalità party</b>: più partite di fila, corone e premiazione finale.'
+  ]},
+  {v:'1.0.6', d:'2026-10-14'},
+  {v:'1.0.5', d:'2026-10-14'},
+  {v:'1.0.4', d:'2026-10-14'},
+  {v:'1.0.3', d:'2026-10-14'},
+  {v:'1.0.2', d:'2026-10-14'},
+  {v:'1.0.1', d:'2026-10-13'},
+  {v:'1.0.0', major:true, d:'2026-10-13', title:'Prima versione ufficiale', items:[
+    'Rilascio della prima versione ufficiale.'
+  ]}
+];
+
+const News = {
+  cmp(a, b){
+    const x = String(a||'0').split('.').map(Number), y = String(b||'0').split('.').map(Number);
+    for(let i=0;i<3;i++){ const d = (x[i]||0)-(y[i]||0); if(d) return d; }
+    return 0;
+  },
+  when(e){
+    const iso = e.d==='__BUILD__' ? (SBOBOZ_CONFIG.buildTime||'') : e.d;
+    if(!iso) return '';
+    const d = new Date(iso); if(isNaN(d)) return '';
+    return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'});
+  },
+  entryHtml(e){
+    const w = News.when(e);
+    if(e.major) return `<div class="news-entry major"><div class="news-head"><b>v${e.v}</b><span>${esc(e.title)}</span></div>${w?`<div class="news-when">${w}</div>`:''}<ul>${e.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    return `<div class="news-entry minor"><b>v${e.v}</b><span>Aggiornamento minore</span>${w?`<em>${w}</em>`:''}</div>`;
+  },
+  html(list){ return list.map(News.entryHtml).join(''); },
+  show(list, title){
+    closableModal(title||'Novità', `<div class="news">${News.html(list)}</div>`, true);
+  },
+  all(){ News.show(CHANGELOG, 'Novità e aggiornamenti'); },
+  /* once, the first time the game opens after an update */
+  check(){
+    const cur = SBOBOZ_CONFIG.version || '';
+    let seen = Store.data.seenVer;
+    if(!seen){
+      // a player from before this feature existed has already used the game
+      seen = (Store.data.games.length>0 || Store.data.name) ? '1.0.0' : cur;
+    }
+    if(News.cmp(seen, cur) < 0){
+      const list = CHANGELOG.filter(e=>News.cmp(e.v, seen)>0 && News.cmp(e.v, cur)<=0);
+      if(list.length) setTimeout(()=>News.show(list, '🎉 Novità'), 700);
+    }
+    if(Store.data.seenVer!==cur){ Store.data.seenVer = cur; Store.save(); }
+  }
+};
 
 /* ============================================================
    UI: screens, home, lobby, join, QR, statistics, rules, about
@@ -4745,6 +5728,29 @@ const UI = {
     R.members = R.members.filter(m=>m.connected || m.kind==='bot' || m.isHost);
     if(R.members.length<2){ UI.backToLobby(); return; }
     Client.reset();
+    Host.startGame();
+  },
+  /* party: next game with the same players (host) */
+  partyNext(){
+    if(R.role!=='host') return;
+    R.phase = 'lobby';
+    Client.reset();
+    Host.startGame();
+  },
+  /* party: all games done -> final ceremony for everybody */
+  partyFinale(){
+    if(R.role!=='host' || !R.party) return;
+    const data = Party.finalize();
+    broadcastGuests({t:'partyEnd', data});
+    try{ Analytics.partyEnd(data); }catch(e){}
+    Client.onPartyEnd(data);
+  },
+  partyAgain(){
+    if(R.role!=='host') return;
+    R.party = null; R.phase = 'lobby';
+    R.members = R.members.filter(m=>m.connected || m.kind==='bot' || m.isHost);
+    Client.reset();
+    if(R.members.length<PARTY_MIN_PLAYERS){ UI.backToLobby(); return; }
     Host.startGame();
   },
   backToLobby(){
@@ -4863,14 +5869,36 @@ const UI = {
         html += `<label class="set-row switch"><span>Usa 104 carte (due mazzi)</span><input type="checkbox" id="chk-two" ${L.settings.twoDecks?'checked':''}><i></i></label>`;
       }
     }
-    html += `<div class="set-note">${deckInfo}</div></div>`;
+    html += `<div class="set-note">${deckInfo}</div>`;
+    // ---- party mode ----
+    const partyOn = !!L.settings.party;
+    const canParty = n>=PARTY_MIN_PLAYERS;
+    if(isHost){
+      html += `<label class="set-row switch${(canParty||partyOn)?'':' disabled'}"><span>🎉 Modalità party</span><input type="checkbox" id="chk-party" ${partyOn?'checked':''} ${(canParty||partyOn)?'':'disabled'}><i></i></label>`;
+      if(!canParty && !partyOn) html += `<div class="party-note">Servono almeno ${PARTY_MIN_PLAYERS} giocatori.</div>`;
+    } else if(partyOn){
+      html += `<div class="set-row"><span>🎉 Modalità party</span><b>attiva</b></div>`;
+    }
+    if(partyOn){
+      const games = Party.gamesFor(L.settings, n), rec = Party.defaultGames(n), bonus = Party.bonusCount(n, games);
+            html += `<div class="set-sub"><span>Numero di partite</span>` + (isHost
+        ? `<span class="stepper"><button id="btn-pg-minus" ${games<=PARTY_MIN_GAMES?'disabled':''}>−</button><b>${games}</b><button id="btn-pg-plus" ${games>=PARTY_MAX_GAMES?'disabled':''}>+</button></span>`
+        : `<b>${games}</b>`) + `</div>`;
+      html += `<div class="party-note">Consigliate: ${rec}</div>`;
+      html += `<div class="party-note">Ogni vittoria vale una corona. Alla fine ${bonus} corone bonus per i record (sorteggiati), poi la premiazione: vince chi ha più corone.</div>`;
+      if(!canParty) html += `<div class="party-note warn">Per il party servono almeno ${PARTY_MIN_PLAYERS} giocatori.</div>`;
+    }
+    html += `</div>`;
     $('lobby-body').innerHTML = html;
 
     // footer
     const foot = $('lobby-foot');
     if(isHost){
       const ok = Room.canStart();
-      foot.innerHTML = `<button class="btn-primary big" id="btn-start" ${ok?'':'disabled'}>${ok ? `Inizia partita · ${n} giocatori` : 'Servono almeno 2 giocatori'}</button>`;
+      const pOn = !!L.settings.party;
+      const label = !ok ? (pOn ? `Il party richiede almeno ${PARTY_MIN_PLAYERS} giocatori` : 'Servono almeno 2 giocatori')
+        : (pOn ? `Inizia party · ${n} giocatori · ${Party.gamesFor(L.settings, n)} partite` : `Inizia partita · ${n} giocatori`);
+      foot.innerHTML = `<button class="btn-primary big" id="btn-start" ${ok?'':'disabled'}>${label}</button>`;
     } else {
       foot.innerHTML = `<div class="lobby-wait">In attesa che l’host avvii la partita…</div>`;
     }
@@ -4908,6 +5936,9 @@ const UI = {
       UI.toastTop('Puoi togliere solo i bot');
     };
     if(q('chk-two')) q('chk-two').onchange = (e)=>Room.setTwoDecks(e.target.checked);
+    if(q('chk-party')) q('chk-party').onchange = (e)=>Room.setParty(e.target.checked);
+    if(q('btn-pg-minus')) q('btn-pg-minus').onclick = ()=>Room.stepPartyGames(-1);
+    if(q('btn-pg-plus')) q('btn-pg-plus').onclick = ()=>Room.stepPartyGames(1);
     if(q('btn-start')) q('btn-start').onclick = ()=>{ Client.reset(); Room.start(); };
   }
 };
@@ -5188,7 +6219,7 @@ function showRules(){
     <p>Un effetto si attiva solo se la carta lo ha <i>davvero</i> in quel momento: un 5 con la mano vuota, un 3 senza sboboz, un J con l’ipersboboz vuoto o un 4 senza coperta sotto contano come carte normali.</p>
     <div class="rule-cards">
       ${card('2','Sempre giocabile. Dopo un 2 si può giocare qualsiasi carta.')}
-      ${card('3','Carta normale (la più bassa). Riporta sul tavolo, sotto di sé, tutte le carte dello sboboz.')}
+      ${card('3','Carta normale (la più bassa). Riporta sul tavolo, sotto di sé, tutte le carte dello sboboz. Se erano 3 e insieme al tuo formano abbastanza carte uguali di fila, scatta subito un nuovo sboboz.')}
       ${card('4','Giocato dalle scoperte: la coperta sotto diventa scoperta. Dalla mano è una carta normale.')}
       ${card('5','Giocato dalla mano: scarti una carta a scelta dalla tua mano nell’ipersboboz (prima di ripescare). Con più 5 insieme se ne scarta una sola.')}
       ${card('7','Annulla l’effetto della carta giocata subito dopo. Se anche questa è un 7, l’annullamento prosegue.')}
@@ -5215,6 +6246,15 @@ function showRules(){
       <li><b>Patta.</b> Con almeno 2 giocatori umani ancora in gara, uno può proporla in qualsiasi momento con il pulsante 🤝. Se tutti gli umani rimasti accettano, la partita finisce in parità; i bot accettano sempre. Contro i soli bot non è disponibile.</li>
     </ul>
 
+    <h4>Modalità party 🎉</h4>
+    <ul>
+      <li><b>Cos’è.</b> Con almeno 3 giocatori l’host può attivare il party: si giocano più partite di fila con gli stessi giocatori (contro i bot o online). Ogni <b>vittoria vale una corona</b>.</li>
+      <li><b>Quante partite.</b> Da 4 a 10, con i tasti + e −. Quelle consigliate sono <b>giocatori + 1</b> (con 4 giocatori, 5 partite): con meno partite conta molto di più la fortuna, con di più il risultato è più equilibrato ma il party dura di più.</li>
+      <li><b>Corone bonus.</b> Alla fine vengono sorteggiati <b>giocatori + 1</b> record tra 20 possibili (per esempio più sboboz, miglior piazzamento medio, più Regine attivate…) e chi li detiene riceve una corona. Non possono essere più delle partite giocate; un record viene sorteggiato solo se qualcuno lo detiene davvero (se sono tutti pari non vale). In caso di pari merito la corona va a tutti i pari. I record sui Jolly escono solo in 7 giocatori.</li>
+      <li><b>Premiazione.</b> Le corone bonus si rivelano una alla volta, poi il podio: vince chi ha più corone; a parità contano le partite vinte e poi il piazzamento medio. Una partita finita in stallo o patta non dà corone.</li>
+      <li><b>Statistiche.</b> Ogni partita del party è registrata anche tra quelle normali; i party conclusi hanno la loro scheda.</li>
+    </ul>
+
     <h4>Online</h4>
     <p>L’host crea la stanza e condivide codice o QR; gli altri entrano da «Entra in una stanza». Si può completare la stanza con bot, fino a 7 giocatori. Un giocatore che si disconnette viene sostituito da un bot finché non torna.</p>
     </div>`, true);
@@ -5225,10 +6265,12 @@ function showAbout(){
     <div class="about">
       <div class="about-logo">IlSboboz</div>
       <p>Fatto da <b>SuperMarioMacher</b> con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>, l’assistente AI di Anthropic.</p>
+      <p><button class="btn-secondary" id="btn-news">📜 Novità e aggiornamenti</button></p>
       <div class="about-disc"><b>Disclaimer per i creatori di Sboboz</b><br>Questa non è la versione originale di Sboboz: è una versione avanzata creata a partire dalla versione originale di Sboboz.</div>
       <p class="muted">Le partite online viaggiano direttamente tra i dispositivi (peer-to-peer); il gioco non ha un server proprio. Per l’accoppiamento iniziale si usa il servizio pubblico PeerJS. Ogni stanza accetta solo la stessa versione del gioco (impronta <code>${BUILD_SHORT}</code>) e l’host controlla ogni mossa.</p>
-      ${Analytics.configured() ? `<p class="muted"><b>Privacy.</b> Si raccolgono solo statistiche d’uso anonime (visite, tempo di utilizzo, dati di base delle partite) con Umami, <b>senza cookie</b> e senza nomi o dati personali. <label class="an-opt"><input type="checkbox" id="an-off" ${Analytics.optedOut()?'checked':''} ${navigator.doNotTrack==='1'?'disabled':''}> non inviare statistiche da questo dispositivo</label></p>` : ''}
+      ${Analytics.configured() ? `<div class="privacy-box"><p class="muted"><b>Privacy.</b> Si raccolgono solo statistiche d’uso anonime (visite, tempo di utilizzo, dati di base delle partite) con Umami, <b>senza cookie</b> e senza nomi o dati personali.</p><label class="an-opt"><input type="checkbox" id="an-off" ${Analytics.optedOut()?'checked':''} ${navigator.doNotTrack==='1'?'disabled':''}><span>Non inviare statistiche da questo dispositivo</span></label></div>` : ''}
     </div>`);
+  if($('btn-news')) $('btn-news').onclick = ()=>News.all();
   const off = $('an-off'); if(off) off.onchange = ()=>Analytics.setOptOut(off.checked);
 }
 
@@ -5240,9 +6282,17 @@ function showLog(){
     const st = p.st||{};
     return `<div class="live-row${p.id===V.me?' you':''}"><span>${esc(p.name)}${nameTag(p)}</span><i>🂠 ${st.played||0}</i><i>📥 ${st.pickups||0}</i><i>💥 ${st.sboboz||0}</i></div>`;
   }).join('');
+  const partyOn = !!(R.settings && R.settings.party);
+  let partyLive = '';
+  if(partyOn){
+    const pl = Client.partyLive, total = Party.gamesFor(R.settings, V.players.length);
+    const done = (pl && pl.k<pl.total) ? pl.k : 0;
+    const cr = {}; if(done) pl.crowns.forEach(c=>{ cr[c.name] = c.c; });
+    partyLive = `<h4>🎉 Party · partita ${done+1} di ${total}</h4><div class="live-stats">` + V.players.map(p=>`<div class="live-row${p.id===V.me?' you':''}"><span>${esc(p.name)}${nameTag(p)}</span><i>${cr[p.name]||0} 👑</i></div>`).join('') + `</div>`;
+  }
   const box = closableModal('Diario e statistiche', `
     <div class="deck-info">🎴 <b>${V.numDecks===1?'1 mazzo (52 carte)':'2 mazzi ('+(104+(V.hasJolly?1:0))+' carte'+(V.hasJolly?', con 1 Jolly':'')+')'}</b> · sboboz con <b>${V.sbobozThreshold}</b> carte uguali</div>
-    <h4>Questa partita</h4><div class="live-stats">${rows}</div><div class="live-legend">🂠 carte giocate · 📥 tavoli presi · 💥 sboboz</div>
+    ${partyOn ? partyLive : `<h4>Questa partita</h4><div class="live-stats">${rows}</div><div class="live-legend">🂠 carte giocate · 📥 tavoli presi · 💥 sboboz</div>`}
     <h4>Mosse</h4>${entries}`);
   box.style.textAlign = 'left';
 }
@@ -5336,7 +6386,7 @@ function wireUp(){
   $('btn-react').onclick = ()=>$('react-tray').classList.toggle('open');
   $('btn-end').onclick = ()=>{
     if(R.role==='host'){
-      Modal.choice('Terminare la partita?', 'Nessuna classifica: tutti tornano alla stanza.', [['Termina','y'],['Continua a giocare','n']], v=>{ if(v==='y') Host.abort(); });
+      Modal.choice('Terminare la partita?', (R.party ? 'Nessuna classifica: il party viene annullato e tutti tornano alla stanza.' : 'Nessuna classifica: tutti tornano alla stanza.'), [['Termina','y'],['Continua a giocare','n']], v=>{ if(v==='y') Host.abort(); });
     } else {
       Modal.choice('Uscire dalla partita?', 'Un bot prenderà il tuo posto.', [['Esci','y'],['Resta','n']], v=>{ if(v==='y'){ UI.teardown(); UI.show('home'); } });
     }
@@ -5383,6 +6433,7 @@ render = function(){
 wireUp();
 UI.show('home');
 try{ Analytics.init(); }catch(e){}
+try{ News.check(); }catch(e){}
 UI.renderHome();
 updateFullscreenButtons();
 
@@ -5399,7 +6450,7 @@ updateFullscreenButtons();
   }catch(e){}
 })();
 
-window.__dbg={Eng:{aiStep,resolvePendingByAI,initGame,aiChooseFaceUp,skipToEnd,buildResults,aiPlayHand,aiPlayFaceUp,currentZone,resolvePlay,pickUpTable,checkAutoSboboz,applyEffect,log},isLegalRank,hasEffectContextual,hasAnyLegalInHand,humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
+window.__dbg={Party,PartyShow,Eng:{aiStep,resolvePendingByAI,initGame,aiChooseFaceUp,skipToEnd,buildResults,aiPlayHand,aiPlayFaceUp,currentZone,resolvePlay,pickUpTable,checkAutoSboboz,applyEffect,log},isLegalRank,hasEffectContextual,hasAnyLegalInHand,humanAction,render,R,Client,UI,Store,Host,Room,Guest,Modal,heldClones,get G(){return G;}};
 
 })();
 </script>
