@@ -934,7 +934,7 @@
   .ps-rcr{ font-weight:800; color:var(--gold-bright); }
   .ps-podium{ position:relative; display:flex; align-items:flex-end; justify-content:center; gap:6px; width:100%; margin-top:12px; transition:filter .6s; }
   .ps-podium.dim{ filter:brightness(.55); }
-  .ps-spot{ position:absolute; left:-6%; right:-6%; top:-30%; bottom:0; background:radial-gradient(ellipse at 50% 0%, rgba(255,243,176,.4), transparent 62%); opacity:0; transition:opacity 1.2s; pointer-events:none; }
+  .ps-spot{ position:fixed; left:0; right:0; top:0; bottom:0; background:radial-gradient(ellipse 85% 75% at 50% 0%, rgba(255,243,176,.34), rgba(255,243,176,.14) 45%, transparent 78%); opacity:0; transition:opacity 1.2s; pointer-events:none; }
   .ps-podium.final .ps-spot{ opacity:1; }
   .ps-col{ flex:1 1 0; min-width:0; max-width:190px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; position:relative; }
   .ps-col.c1{ flex:1.25 1 0; max-width:230px; }
@@ -1009,6 +1009,10 @@
   .ps-waithost{ font-size:.85rem; opacity:.7; animation:psBlink 1.4s infinite; }
 
   .g-nm small.g-sub{ display:block; white-space:normal; margin-top:1px; }
+
+  .rank-row .rank-num{ display:inline-block; min-width:2.3em; margin-right:0; font-variant-numeric:tabular-nums; }
+  .pb-crowns{ display:flex; align-items:center; justify-content:flex-end; }
+  .pb-crowns b{ display:inline-block; min-width:1.5em; text-align:right; margin-left:2px; font-variant-numeric:tabular-nums; }
 
 </style>
 </head>
@@ -1220,8 +1224,8 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.1.3',   // mostrata in fondo alla home
-  buildTime: '2026-10-15T14:32',   // data e ora di creazione di questo file (per le novità)
+  version: '1.1.4',   // mostrata in fondo alla home
+  buildTime: '2026-10-15T18:57',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -3432,6 +3436,7 @@ const Guest = {
       case 'results': Client.onResults(msg.res, Client.V ? Client.V.me : 0, true); break;
       case 'partyEnd': Client.onPartyEnd(msg.data); break;
       case 'partyAdv': PartyShow.onAdv(msg); break;
+      case 'partyCtl': PartyShow.onCtl(msg); break;
       case 'rej': Client.onHostMessage(msg); break;
       case 'react': Client.onReact(msg); break;
       case 'aborted': Client.onAborted(); break;
@@ -3521,7 +3526,8 @@ const Party = {
   addGame(res){
     const P = R.party;
     const rows = res.rows.map(r=>({mid:r.mid, place:r.place, tie:!!r.tie, st:Object.assign({}, r.st)}));
-    const winners = res.stalemate ? [] : rows.filter(r=>r.place===1 && !r.tie).map(r=>r.mid);
+    // whoever had already finished first keeps the crown, even if the game ended in a stalemate or a draw
+    const winners = rows.filter(r=>r.place===1 && !r.tie).map(r=>r.mid);
     P.hist.push({rows, winners, stalemate:!!res.stalemate, turns:res.turns||0, rounds:res.rounds||0, secs:res.secs||0});
     P.k = P.hist.length;
     P.moves += res.turns||0; P.rounds += res.rounds||0;
@@ -4872,7 +4878,7 @@ function showResults(){
    Tap anywhere = hurry the current pause, "Salta" = jump ahead.
 ============================================================ */
 const PartyShow = {
-  tok:0, adv:0, advAll:false, advRes:null, speed:1, timeScale:1, data:null, parts:[], raf:0, cancel:null, phase:'', skipBonus:false,
+  tok:0, step:0, cuts:{}, speedAt:{}, adv:0, advAll:false, advRes:null, speed:1, timeScale:1, data:null, parts:[], raf:0, cancel:null, phase:'', skipBonus:false,
 
   el(id){ return document.getElementById(id); },
   reduced(){ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } },
@@ -4890,14 +4896,43 @@ const PartyShow = {
   wait(ms, tok){
     return new Promise((res, rej)=>{
       if(PartyShow.tok!==tok) return rej('x');
+      const n = ++PartyShow.step;                 // every device counts the pauses in the same order
+      if(PartyShow.speedAt[n]){ PartyShow.speed = PartyShow.speedAt[n]; delete PartyShow.speedAt[n]; }
       let t = null;
       const done = ()=>{ clearTimeout(t); PartyShow.cancel = null; PartyShow.tok===tok ? res() : rej('x'); };
+      if(PartyShow.cuts[n]){ delete PartyShow.cuts[n]; return done(); }
       t = setTimeout(done, Math.max(0, ms/(PartyShow.speed*PartyShow.timeScale)));
       PartyShow.cancel = done;
     });
   },
 
-  fastBtn(on){ const b = PartyShow.el('party-fast'); if(b) b.style.display = on ? '' : 'none'; },
+  /* Only the host drives the show: his taps / fast / skip are sent to everybody,
+     who apply them at the same point of the show. */
+  isHost(){ return R.role==='host'; },
+  send(a){ try{ broadcastGuests({t:'partyCtl', a, n:PartyShow.step}); }catch(e){} },
+  hurry(){ if(PartyShow.cancel){ PartyShow.send('hurry'); PartyShow.cancel(); } },
+  fast(){ PartyShow.speed = 14; PartyShow.send('fast'); if(PartyShow.cancel) PartyShow.cancel(); },
+  skip(){
+    if(PartyShow.phase==='intro' || PartyShow.phase==='bonus'){ PartyShow.skipBonus = true; PartyShow.speed = 8; }
+    else PartyShow.speed = 6;
+    PartyShow.send('skip');
+    if(PartyShow.cancel) PartyShow.cancel();
+    if(PartyShow.advRes) PartyShow.advRes();
+  },
+  onCtl(m){
+    const n = m.n|0;
+    if(m.a==='skip'){
+      if(PartyShow.phase==='intro' || PartyShow.phase==='bonus'){ PartyShow.skipBonus = true; PartyShow.speed = 8; } else PartyShow.speed = 6;
+      if(PartyShow.cancel) PartyShow.cancel();
+      if(PartyShow.advRes) PartyShow.advRes();
+      return;
+    }
+    const sp = m.a==='fast' ? 14 : 0;
+    if(PartyShow.step<n){ PartyShow.cuts[n] = true; if(sp) PartyShow.speedAt[n] = sp; }   // not there yet: do it when we arrive
+    else { if(sp) PartyShow.speed = sp; if(PartyShow.step===n && PartyShow.cancel) PartyShow.cancel(); }
+  },
+
+  fastBtn(on){ const b = PartyShow.el('party-fast'); if(b) b.style.display = (on && PartyShow.isHost()) ? '' : 'none'; },
   /* the host decides when to go on; the guests follow */
   waitNext(i, last, tok, st){
     return new Promise((res, rej)=>{
@@ -5007,13 +5042,13 @@ const PartyShow = {
   async play(data, myMid){
     PartyShow.stop();
     const tok = ++PartyShow.tok;
-    PartyShow.data = data; PartyShow.speed = 1; PartyShow.skipBonus = false; PartyShow.adv = 0; PartyShow.advAll = false; PartyShow.advRes = null;
+    PartyShow.data = data; PartyShow.speed = 1; PartyShow.skipBonus = false; PartyShow.adv = 0; PartyShow.advAll = false; PartyShow.advRes = null; PartyShow.step = 0; PartyShow.cuts = {}; PartyShow.speedAt = {};
     // saved once, as soon as the show starts (even if somebody skips it)
     try{ Store.recordParty(data, R.myMid, data.nHumans>=2, (Client.results && Client.results.online) ? R.code : null); }catch(e){}
     const o = PartyShow.el('party-overlay');
     o.style.display = 'flex';
     PartyShow.fxSize();
-    PartyShow.el('party-skip').style.display = '';
+    PartyShow.el('party-skip').style.display = PartyShow.isHost() ? '' : 'none';
     PartyShow.fastBtn(false);
     requestAnimationFrame(()=>o.classList.add('on'));
     const crowns = {}; data.final.forEach(f=>{ crowns[f.mid] = f.wins; });
@@ -5204,19 +5239,10 @@ const PartyShow = {
 (function(){
   const o = document.getElementById('party-overlay');
   const skip = document.getElementById('party-skip');
-  if(o) o.addEventListener('click', e=>{ if(e.target.closest('button,a')) return; if(PartyShow.cancel) PartyShow.cancel(); });
-  if(skip) skip.addEventListener('click', e=>{
-    e.stopPropagation();
-    if(PartyShow.phase==='intro' || PartyShow.phase==='bonus'){
-      PartyShow.skipBonus = true; PartyShow.speed = 8;
-      if(R.role==='host'){ try{ broadcastGuests({t:'partyAdv', all:true}); }catch(err){} }
-    }
-    else PartyShow.speed = 6;
-    if(PartyShow.cancel) PartyShow.cancel();
-    if(PartyShow.advRes) PartyShow.advRes();
-  });
+  if(o) o.addEventListener('click', e=>{ if(e.target.closest('button,a')) return; if(PartyShow.isHost()) PartyShow.hurry(); });
+  if(skip) skip.addEventListener('click', e=>{ e.stopPropagation(); if(PartyShow.isHost()) PartyShow.skip(); });
   const fast = document.getElementById('party-fast');
-  if(fast) fast.addEventListener('click', e=>{ e.stopPropagation(); PartyShow.speed = 14; if(PartyShow.cancel) PartyShow.cancel(); });
+  if(fast) fast.addEventListener('click', e=>{ e.stopPropagation(); if(PartyShow.isHost()) PartyShow.fast(); });
   window.addEventListener('resize', ()=>{ if(o && o.style.display!=='none') PartyShow.fxSize(); });
 })();
 
@@ -5602,7 +5628,8 @@ function wireStats(){
    an update. Dates/times are when each file was produced.
 ============================================================ */
 const CHANGELOG = [
-  {v:'1.1.3', d:'__BUILD__'},
+  {v:'1.1.4', d:'__BUILD__'},
+  {v:'1.1.3', d:'2026-10-15'},
   {v:'1.1.2', d:'2026-10-15'},
   {v:'1.1.1', d:'2026-10-15'},
   {v:'1.1.0', major:true, d:'2026-10-15', title:'Modalità party', items:[
@@ -5613,7 +5640,7 @@ const CHANGELOG = [
   {v:'1.0.4', d:'2026-10-14'},
   {v:'1.0.3', d:'2026-10-14'},
   {v:'1.0.2', d:'2026-10-14'},
-  {v:'1.0.1', d:'2026-10-13'},
+  {v:'1.0.1', d:'2026-10-14'},
   {v:'1.0.0', major:true, d:'2026-10-13', title:'Prima versione ufficiale', items:[
     'Rilascio della prima versione ufficiale.'
   ]}
