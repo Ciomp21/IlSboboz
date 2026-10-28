@@ -1295,7 +1295,7 @@
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.2.0',   // mostrata in fondo alla home
-  buildTime: '2026-10-28T08:52',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-28T09:07',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -4156,7 +4156,8 @@ const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform
 const IS_STANDALONE = (()=>{ try{ return navigator.standalone===true || matchMedia('(display-mode: standalone)').matches; }catch(e){ return false; } })();
 const FS_REQ = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
 const fsElement = ()=>document.fullscreenElement || document.webkitFullscreenElement || null;
-if(IS_STANDALONE || (!FS_REQ && !IS_IOS)) document.documentElement.classList.add('nofs');
+// hidden only where it cannot work: browsers without the API, and iOS once installed (already full screen)
+if((!FS_REQ && !IS_IOS) || (IS_IOS && IS_STANDALONE)) document.documentElement.classList.add('nofs');
 
 function toggleFullscreen(){
   if(!fsElement()){
