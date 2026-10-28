@@ -1156,7 +1156,7 @@
   .topbar .icon-btn, .topbar button{ flex:0 0 auto; }
   .opp-seat{ min-width:0; } .opp-seat *{ min-width:0; }
   .opp-name, .opp-seat .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .modal, .modal-box{ max-width:calc(100vw - 20px); max-height:calc(var(--app-height) - 24px); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .modal, .modal-box{ max-height:calc(var(--app-height) - 24px); overflow-y:auto; -webkit-overflow-scrolling:touch; }
   .menu-btn, .btn-primary, .btn-secondary{ min-width:0; }
   @media (max-width:360px){ .topbar .btn-label{ display:none; } .logo{ font-size:2.6rem; } }
 
@@ -1168,6 +1168,23 @@
   }
   #toast-stack{ gap:6px; }
   @media (max-width:640px){ .effect-toast, #table-surface .constraint-banner{ font-size:.86rem !important; width:min(17em, 84vw) !important; } }
+
+  /* ================= 1.2.2b ================= */
+  .modal-box{ max-width:min(calc(420 * var(--u)), calc(100vw - 20px)); }
+  .modal-box.modal-box-wide{ max-width:min(calc(620 * var(--u)), calc(100vw - 20px)); }
+  html.land .modal-box, html.land .modal-box.modal-box-wide{ max-width:min(520px, calc(100vw - 20px)); }
+  html.land .modal-box{ padding:12px 16px; }
+  /* red "no" sign, like the 🚫 of the cancelled effect */
+  .nofx{ color:#e0453a; }
+  /* effect popups: sized in px so big (wide) screens, where rem is scaled up, do not make them tall */
+  .effect-toast, #table-surface .constraint-banner{ font-size:calc(13px + 4 * var(--u)) !important; height:2.5em !important; width:min(20em, 86vw) !important; }
+  @media (max-width:640px){ .effect-toast, #table-surface .constraint-banner{ font-size:.86rem !important; width:min(17em, 84vw) !important; height:2.7em !important; } }
+  html.land .effect-toast, html.land #table-surface .constraint-banner{ font-size:.8rem !important; height:2.4em !important; }
+  /* joker on a bot's small card */
+  .card.small.jolly{ justify-content:center; align-items:center; padding:0; }
+  .card.small.jolly .corner{ display:none; }
+  .card.small.jolly .suit-mid{ position:static; transform:none; font-size:calc(var(--small-w) * .62); line-height:1; display:flex; align-items:center; justify-content:center; }
+  html.land .card.small.jolly .suit-mid{ position:static; transform:none; font-size:calc(var(--small-w) * .62); }
 
 </style>
 </head>
@@ -1382,7 +1399,7 @@
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.2.2',   // mostrata in fondo alla home
-  buildTime: '2026-10-28T14:05',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-28T18:50',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -3865,6 +3882,9 @@ function positionFixed(el, rect){
   el.style.height = rect.height+'px';
   el.style.margin = '0';
   el.style.zIndex = 999;
+  /* the clone sits outside the layout, so give its markup the size it is actually drawn at */
+  el.style.setProperty('--card-w', rect.width+'px'); el.style.setProperty('--card-h', rect.height+'px');
+  el.style.setProperty('--small-w', rect.width+'px'); el.style.setProperty('--small-h', rect.height+'px');
 }
 
 /* The bot's hand-pile indicator is now just a small text row (no
@@ -4057,6 +4077,7 @@ function showEffectToast(text){
   if(dup){ clearTimeout(dup._t1); clearTimeout(dup._t2); dup.classList.add('show'); dup.classList.remove('hide');
     dup._t1 = setTimeout(()=>{ dup.classList.add('hide'); dup.classList.remove('show'); }, 2600);
     dup._t2 = setTimeout(()=>{ dup.remove(); surface.classList.toggle('has-toast', stack.children.length>0); }, 3100); return; }
+  while(stack.children.length >= 2){ const o = stack.firstElementChild; clearTimeout(o._t1); clearTimeout(o._t2); o.remove(); }
   const el = document.createElement('div');
   el.className = 'effect-toast';
   el.dataset.t = text; el.innerHTML = fxHtml(text);
@@ -5944,7 +5965,9 @@ const CHANGELOG = [
     'iOS: icona «senza effetto» corretta (cerchio barrato) e icone statistiche uniformi su tutti i dispositivi',
     'iOS: allineamento di avatar e numeri nella classifica di fine partita',
     'iOS: tolta la barra nera in fondo a schermo intero',
-    'Tutti i popup degli effetti hanno la stessa dimensione',
+    'Tutti i popup degli effetti hanno la stessa dimensione, più bassi su PC e mai più di due insieme',
+    'Orizzontale: jolly sulle carte dei bot sistemato, animazioni delle carte della dimensione giusta, popup (aggiornamenti, scarto) non più a tutto schermo',
+    'Icona «senza effetto» rossa',
     'Layout più robusto: se manca spazio gli elementi non si sovrappongono'
   ]},
   {v:'1.2.1', d:'__BUILD__', title:'Rifiniture e modalità orizzontale', items:[
