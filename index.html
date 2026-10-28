@@ -389,7 +389,7 @@
   .home-foot a, .about a{ color:var(--gold-bright); }
   .credits{ margin-bottom:3px; font-size:.76rem; color:rgba(243,236,217,.72); }
   .disclaimer{ font-size:.66rem; opacity:.8; }
-  @media (max-height:640px){ .fan{ display:none; } .home-menu{ gap:7px; } .menu-btn{ padding:9px 16px; } .menu-btn.primary{ padding:11px 16px; } .logo{ font-size:2.8rem; } .disclaimer{ display:none; } }
+  @media (max-height:640px){ .fan{ height:clamp(56px,11vh,74px); } .home-menu{ gap:7px; } .menu-btn{ padding:9px 16px; } .menu-btn.primary{ padding:11px 16px; } .logo{ font-size:2.8rem; } .disclaimer{ display:none; } }
 
   /* ================= JOIN ================= */
   #join-screen{ align-items:center; }
@@ -801,13 +801,13 @@
     #home-screen .home-menu{ grid-column:2; grid-row:1 / span 3; max-width:420px; }
     #home-screen .home-foot{ grid-column:1; grid-row:3; max-width:none; }
     #home-screen .logo{ font-size:2.6rem; margin:0; }
-    #home-screen .fan{ display:none; }
 
-    #game-screen[style*="flex"]{ display:grid !important; grid-template-columns:minmax(0,46fr) minmax(0,54fr); grid-template-rows:auto auto minmax(0,1fr) auto; column-gap:6px; row-gap:3px; }
+    #game-screen[style*="flex"]{ display:grid !important; grid-template-columns:minmax(0,51fr) minmax(0,49fr); grid-template-rows:auto auto minmax(0,1fr) auto; column-gap:6px; row-gap:3px; }
     #game-screen[style*="flex"] > *{ min-width:0; min-height:0; }
     #game-screen .topbar{ grid-column:1 / -1; grid-row:1; }
     #game-screen #react-tray{ position:absolute; top:44px; right:8px; z-index:50; }
-    #game-screen #opponent-seats{ grid-column:1; grid-row:2; width:auto; margin:0; align-content:flex-start; max-height:46vh; overflow:hidden; }
+    #game-screen #opponent-seats{ grid-column:1; grid-row:2; width:auto; margin:0; align-content:flex-start; overflow:hidden; }
+    #game-screen #table-surface, #game-screen #opponent-seats{ --card-w:var(--t-w); --card-h:var(--t-h); }
     #game-screen #table-surface{ grid-column:1; grid-row:3; width:auto; margin:0; }
     #game-screen .status-strip{ grid-column:1; grid-row:4; width:auto; justify-content:flex-start; }
     #game-screen #human-area{ grid-column:2; grid-row:2 / span 3; margin:0; width:auto; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; }
@@ -818,7 +818,7 @@
     /* phone turned clockwise: hand on the left, table and bots on the right */
     html.flip #home-screen .home-top, html.flip #home-screen .home-hero, html.flip #home-screen .home-foot{ grid-column:2; }
     html.flip #home-screen .home-menu{ grid-column:1; }
-    html.flip #game-screen[style*="flex"]{ grid-template-columns:minmax(0,54fr) minmax(0,46fr); }
+    html.flip #game-screen[style*="flex"]{ grid-template-columns:minmax(0,49fr) minmax(0,51fr); }
     html.flip #game-screen #opponent-seats, html.flip #game-screen #table-surface, html.flip #game-screen .status-strip{ grid-column:2; }
     html.flip #game-screen #human-area{ grid-column:1; }
   }
@@ -1043,12 +1043,17 @@
   .fan-card .fc-corner .sv{ width:.85em; height:.85em; } .fan-card .fc-mid{ line-height:0; } .fan-card .fc-mid .sv{ width:1em; height:1em; }
 
   /* while an effect message is on screen the constraint banner steps aside (they say the same thing) */
-  #table-surface.has-toast .constraint-banner{ opacity:0 !important; transition:opacity .15s; }
   .effect-toast{ -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); background:rgba(8,18,13,.78); font-size:1.05rem; box-shadow:0 6px 18px rgba(0,0,0,.35); }
 
   /* home on short screens (iPhone with Safari bars): nothing may overlap */
-  @media (max-height:720px){ .ninja-row{ display:none; } }
-  @media (max-height:600px){ .tagline{ display:none; } .fan{ display:none; } }
+  @media (orientation:portrait) and (max-height:720px){ .ninja-row{ display:none; } }
+  @media (orientation:portrait) and (max-height:600px){ .tagline{ display:none; } .fan{ display:none; } }
+
+  @media (orientation:landscape) and (min-height:521px) and (max-height:780px){
+    .fan{ height:clamp(52px,9vh,70px); margin-bottom:0; } .logo{ font-size:2.6rem; } .tagline{ margin:2px 0 4px; } .disclaimer{ display:none; }
+    .home-menu{ gap:7px; } .menu-btn{ padding:8px 16px; } .menu-btn.primary{ padding:10px 16px; }
+  }
+  @media (orientation:landscape) and (max-height:520px){ .fan{ height:clamp(40px,12vh,56px); width:170px; } }
 
   /* iOS: no zoom by double tap, no text size jumps */
   html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; touch-action:manipulation; }
@@ -1081,6 +1086,88 @@
   .modal-box{ background:linear-gradient(180deg, #11463a, #0a2e24); box-shadow:0 24px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(232,192,95,.25); }
   .modal-overlay{ -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); }
   :focus-visible{ outline:2px solid var(--gold-bright); outline-offset:2px; }
+
+  /* ---- 1.2.1 ---- */
+  /* effect on the next player: a pinned pill (same look as the pop-ups) instead of the old box, until the move is made */
+  #table-surface .constraint-banner{
+    position:absolute; left:50% !important; top:calc(6 * var(--u)) !important; transform:translateX(-50%) !important; z-index:5; margin:0;
+    background:rgba(8,18,13,.82); border:1px solid rgba(232,192,95,.5); color:var(--gold-bright);
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; padding:calc(7 * var(--u)) calc(16 * var(--u)); border-radius:calc(30 * var(--u));
+    min-height:0; max-width:92%; white-space:nowrap; box-shadow:0 6px 18px rgba(0,0,0,.35); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  }
+  @media (max-width:640px){ #table-surface .constraint-banner{ font-size:.82rem; padding:4px 12px; top:4px !important; } }
+  /* empty piles: just an outline, no card-back texture */
+  .card-back.pile-empty{ background:rgba(0,0,0,.14); border:2px dashed rgba(243,236,217,.16); box-shadow:none; opacity:1; }
+
+  .gi-block{ margin:0 0 14px; text-align:center; }
+  .gi-label{ font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(243,236,217,.55); margin-bottom:6px; }
+  .gi-code{ font:700 2rem 'Fraunces',serif; letter-spacing:.3em; padding-left:.3em; color:var(--gold-bright); margin-bottom:8px; }
+  .gi-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:7px 10px; background:rgba(0,0,0,.22); border-radius:10px; margin-bottom:5px; font-size:.86rem; text-align:left; }
+
+  /* seats in balanced rows: the box is exactly as wide as --per-row seats */
+  @media (min-width:641px){
+    html:not(.land) #opponent-seats{
+      --seat-w:calc(5 * var(--small-w) + 38 * var(--u)); --seat-gap:calc(5 * var(--u));
+      width:calc(var(--per-row, 3) * var(--seat-w) + (var(--per-row, 3) - 1) * var(--seat-gap) + 12 * var(--u) + 4px);
+      max-width:100%; margin-left:auto; margin-right:auto;
+    }
+  }
+
+  /* ================= 1.2.2 ================= */
+  .nofx{ display:inline-block; width:1.05em; height:1.05em; vertical-align:-.17em; margin-right:.12em; }
+  /* hover only where a real pointer exists: on touch screens it stuck and left cards half raised */
+  .card.selectable:hover{ transform:none; }
+  @media (hover:hover) and (pointer:fine){ .card.selectable:hover{ transform:translateY(-6px); } .card.selected:hover{ transform:translateY(-12px); } }
+  .card.selectable{ -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+  /* stats: every figure in its own fixed column, same on all systems */
+  .rank-stats{ align-items:center; flex:0 0 auto; }
+  .rank-stats i, .g-st i, .live-row i{ display:inline-flex; align-items:center; gap:.25em; line-height:1; font-style:normal; font-variant-numeric:tabular-nums; }
+  .rank-stats i{ min-width:2.9em; }
+  .rank-name{ display:flex; align-items:center; gap:6px; }
+  .rank-name .rank-num{ flex:0 0 auto; }
+  .rank-name .pa{ flex:0 0 auto; }
+  .rank-row{ display:flex; align-items:center; }
+  .pa, .s-ava, .pb-ava{ line-height:1; text-align:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Inter',sans-serif; }
+  .pa.bot, .s-ava.bot, .pb-ava.bot{ font-family:'Fraunces',serif; }
+  /* page always fills the real screen (iOS home-screen mode left a bar at the bottom) */
+  html{ background:#05130d; }
+  body{ position:fixed; inset:0; height:auto; }
+  .screen{ height:100%; }
+
+  /* small bot cards: rank + suit scale with the card, no overflow */
+  .card.small{ padding:calc(var(--small-w) * .1); }
+  .card.small .corner{ font-size:calc(var(--small-w) * .3); }
+  .card.small .suit-mid{ font-size:calc(var(--small-w) * .5); }
+  @media (min-width:641px){
+    .card.small .corner{ font-size:calc(var(--small-w) * .3); }
+    .card.small .suit-mid{ font-size:calc(var(--small-w) * .5); }
+  }
+  /* landscape phone: no room reserved for notifications, one corner only on bot cards */
+  html.land, html.land.fs{ --top-gap:4px; }
+  html.land .screen, html.land.fs .screen{ padding-top:max(env(safe-area-inset-top), 4px); }
+  html.land #game-screen{ padding-top:max(env(safe-area-inset-top), 4px); padding-bottom:max(env(safe-area-inset-bottom), 4px); }
+  html.land .card.small .corner.bottom{ display:none; }
+  html.land .card.small{ justify-content:flex-start; }
+  html.land .card.small .suit-mid{ top:auto; bottom:calc(var(--small-w) * .08); left:auto; right:calc(var(--small-w) * .1); transform:none; }
+  html.land .card.small .corner{ font-size:calc(var(--small-w) * .34); }
+  html.land .card.small .suit-mid{ font-size:calc(var(--small-w) * .5); }
+  /* responsive safety: nothing may push or overlap its neighbours when space runs short */
+  .topbar{ min-width:0; } .topbar-title{ min-width:0; flex:1 1 auto; } .topbar h2{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .topbar .icon-btn, .topbar button{ flex:0 0 auto; }
+  .opp-seat{ min-width:0; } .opp-seat *{ min-width:0; }
+  .opp-name, .opp-seat .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .modal, .modal-box{ max-width:calc(100vw - 20px); max-height:calc(var(--app-height) - 24px); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .menu-btn, .btn-primary, .btn-secondary{ min-width:0; }
+  @media (max-width:360px){ .topbar .btn-label{ display:none; } .logo{ font-size:2.6rem; } }
+
+  /* all effect popups (toasts and the pinned pill) share one size */
+  .effect-toast, #table-surface .constraint-banner{
+    box-sizing:border-box; width:min(19em, 86vw) !important; height:2.9em !important; min-height:0 !important; padding:0 .9em !important;
+    display:flex !important; align-items:center; justify-content:center; text-align:center; line-height:1.12; font-size:1.05rem;
+    overflow:hidden; white-space:normal;
+  }
+  #toast-stack{ gap:6px; }
+  @media (max-width:640px){ .effect-toast, #table-surface .constraint-banner{ font-size:.86rem !important; width:min(17em, 84vw) !important; } }
 
 </style>
 </head>
@@ -1170,7 +1257,6 @@
 
 <!-- ===================== SETUP ===================== -->
 <div id="setup-screen" class="screen">
-  <div class="setup-meta room-meta"></div>
   <div id="setup-pick">
     <h2>Scegli le tue 5 carte scoperte</h2>
     <p>Hai 10 carte. Ne scegli 5 da mettere scoperte sopra le tue coperte (tutti le vedranno per il resto della partita), le altre 5 restano in mano. Selezionane <b id="setup-remaining">5</b>.</p>
@@ -1208,6 +1294,7 @@
     <div class="topbar-actions">
       <button class="icon-btn" id="btn-draw" style="display:none;" title="Proponi patta" aria-label="Proponi patta">🤝</button>
       <button class="icon-btn" id="btn-react" style="display:none;">💬</button>
+      <button class="icon-btn" id="btn-settings" title="Impostazioni e info" aria-label="Impostazioni e info">⚙</button>
       <button class="icon-btn" id="btn-log">Diario</button>
       <button class="icon-btn" id="btn-fullscreen-game">⛶</button>
       <button class="icon-btn danger" id="btn-end">Termina</button>
@@ -1294,8 +1381,8 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.2.0',   // mostrata in fondo alla home
-  buildTime: '2026-10-28T09:07',   // data e ora di creazione di questo file (per le novità)
+  version: '1.2.2',   // mostrata in fondo alla home
+  buildTime: '2026-10-28T14:05',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -3624,7 +3711,7 @@ const PARTY_BONUSES = [
   {id:1,  group:'avg',    dir:'min', emoji:'🥇', title:'Miglior piazzamento medio',  desc:'Chi ha chiuso le partite, in media, nelle posizioni più alte', fmt:'avg', get:a=>a.avgPlace},
   {id:2,  group:'avg',    dir:'max', emoji:'🐢', title:'Peggior piazzamento medio',  desc:'Chi ha chiuso le partite, in media, nelle posizioni più basse: una corona di consolazione!', fmt:'avg', get:a=>a.avgPlace},
   {id:3,  group:'hand',   dir:'max', emoji:'✋', title:'Mano più grande',            desc:'Chi ha tenuto in mano più carte tutte insieme, almeno una volta', fmt:'n', unit:'carte', get:a=>a.maxHand},
-  {id:4,  group:'played', dir:'max', emoji:'🂠', title:'Più carte giocate',          desc:'Chi ha giocato più carte in tutto il party', fmt:'n', get:a=>a.played},
+  {id:4,  group:'played', dir:'max', emoji:'🎴', title:'Più carte giocate',          desc:'Chi ha giocato più carte in tutto il party', fmt:'n', get:a=>a.played},
   {id:5,  group:'played', dir:'min', emoji:'🪶', title:'Meno carte giocate',         desc:'Chi ha giocato meno carte in tutto il party', fmt:'n', get:a=>a.played},
   {id:6,  group:'sboboz', dir:'max', emoji:'💥', title:'Più sboboz',                 desc:'Chi ha fatto più sboboz', fmt:'n', get:a=>a.sboboz},
   {id:7,  group:'sboboz', dir:'min', emoji:'🤫', title:'Meno sboboz',                desc:'Chi ha fatto meno sboboz', fmt:'n', get:a=>a.sboboz},
@@ -3961,16 +4048,18 @@ function showEffectToast(text){
   }
   const rect = surface.getBoundingClientRect();
   stack.style.left = (rect.left + rect.width/2) + 'px';
-  stack.style.top = (rect.top + 8) + 'px';
+  const pill = document.getElementById('constraint-banner');
+  const off = (pill && pill.style.visibility==='visible') ? pill.offsetHeight + 14 : 8;     // below the pinned effect pill, if any
+  stack.style.top = (rect.top + off) + 'px';
   stack.style.maxWidth = Math.max(160, rect.width - 16) + 'px';
   // the same message twice in a row (two events of one move) is shown once
-  const dup = [...stack.children].find(c=>c.textContent===text && !c.classList.contains('hide'));
+  const dup = [...stack.children].find(c=>c.dataset.t===text && !c.classList.contains('hide'));
   if(dup){ clearTimeout(dup._t1); clearTimeout(dup._t2); dup.classList.add('show'); dup.classList.remove('hide');
     dup._t1 = setTimeout(()=>{ dup.classList.add('hide'); dup.classList.remove('show'); }, 2600);
     dup._t2 = setTimeout(()=>{ dup.remove(); surface.classList.toggle('has-toast', stack.children.length>0); }, 3100); return; }
   const el = document.createElement('div');
   el.className = 'effect-toast';
-  el.textContent = text;
+  el.dataset.t = text; el.innerHTML = fxHtml(text);
   stack.appendChild(el);
   surface.classList.add('has-toast');
   requestAnimationFrame(()=>{ el.classList.add('show'); });
@@ -3997,7 +4086,7 @@ function fitLayout(){
   const wide = window.innerWidth >= 900 && !land;
   // landscape computer screens: covered stacks and hand sit side by side, so the cards can be much bigger
   gs.classList.toggle('sbs', wide && window.innerWidth/window.innerHeight >= 1.4);
-  const maxW = mobile ? 66 : (wide ? 190 : (land ? 74 : (window.innerWidth>=700 ? 126 : 84)));   // tablets in portrait get big cards too
+  const maxW = mobile ? 66 : (wide ? 190 : (land ? 80 : (window.innerWidth>=700 ? 126 : 84)));   // tablets in portrait get big cards too
   const humanArea = document.getElementById('human-area');
   const nb = parseInt(gs.getAttribute('data-bots'),10) || 0;
   const minW = 30;
@@ -4021,8 +4110,11 @@ function fitLayout(){
     if(stacks.scrollWidth > stacks.clientWidth + 1) return false;
     return true;
   }
+  let tw = null;   // landscape phone: table + bots get their own card size, so the hand can be as big as in portrait
   function apply(cw){
     root.style.setProperty('--card-w', cw+'px');
+    if(land){ const t = tw || cw; root.style.setProperty('--t-w', t+'px'); root.style.setProperty('--t-h', Math.round(t*1.41)+'px'); }
+    else { root.style.removeProperty('--t-w'); root.style.removeProperty('--t-h'); }
     if(!mobile) root.style.setProperty('--card-h', Math.round(cw*1.41)+'px');   // real card proportions
     else root.style.removeProperty('--card-h');                                   // back to the portrait CSS values
     if(wide){
@@ -4039,13 +4131,16 @@ function fitLayout(){
     }
     // bots' mini cards: as big as the seat's row allows. With few opponents
     // (or on a wide screen) the seat itself is as wide as its five cards.
-    let sw = Math.round(cw*0.8);
+    const bw = (land && tw) ? tw : cw;
+    let sw = Math.round(bw*0.8);
     if(!mobile || nb<=2){
       const k = mobile ? 0.8 : land ? (nb<=1 ? 0.7 : 0.55) : (nb<=1 ? 0.8 : nb===2 ? 0.68 : nb===3 ? 0.58 : 0.5);
-      sw = Math.round(cw * k);
-      const perRow = mobile ? 1 : (land ? Math.max(1, Math.min(nb, 2)) : Math.max(1, Math.min(nb, wide ? 5 : 3)));
+      sw = Math.round(bw * k);
+      const perRow = mobile ? 1 : (land ? Math.max(1, Math.min(nb, 2)) : Math.max(1, nb<=3 ? nb : Math.ceil(nb/2)));
       const uu = wide ? cw/120 : 1;
-      const cap = Math.floor((seats.clientWidth - (24 + perRow*44)*uu) / (5*perRow));
+      // width the seats can use: not their own box (it now shrinks around the seats), but the column they sit in
+      const availW = wide ? (parseFloat(root.style.getPropertyValue('--col-w')) || seats.parentElement.clientWidth) : seats.parentElement.clientWidth;
+      const cap = Math.floor((availW - (24 + perRow*44)*uu) / (5*perRow));
       if(cap>0) sw = Math.min(sw, cap);
     } else {
       const row = document.querySelector('.opp-stacks-row');
@@ -4059,6 +4154,12 @@ function fitLayout(){
     root.style.setProperty('--small-w', sw+'px');
     if(!mobile) root.style.setProperty('--small-h', Math.round(sw*1.41)+'px');
     else root.style.removeProperty('--small-h');
+  }
+  if(land){
+    // 1) table and bots: the biggest size the left column holds (hand kept small meanwhile)
+    let tBest = 26;
+    for(let t=64; t>=26; t-=2){ tw = t; apply(minW); if(fits()){ tBest = t; break; } }
+    tw = tBest;
   }
   let chosen = minW;
   for(let cw=maxW; cw>=minW; cw-=2){
@@ -4343,8 +4444,10 @@ function cardHtml(card, size){
   </div>`;
 }
 
+const PINNED_TOASTS = new Set(['🚫 Prossimo effetto annullato','⬆️ Serve più alta','⬇️ Serve più bassa','✨ Serve con effetto','⭕ Serve senza effetto']);
+
 function pileStackHtml(count){
-  if(count<=0) return `<div class="card-back" style="opacity:0.15;"></div>`;
+  if(count<=0) return `<div class="card-back pile-empty"></div>`;
   const n = Math.min(3, count);
   let html = '';
   for(let i=0;i<n;i++) html += `<div class="card-back pile-offset"></div>`;
@@ -4353,7 +4456,7 @@ function pileStackHtml(count){
 
 /* The sboboz pile lies face-up, in the order the cards were played (last one on top). */
 function faceUpPileHtml(cards){
-  if(!cards.length) return `<div class="card-back" style="opacity:0.15;"></div>`;
+  if(!cards.length) return `<div class="card-back pile-empty"></div>`;
   const n = cards.length, layers = Math.min(2, n-1);
   let html = '<div class="pile-stack">';
   for(let i=layers;i>=1;i--){
@@ -4363,6 +4466,8 @@ function faceUpPileHtml(cards){
   return html;
 }
 
+const NOFX_SVG='<svg class="nofx" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M5.6 18.4 18.4 5.6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
+function fxHtml(t){ return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace('⭕', NOFX_SVG); }
 function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ============================================================
@@ -4451,7 +4556,7 @@ async function playEvent(ev){
       }
       break;
     }
-    case 'toast': showEffectToast(ev.text); break;
+    case 'toast': if(!PINNED_TOASTS.has(ev.text)) showEffectToast(ev.text); break;   // effects on the next player stay pinned instead (constraint pill)
     default: break;
   }
 }
@@ -4525,11 +4630,11 @@ function renderPiles(){
   const cb = document.getElementById('constraint-banner');
   if(V.constraint){
     cb.style.visibility = 'visible';
-    if(V.constraint.type==='8') cb.textContent = `Vincolo: prossima carta ${V.constraint.mode==='higher'?'più alta':'più bassa'} dell'8.`;
-    else cb.textContent = `Vincolo: prossima carta ${V.constraint.mode==='effect'?'con effetto':'senza effetto'}.`;
+    if(V.constraint.type==='8') cb.textContent = V.constraint.mode==='higher' ? '⬆️ Serve più alta' : '⬇️ Serve più bassa';
+    else cb.innerHTML = fxHtml(V.constraint.mode==='effect' ? '✨ Serve con effetto' : '⭕ Serve senza effetto');
   } else if(V.suppressNext){
     cb.style.visibility = 'visible';
-    cb.textContent = 'Un 7 annulla l’effetto della prossima carta.';
+    cb.textContent = '🚫 Prossimo effetto annullato';
   } else {
     cb.style.visibility = 'hidden';
     cb.textContent = ' ';
@@ -4549,6 +4654,8 @@ function renderOpponents(){
   container.innerHTML = '';
   const n = V.players.length;
   document.getElementById('game-screen').setAttribute('data-bots', n-1);
+  // balanced rows on computers/tablets: 4 -> 2+2, 5 -> 3+2, 6 -> 3+3 (never 5 above and 1 below)
+  container.style.setProperty('--per-row', (n-1)<=3 ? Math.max(1,n-1) : Math.ceil((n-1)/2));
   for(let k=1;k<n;k++){
     const p = V.players[(V.me+k)%n];
     const seat = document.createElement('div');
@@ -5027,7 +5134,7 @@ function showResults(){
       : `<span class="pa sm">${esc(r.avatar||'🥷')}</span>`;
     return `<div class="rank-row${r.pid===me?' rank-you':''}"${style}>
       <span class="rank-name"><span class="rank-num">${r.place}°${r.tie?'=':''}</span>${av} ${nm}</span>
-      ${pty ? '' : `<span class="rank-stats"><i title="carte giocate">🂠 ${st.played||0}</i><i title="volte che ha preso il tavolo">📥 ${st.pickups||0}</i><i title="sboboz fatti">💥 ${st.sboboz||0}</i></span>`}
+      ${pty ? '' : `<span class="rank-stats"><i title="carte giocate">🎴 ${st.played||0}</i><i title="volte che ha preso il tavolo">📥 ${st.pickups||0}</i><i title="sboboz fatti">💥 ${st.sboboz||0}</i></span>`}
     </div>`;
   }).join('');
   if(pty) sub.textContent = `Partita ${pty.k} di ${pty.total} · ` + sub.textContent;
@@ -5648,7 +5755,7 @@ function gameCard(g){
       <div class="g-rank">${rows.map(r=>{
         const st = r.st||{};
         return `<div class="g-row ${r.me?'me':''}"><span class="g-pl">${r.pl}°${r.t?'=':''}</span><span class="g-nm">${esc(r.me?'Tu':r.w)}${r.k==='b'?' <small>bot</small>':''}</span>
-          <span class="g-st"><i title="carte giocate">🂠${st.played||0}</i><i title="tavoli presi">📥${st.pickups||0}</i><i title="sboboz con carte">💥${st.sbobozCards||0}</i><i title="sboboz con Re">👑${st.sbobozKings||0}</i><i title="mano massima">✋${st.maxHand||0}</i></span></div>`;
+          <span class="g-st"><i title="carte giocate">🎴${st.played||0}</i><i title="tavoli presi">📥${st.pickups||0}</i><i title="sboboz con carte">💥${st.sbobozCards||0}</i><i title="sboboz con Re">👑${st.sbobozKings||0}</i><i title="mano massima">✋${st.maxHand||0}</i></span></div>`;
       }).join('')}</div>`}
       <button class="btn-secondary danger g-del" data-del="${esc(g.id)}">Elimina questa partita</button>
     </div>`;
@@ -5831,6 +5938,22 @@ function wireStats(){
    an update. Dates/times are when each file was produced.
 ============================================================ */
 const CHANGELOG = [
+  {v:'1.2.2', d:'__BUILD__', title:'Orizzontale e iOS', items:[
+    'Modalità orizzontale: carte dei bot ridisegnate (un solo angolo, niente testo che esce), carte in mano più grandi, niente spazio sprecato in alto',
+    'iOS: carta deselezionata torna subito al suo posto',
+    'iOS: icona «senza effetto» corretta (cerchio barrato) e icone statistiche uniformi su tutti i dispositivi',
+    'iOS: allineamento di avatar e numeri nella classifica di fine partita',
+    'iOS: tolta la barra nera in fondo a schermo intero',
+    'Tutti i popup degli effetti hanno la stessa dimensione',
+    'Layout più robusto: se manca spazio gli elementi non si sovrappongono'
+  ]},
+  {v:'1.2.1', d:'__BUILD__', title:'Rifiniture e modalità orizzontale', items:[
+    'Bot allineati in righe bilanciate su computer e tablet (6 bot: 3 + 3)',
+    'Mazzi sboboz e ipersboboz vuoti di nuovo davvero vuoti',
+    'Codice stanza in partita dentro il tasto ⚙ (impostazioni e info)',
+    'Effetti contro di te: il popup resta finché non giochi, al posto del riquadro vincolo',
+    'Modalità orizzontale rivista: carte in mano più grandi, bot proporzionati, home con carte e ninja visibili'
+  ]},
   {v:'1.2.0', major:true, d:'__BUILD__', title:'Sistemazione bug importanti, layout e compatibilità', items:[
     'Sistemati diversi bug importanti, soprattutto quando un giocatore esce e rientra in una partita online.',
     'Layout rinnovato e più curato su telefono, tablet e PC, con un miglior supporto per iOS.'
@@ -5944,13 +6067,12 @@ const UI = {
     map = map || UI.curPings();
     const online = (R.role==='host' && R.online) || R.role==='guest';
     document.querySelectorAll('.room-meta').forEach(box=>{
-      if(!online || !R.code){ box.innerHTML = ''; box.style.display = 'none'; return; }
+      if(!online || !R.code){ box.innerHTML = ''; box.dataset.k = ''; box.style.display = 'none'; return; }
       let v = null;
       if(R.role==='guest') v = map[R.myMid]; else { const a = Object.values(map); v = a.length ? Math.max(...a) : null; }
       const pg = v==null ? '' : `<span class="ping-chip ${UI.pingClass(v)}" title="${R.role==='host'?'Ping del giocatore più lento':'Il tuo ping verso l’host'}">${v} ms</span>`;
-      const sig = `<button class="room-chip" type="button" title="Codice della stanza: tocca per copiarlo">🔑 ${esc(R.code)}</button>`;
       box.style.display = '';
-      if(box.dataset.k !== sig+'|'+(v==null?'':'p')){ box.dataset.k = sig+'|'+(v==null?'':'p'); box.innerHTML = sig + '<span class="ping-slot"></span>'; box.querySelector('.room-chip').onclick = ()=>{ copyText(R.code); UI.toastTop('Codice copiato'); }; }
+      if(box.dataset.k!=='p'){ box.dataset.k = 'p'; box.innerHTML = '<span class="ping-slot"></span>'; }
       box.querySelector('.ping-slot').innerHTML = pg;
     });
   },
@@ -6398,6 +6520,28 @@ function openProfile(){
 /* ============================================================
    RULES / ABOUT / LOG
 ============================================================ */
+/* in-game settings / info: room code (only here, not always on screen), connection, version.
+   It is also where the settings of the next versions will go. */
+function showGameInfo(){
+  const online = (R.role==='host' && R.online) || R.role==='guest';
+  const members = R.role==='host' ? R.members : ((R.lobby && R.lobby.members) || []);
+  const pings = UI.curPings();
+  let h = '';
+  if(online && R.code){
+    h += `<div class="gi-block"><div class="gi-label">Codice stanza</div><div class="gi-code">${esc(R.code)}</div>
+      <button class="btn-secondary" id="gi-copy">Copia il codice</button></div>`;
+    const rows = members.filter(m=>m.kind==='human' && !m.isHost && pings[m.mid]!=null)
+      .map(m=>`<div class="gi-row"><span>${esc(m.name)}</span><span class="s-ping ${UI.pingClass(pings[m.mid])}">${pings[m.mid]} ms</span></div>`).join('');
+    const mine = (R.role==='guest' && pings[R.myMid]!=null) ? `<div class="gi-row"><span>Il tuo ping verso l’host</span><span class="s-ping ${UI.pingClass(pings[R.myMid])}">${pings[R.myMid]} ms</span></div>` : '';
+    if(rows || mine) h += `<div class="gi-block"><div class="gi-label">Connessione</div>${mine}${R.role==='host'?rows:''}</div>`;
+  } else {
+    h += `<p class="muted">Partita locale contro i bot: nessun codice stanza.</p>`;
+  }
+  h += `<div class="gi-block"><div class="gi-label">Versione</div><div class="gi-row"><span>IlSboboz</span><span>v${esc((window.SBOBOZ_CONFIG && SBOBOZ_CONFIG.version) || '')}</span></div></div>`;
+  closableModal('Impostazioni e info', h);
+  const c = $('gi-copy'); if(c) c.onclick = ()=>{ copyText(R.code); UI.toastTop('Codice copiato'); };
+}
+
 function closableModal(title, bodyHtml, wide){
   const box = Modal.open(`<div class="modal-header-row"><h3>${title}</h3><button class="modal-close-x" id="mx">&times;</button></div><div class="modal-scroll-body">${bodyHtml}</div>`, wide ? 'modal-box-wide left' : 'left', true);
   $('mx').onclick = Modal.close;
@@ -6545,7 +6689,7 @@ function showLog(){
   const entries = V.log.length ? groupLog(V.log).map(g=>'<p class="log-line">'+(g.text?esc(g.text):'')+g.subs.map(s=>'<br><span class="log-sub">'+esc(s)+'</span>').join('')+'</p>').join('') : '<p>Nessuna mossa ancora.</p>';
   const rows = V.players.map(p=>{
     const st = p.st||{};
-    return `<div class="live-row${p.id===V.me?' you':''}"><span>${esc(p.name)}${nameTag(p)}</span><i>🂠 ${st.played||0}</i><i>📥 ${st.pickups||0}</i><i>💥 ${st.sboboz||0}</i></div>`;
+    return `<div class="live-row${p.id===V.me?' you':''}"><span>${esc(p.name)}${nameTag(p)}</span><i>🎴 ${st.played||0}</i><i>📥 ${st.pickups||0}</i><i>💥 ${st.sboboz||0}</i></div>`;
   }).join('');
   const partyOn = !!(R.settings && R.settings.party);
   let partyLive = '';
@@ -6557,7 +6701,7 @@ function showLog(){
   }
   const box = closableModal('Diario e statistiche', `
     <div class="deck-info">🎴 <b>${V.numDecks===1?'1 mazzo (52 carte)':'2 mazzi ('+(104+(V.hasJolly?1:0))+' carte'+(V.hasJolly?', con 1 Jolly':'')+')'}</b> · sboboz con <b>${V.sbobozThreshold}</b> carte uguali</div>
-    ${partyOn ? partyLive : `<h4>Questa partita</h4><div class="live-stats">${rows}</div><div class="live-legend">🂠 carte giocate · 📥 tavoli presi · 💥 sboboz</div>`}
+    ${partyOn ? partyLive : `<h4>Questa partita</h4><div class="live-stats">${rows}</div><div class="live-legend">🎴 carte giocate · 📥 tavoli presi · 💥 sboboz</div>`}
     <h4>Mosse</h4>${entries}`);
   box.style.textAlign = 'left';
 }
@@ -6651,6 +6795,7 @@ function wireUp(){
     Client.act({t:'pickup'});
   });
   $('btn-log').onclick = showLog;
+  $('btn-settings').onclick = showGameInfo;
   $('btn-draw').onclick = ()=>{
     Modal.choice('Proporre la patta?', 'Se tutti gli altri giocatori (non bot) ancora in gara accettano, la partita finisce in parità.', [['Proponi','y'],['Annulla','n']], v=>{ if(v==='y') sendToHost({t:'draw', a:'offer'}); }, true);
   };
