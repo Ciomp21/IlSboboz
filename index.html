@@ -1223,6 +1223,21 @@
   .topbar-actions{ flex:0 0 auto; }
   .t.wait{ opacity:.6; font-style:normal; }
 
+  /* iPhone full screen: the strip under the game was the safe-area padding showing the dark background.
+     The panel now reaches the bottom edge and keeps its content above the home indicator instead. */
+  #game-screen, html.land #game-screen{ padding-bottom:0 !important; }
+  #human-area{ padding-bottom:calc(env(safe-area-inset-bottom, 0px) * .7 + 6px); margin-bottom:0; }
+  html.land #human-area{ padding-bottom:6px; }
+  html{ background:radial-gradient(ellipse at 50% 20%, #12291f, #05130d 75%) fixed #05130d; }
+
+  /* installed app (home screen): fill the physical screen, home-indicator area included */
+  @media all and (display-mode: standalone), all and (display-mode: fullscreen){
+    html, body{ height:100vh; }
+    body{ position:fixed; top:0; left:0; right:0; bottom:auto; height:100vh; }
+    @supports (height:100lvh){ html, body{ height:100lvh; } body{ height:100lvh; } }
+    .screen{ height:100%; }
+  }
+
 </style>
 </head>
 <body>
@@ -1435,7 +1450,7 @@
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.2.3',   // mostrata in fondo alla home
-  buildTime: '2026-10-29T09:17',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-29T10:57',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -6063,6 +6078,7 @@ const CHANGELOG = [
     'Ping di ogni giocatore accanto al nome in partita; il tuo accanto al titolo',
     'Lobby: tasto «Sono pronto» per i giocatori, l’host vede chi è pronto e decide quando iniziare',
     'Rivincita: si parte solo se tutti hanno votato sì, come per «pronto» in lobby (l’host non può forzare)',
+    'iPhone a schermo intero: tolta la striscia scura in fondo alla partita',
     'Ping dell’host visibile agli altri, in lobby e in partita',
     'Presa del tavolo obbligatoria molto più evidente (tavolo e tasto pulsanti)',
     'Tolte le reazioni dalla partita',
