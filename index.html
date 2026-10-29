@@ -1217,6 +1217,12 @@
   html.land .effect-toast, html.land #table-surface .constraint-banner{ font-size:.7rem !important; height:2em !important; width:min(17em, 40vw) !important; padding:0 .6em !important; }
   .topbar-title{ justify-content:flex-start; }
 
+  .topbar-title{ flex-direction:row !important; align-items:center; justify-content:flex-start; flex:0 1 auto; }
+  .topbar-title h2{ flex:0 0 auto; }
+  .topbar{ justify-content:space-between; }
+  .topbar-actions{ flex:0 0 auto; }
+  .t.wait{ opacity:.6; font-style:normal; }
+
 </style>
 </head>
 <body>
@@ -1429,7 +1435,7 @@
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.2.3',   // mostrata in fondo alla home
-  buildTime: '2026-10-29T09:05',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-29T09:17',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -4728,10 +4734,11 @@ function renderPiles(){
 function pingSpan(p){
   if(p.kind!=='human' || !(R.role==='host' ? R.online : R.role==='guest')) return '';
   const members = R.role==='host' ? R.members : ((R.lobby && R.lobby.members) || []);
-  const m = members.find(x=>x.kind==='human' && !x.isHost && x.name===p.name);
+  const m = members.find(x=>x.kind==='human' && x.name===p.name && (!x.isHost || R.role==='guest'));
   if(!m) return '';
-  const v = UI.curPings()[m.mid];
-  return `<span class="s-ping opp-ping${v==null?'':' '+UI.pingClass(v)}" data-ping="${m.mid}">${v==null?'':v+' ms'}</span>`;
+  const key = m.isHost ? 'host' : m.mid;
+  const v = UI.curPings()[key];
+  return `<span class="s-ping opp-ping${v==null?'':' '+UI.pingClass(v)}" data-ping="${key}">${v==null?'':v+' ms'}</span>`;
 }
 function renderOpponents(){
   const V = Client.V;
@@ -5189,7 +5196,12 @@ function renderResultsVotes(){
   if(info) info.innerHTML = names.length ? `✋ Vogliono la rivincita: <b>${names.map(esc).join(', ')}</b>` : (isHost ? '' : 'Puoi votare per una rivincita: decide l’host.');
   if(btn){ btn.textContent = mine ? '✋ Voto per la rivincita (annulla)' : '✋ Voglio la rivincita'; btn.classList.toggle('voted', mine); }
   const rm = document.getElementById('res-rematch');
-  if(rm) rm.textContent = names.length ? `Rivincita (${names.length} ${names.length===1?'voto':'voti'})` : 'Rivincita';
+  if(rm){
+    const need = members.filter(x=>x.kind==='human' && !x.isHost && x.connected).length;
+    const have = Client.rvotes.filter(mid=>members.some(x=>x.mid===mid && x.connected)).length;
+    rm.disabled = have < need;
+    rm.textContent = need ? (have<need ? `Rivincita (votano ${have}/${need})` : 'Rivincita (tutti d’accordo)') : 'Rivincita';
+  }
 }
 function hideResults(){
   const o = document.getElementById('results-overlay');
@@ -6050,7 +6062,8 @@ const CHANGELOG = [
   {v:'1.2.3', d:'__BUILD__', title:'Pronti, rivincita e rifiniture', items:[
     'Ping di ogni giocatore accanto al nome in partita; il tuo accanto al titolo',
     'Lobby: tasto «Sono pronto» per i giocatori, l’host vede chi è pronto e decide quando iniziare',
-    'Rivincita: tutti possono votarla, l’host ha l’ultima parola',
+    'Rivincita: si parte solo se tutti hanno votato sì, come per «pronto» in lobby (l’host non può forzare)',
+    'Ping dell’host visibile agli altri, in lobby e in partita',
     'Presa del tavolo obbligatoria molto più evidente (tavolo e tasto pulsanti)',
     'Tolte le reazioni dalla partita',
     'iPhone: la carta selezionata si alza subito',
@@ -6171,7 +6184,12 @@ const UI = {
   /* ---------- host/guest callbacks ---------- */
   lobbyChanged(){ if(UI.current==='lobby') UI.renderLobby(); },
   /* ping (ms): in the room next to every player, in game for me (the host sees the worst one) */
-  curPings(){ return R.role==='host' ? Room.pingMap() : (R.pings||{}); },
+  curPings(){
+    if(R.role==='host') return Room.pingMap();
+    const o = Object.assign({}, R.pings||{});
+    if(o[R.myMid]!=null) o.host = o[R.myMid];      // what a guest sees on the host is his own ping to the host
+    return o;
+  },
   pingClass(v){ return v<90 ? 'good' : (v<200 ? 'mid' : 'bad'); },
   pingChanged(map){
     map = map || UI.curPings();
@@ -6347,7 +6365,7 @@ const UI = {
       const tags = [];
       if(m.isHost) tags.push('<em class="t host">Host</em>');
       if(me) tags.push('<em class="t me">Tu</em>');
-      if(m.kind==='human' && !m.isHost && R.phase!=='game') tags.push(m.ready ? '<em class="t ready">✓ Pronto</em>' : '<em class="t wait">…</em>');
+      if(m.kind==='human' && !m.isHost && R.phase!=='game') tags.push(m.ready ? '<em class="t ready">✓ Pronto</em>' : '<em class="t wait">Non pronto</em>');
       if(m.kind==='bot') tags.push(m.random ? '<em class="t bot">Bot casuale</em>' : '<em class="t bot">Bot</em>');
       const ed = me ? '<button class="s-edit" id="btn-edit-me" title="Cambia nome e avatar">✎ Nome</button>' : '';
       const rnd = (isHost && m.kind==='bot') ? `<button class="s-rnd${m.random?' on':''}" data-rnd="${m.mid}" title="${m.random?'Bot casuale: cambia ninja a ogni partita':'Rendi casuale'}">🎲</button>` : '';
@@ -6356,7 +6374,7 @@ const UI = {
         ${ava}
         <span class="s-name">${esc(m.name)}</span>
         <span class="s-tags">${tags.join('')}</span>
-        ${(m.kind==='human' && !m.isHost && m.connected) ? `<span class="s-ping" data-ping="${m.mid}"></span>` : ''}
+        ${(m.kind==='human' && m.connected && (!m.isHost || R.role==='guest')) ? `<span class="s-ping" data-ping="${m.isHost ? 'host' : m.mid}"></span>` : ''}
         ${ed}${rnd}
         <span class="s-dot ${m.connected?'on':'off'}"></span>
         ${rm}
@@ -6402,9 +6420,10 @@ const UI = {
     // footer
     const foot = $('lobby-foot');
     if(isHost){
-      const ok = Room.canStart();
+      const ok = Room.canStart() && L.members.every(m=>m.kind!=='human' || m.isHost || !m.connected || m.ready);
       const pOn = !!L.settings.party;
-      const label = !ok ? (pOn ? `Il party richiede almeno ${PARTY_MIN_PLAYERS} giocatori` : 'Servono almeno 2 giocatori')
+      const notReady = Room.canStart() && !ok;
+      const label = notReady ? 'Aspetta che tutti siano pronti' : !ok ? (pOn ? `Il party richiede almeno ${PARTY_MIN_PLAYERS} giocatori` : 'Servono almeno 2 giocatori')
         : (pOn ? `Inizia party · ${n} giocatori · ${Party.gamesFor(L.settings, n)} partite` : `Inizia partita · ${n} giocatori`);
       const hum = L.members.filter(m=>m.kind==='human' && !m.isHost);
       const rdy = hum.filter(m=>m.ready).length;
