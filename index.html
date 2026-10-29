@@ -1186,6 +1186,37 @@
   .card.small.jolly .suit-mid{ position:static; transform:none; font-size:calc(var(--small-w) * .62); line-height:1; display:flex; align-items:center; justify-content:center; }
   html.land .card.small.jolly .suit-mid{ position:static; transform:none; font-size:calc(var(--small-w) * .62); }
 
+  /* ================= 1.2.3 ================= */
+  /* selection: hover must never decide the raised state (iOS keeps :hover after a tap) */
+  .card.selectable:hover{ transform:none; }
+  .card.selectable.selected, .card.selected.selectable:hover{ transform:translateY(-12px); }
+  @media (hover:hover) and (pointer:fine){ .card.selectable:not(.selected):hover{ transform:translateY(-6px); } }
+  .card.selectable{ transition:transform .14s ease; }
+
+  /* ping next to the name */
+  .topbar-title{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .topbar-title .room-meta{ margin-top:0; }
+  .opp-ping{ font-size:.6rem; margin-left:5px; flex:0 0 auto; align-self:center; opacity:.95; }
+  .opp-head .opp-name{ min-width:0; }
+  /* ready */
+  .t.ready{ background:rgba(90,200,120,.22); color:#9be7ad; } .t.wait{ opacity:.5; }
+  #btn-ready.ready-on{ background:linear-gradient(180deg,#2f8f55,#237044); }
+  .lobby-ready{ text-align:center; font-size:.8rem; color:rgba(243,236,217,.8); margin-bottom:6px; }
+  #btn-start.notall{ filter:saturate(.75); }
+  #res-vote.voted{ background:linear-gradient(180deg,#2f8f55,#237044); }
+  #results-actions .results-wait b{ color:var(--gold-bright); }
+  /* forced pick-up: impossible to miss */
+  #btn-pickup.forced{ background:linear-gradient(180deg,#d9573c,#a8361f); color:#fff; border-color:#ffb199; font-weight:700; animation:forcedPulse 1.1s ease-in-out infinite; }
+  #table-surface.must-take{ animation:mustTake 1.1s ease-in-out infinite; }
+  @keyframes forcedPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,120,90,.0); transform:scale(1); } 50%{ box-shadow:0 0 0 6px rgba(255,120,90,.35); transform:scale(1.03); } }
+  @keyframes mustTake{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,120,90,0), inset 0 0 0 0 rgba(255,120,90,0); } 50%{ box-shadow:0 0 18px 2px rgba(255,120,90,.45), inset 0 0 22px 0 rgba(255,120,90,.25); } }
+  /* landscape: use the whole screen, cutout included */
+  html.land .screen, html.land #game-screen, html.land #home-screen{ padding-left:4px !important; padding-right:4px !important; }
+  html.land .topbar{ margin-left:0; margin-right:0; }
+  /* landscape effect popups: small, so they stay clear of the cards */
+  html.land .effect-toast, html.land #table-surface .constraint-banner{ font-size:.7rem !important; height:2em !important; width:min(17em, 40vw) !important; padding:0 .6em !important; }
+  .topbar-title{ justify-content:flex-start; }
+
 </style>
 </head>
 <body>
@@ -1310,7 +1341,6 @@
     <div class="topbar-title"><h2>IlSboboz</h2><div class="topbar-meta room-meta"></div></div>
     <div class="topbar-actions">
       <button class="icon-btn" id="btn-draw" style="display:none;" title="Proponi patta" aria-label="Proponi patta">🤝</button>
-      <button class="icon-btn" id="btn-react" style="display:none;">💬</button>
       <button class="icon-btn" id="btn-settings" title="Impostazioni e info" aria-label="Impostazioni e info">⚙</button>
       <button class="icon-btn" id="btn-log">Diario</button>
       <button class="icon-btn" id="btn-fullscreen-game">⛶</button>
@@ -1398,8 +1428,8 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.2.2',   // mostrata in fondo alla home
-  buildTime: '2026-10-28T18:50',   // data e ora di creazione di questo file (per le novità)
+  version: '1.2.3',   // mostrata in fondo alla home
+  buildTime: '2026-10-29T09:05',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -3036,7 +3066,7 @@ function lobbyPublic(){
   return {
     code:R.code, phase:R.phase, net:R.net, settings:R.settings, build:BUILD_SHORT,
     members:R.members.map(m=>({mid:m.mid, kind:m.kind, name:m.name, avatar:m.avatar, elem:m.elem, color:m.color,
-      connected:m.connected, isHost:m.isHost, random:!!m.random}))
+      connected:m.connected, isHost:m.isHost, random:!!m.random, ready:!!m.ready}))
   };
 }
 
@@ -3246,6 +3276,16 @@ const Room = {
         Room.lobbyChanged();
         break;
       }
+      case 'ready': {
+        if(R.phase!=='lobby' || m.isHost || m.kind!=='human') return;
+        m.ready = !!msg.v; Room.lobbyChanged(); break;
+      }
+      case 'rvote': {
+        if(R.phase==='game' || m.kind!=='human' || m.isHost) return;
+        R.rvotes = R.rvotes || {};
+        if(msg.v) R.rvotes[m.mid] = 1; else delete R.rvotes[m.mid];
+        Room.sendRvotes(); break;
+      }
       case 'setup': Host.onSetup(m, msg.uids); break;
       case 'ans': Host.onAnswer(m, msg.id, msg.v); break;
       case 'skip': Host.onSkip(m); break;
@@ -3262,6 +3302,12 @@ const Room = {
         break;
       }
     }
+  },
+  /* rematch votes: everybody sees who wants another game; the host decides */
+  sendRvotes(){
+    const mids = Object.keys(R.rvotes||{}).map(Number);
+    broadcastGuests({t:'rvotes', mids});
+    Client.onRvotes(mids);
   },
   /* reply to one member (local host or remote guest) */
   reply(m, msg){
@@ -3374,6 +3420,8 @@ const Host = {
   aiTimer:null,
 
   startGame(){
+    R.rvotes = {}; R.members.forEach(m=>{ m.ready = false; });
+    try{ Room.sendRvotes(); }catch(e){}
     R.phase = 'game'; R.lastResults = null; R.partyEndData = null;
     if(R.settings.party && R.members.length>=PARTY_MIN_PLAYERS){ if(!R.party) Party.init(); } else R.party = null;
     // seating order is random, not the lobby order
@@ -3683,6 +3731,7 @@ const Guest = {
       case 'partyCtl': PartyShow.onCtl(msg); break;
       case 'rej': Client.onHostMessage(msg); break;
       case 'react': Client.onReact(msg); break;
+      case 'rvotes': Client.onRvotes(msg.mids||[]); break;
       case 'aborted': Client.onAborted(); break;
       case 'kicked':
         Guest.wantLeave = true; Guest.fail('Sei stato rimosso dalla stanza.', true); break;
@@ -4070,14 +4119,15 @@ function showEffectToast(text){
   stack.style.left = (rect.left + rect.width/2) + 'px';
   const pill = document.getElementById('constraint-banner');
   const off = (pill && pill.style.visibility==='visible') ? pill.offsetHeight + 14 : 8;     // below the pinned effect pill, if any
-  stack.style.top = (rect.top + off) + 'px';
+  const isLand = document.documentElement.classList.contains('land');
+  stack.style.top = (isLand ? rect.bottom + 3 : rect.top + off) + 'px';
   stack.style.maxWidth = Math.max(160, rect.width - 16) + 'px';
   // the same message twice in a row (two events of one move) is shown once
   const dup = [...stack.children].find(c=>c.dataset.t===text && !c.classList.contains('hide'));
   if(dup){ clearTimeout(dup._t1); clearTimeout(dup._t2); dup.classList.add('show'); dup.classList.remove('hide');
     dup._t1 = setTimeout(()=>{ dup.classList.add('hide'); dup.classList.remove('show'); }, 2600);
     dup._t2 = setTimeout(()=>{ dup.remove(); surface.classList.toggle('has-toast', stack.children.length>0); }, 3100); return; }
-  while(stack.children.length >= 2){ const o = stack.firstElementChild; clearTimeout(o._t1); clearTimeout(o._t2); o.remove(); }
+  while(stack.children.length >= (isLand ? 1 : 2)){ const o = stack.firstElementChild; clearTimeout(o._t1); clearTimeout(o._t2); o.remove(); }
   const el = document.createElement('div');
   el.className = 'effect-toast';
   el.dataset.t = text; el.innerHTML = fxHtml(text);
@@ -4116,6 +4166,11 @@ function fitLayout(){
     if(surface.scrollHeight > surface.clientHeight + 1) return false;
     if(seats.scrollHeight > seats.clientHeight + 1) return false;
     if(gs.scrollHeight > gs.clientHeight + 1) return false;
+    if(land){
+      // room for the effect pill above the piles and their labels below
+      const th = parseFloat(getComputedStyle(root).getPropertyValue('--t-h')) || 0;
+      if(surface.clientHeight < th + 52) return false;
+    }
     if(wide){
       // keep room above the cards for the constraint banner, with equal margins
       const rem = parseFloat(getComputedStyle(root).fontSize) || 16;
@@ -4325,7 +4380,7 @@ function fly(html, from, to, opts){ return new Promise(res=>flyClone(html, from,
 
 const Client = {
   V:null, queue:[], busy:false, idleCbs:[], prompt:null, sel:[], acting:false,
-  setupSel:[], results:null, recorded:{}, resultsOnline:false, msg:'', epoch:0,
+  rvotes:[], setupSel:[], results:null, recorded:{}, resultsOnline:false, msg:'', epoch:0,
 
   reset(){
     Client.epoch++;
@@ -4669,6 +4724,15 @@ function renderPiles(){
   dz.classList.toggle('has-selection', canDrop && Client.sel.length>0);
 }
 
+/* ping of an online player, next to the name (the host's own seat has none) */
+function pingSpan(p){
+  if(p.kind!=='human' || !(R.role==='host' ? R.online : R.role==='guest')) return '';
+  const members = R.role==='host' ? R.members : ((R.lobby && R.lobby.members) || []);
+  const m = members.find(x=>x.kind==='human' && !x.isHost && x.name===p.name);
+  if(!m) return '';
+  const v = UI.curPings()[m.mid];
+  return `<span class="s-ping opp-ping${v==null?'':' '+UI.pingClass(v)}" data-ping="${m.mid}">${v==null?'':v+' ms'}</span>`;
+}
 function renderOpponents(){
   const V = Client.V;
   const container = document.getElementById('opponent-seats');
@@ -4714,7 +4778,7 @@ function renderOpponents(){
     }).join('');
     seat.innerHTML = `
       <div class="opp-head">
-        <span class="opp-name">${displayName(p)}${nameTag(p)}</span>
+        <span class="opp-name">${displayName(p)}${nameTag(p)}</span>${pingSpan(p)}
         <span class="opp-counts" data-role="hand-pile">
           <span class="hand-count" title="carte in mano"><i class="mini-card-icon"></i>${p.hand.length}</span>
         </span>
@@ -4824,7 +4888,10 @@ function renderHuman(){
 
   const pickupBtn = document.getElementById('btn-pickup');
   const msg = document.getElementById('action-msg');
-  const setBtn = (visible, label, mode)=>{
+  const setBtn = (visible, label, mode, forced)=>{
+    pickupBtn.classList.toggle('forced', !!(visible && forced));
+    const ts = document.getElementById('table-surface');
+    if(ts) ts.classList.toggle('must-take', !!(visible && forced));
     pickupBtn.style.visibility = visible ? 'visible' : 'hidden';
     if(label) pickupBtn.textContent = label;
     pickupBtn.dataset.mode = mode || 'pickup';
@@ -4852,11 +4919,11 @@ function renderHuman(){
   const tableHas = V.table.length>0;
   if(zone==='hand'){
     const anyLegal = hasAnyLegalInHand(V, p);
-    setBtn(tableHas, anyLegal ? 'Pesca comunque il tavolo' : 'Prendi il tavolo (obbligatorio)', 'pickup');
+    setBtn(tableHas, anyLegal ? 'Pesca comunque il tavolo' : '👇 Prendi il tavolo (obbligatorio)', 'pickup', !anyLegal);
     msg.textContent = Client.msg || (anyLegal ? 'Seleziona una o più carte dello stesso valore, poi tocca il tavolo per giocarle.' : 'Nessuna carta giocabile: devi prendere il tavolo.');
   } else if(zone==='faceup'){
     const anyLegal = hasAnyLegalInFaceUp(V, p);
-    setBtn(tableHas, anyLegal ? 'Pesca comunque il tavolo' : 'Prendi il tavolo (obbligatorio)', 'pickup');
+    setBtn(tableHas, anyLegal ? 'Pesca comunque il tavolo' : '👇 Prendi il tavolo (obbligatorio)', 'pickup', !anyLegal);
     msg.textContent = Client.msg || (anyLegal ? 'Seleziona una carta scoperta, poi tocca il tavolo per giocarla.' : 'Nessuna carta scoperta giocabile: devi prendere il tavolo.');
   } else if(zone==='facedown'){
     setBtn(false);
@@ -5107,6 +5174,23 @@ function showReaction(msg){
 /* ============================================================
    RESULTS
 ============================================================ */
+Client.onRvotes = function(mids){
+  Client.rvotes = mids;
+  const o = document.getElementById('results-overlay');
+  if(o && o.style.display==='flex' && Client.results) renderResultsVotes();
+};
+function renderResultsVotes(){
+  const info = document.getElementById('res-votes');
+  const btn = document.getElementById('res-vote');
+  const mine = Client.rvotes.includes(R.myMid);
+  const isHost = R.role==='host';
+  const members = isHost ? R.members : ((R.lobby && R.lobby.members) || []);
+  const names = Client.rvotes.map(mid=>{ const m = members.find(x=>x.mid===mid); return m ? m.name : null; }).filter(Boolean);
+  if(info) info.innerHTML = names.length ? `✋ Vogliono la rivincita: <b>${names.map(esc).join(', ')}</b>` : (isHost ? '' : 'Puoi votare per una rivincita: decide l’host.');
+  if(btn){ btn.textContent = mine ? '✋ Voto per la rivincita (annulla)' : '✋ Voglio la rivincita'; btn.classList.toggle('voted', mine); }
+  const rm = document.getElementById('res-rematch');
+  if(rm) rm.textContent = names.length ? `Rivincita (${names.length} ${names.length===1?'voto':'voti'})` : 'Rivincita';
+}
 function hideResults(){
   const o = document.getElementById('results-overlay');
   if(o) o.style.display = 'none';
@@ -5182,15 +5266,19 @@ function showResults(){
       ? `${ptyBtns}<button class="btn-secondary" id="res-party-stop">Termina il party</button>`
       : `<div class="results-wait">In attesa che l’host ${pty.last ? 'avvii la premiazione' : 'avvii la prossima partita'}…</div><button class="btn-secondary" id="res-home">Esci</button>`)
     : isHost
-    ? `<button class="btn-primary" id="res-rematch">Rivincita</button>
+    ? `<div class="results-wait" id="res-votes"></div><button class="btn-primary" id="res-rematch">Rivincita</button>
        <button class="btn-secondary" id="res-lobby">Torna alla stanza</button>
        <button class="btn-secondary" id="res-home">Esci</button>`
-    : `<div class="results-wait">In attesa che l’host scelga cosa fare…</div>
+    : `<div class="results-wait" id="res-votes"></div>
+       <button class="btn-primary" id="res-vote">✋ Voglio la rivincita</button>
+       <div class="results-wait">L’host sceglie cosa fare.</div>
        <button class="btn-secondary" id="res-home">Esci</button>`;
   const q = id=>document.getElementById(id);
   if(q('res-party-next')) q('res-party-next').onclick = ()=>{ hideResults(); UI.partyNext(); };
   if(q('res-party-final')) q('res-party-final').onclick = ()=>{ UI.partyFinale(); };
   if(q('res-party-stop')) q('res-party-stop').onclick = ()=>{ Modal.choice('Terminare il party?', 'Nessuna premiazione: si torna alla stanza.', [['Termina','y'],['Continua','n']], v=>{ if(v==='y'){ hideResults(); UI.backToLobby(); } }); };
+  if(q('res-vote')) q('res-vote').onclick = ()=>{ sendToHost({t:'rvote', v: !Client.rvotes.includes(R.myMid)}); };
+  renderResultsVotes();
   if(q('res-rematch')) q('res-rematch').onclick = ()=>{ hideResults(); UI.rematch(); };
   if(q('res-lobby')) q('res-lobby').onclick = ()=>{ hideResults(); UI.backToLobby(); };
   if(q('res-home')) q('res-home').onclick = ()=>{ hideResults(); UI.leaveToHome(); };
@@ -5959,6 +6047,15 @@ function wireStats(){
    an update. Dates/times are when each file was produced.
 ============================================================ */
 const CHANGELOG = [
+  {v:'1.2.3', d:'__BUILD__', title:'Pronti, rivincita e rifiniture', items:[
+    'Ping di ogni giocatore accanto al nome in partita; il tuo accanto al titolo',
+    'Lobby: tasto «Sono pronto» per i giocatori, l’host vede chi è pronto e decide quando iniziare',
+    'Rivincita: tutti possono votarla, l’host ha l’ultima parola',
+    'Presa del tavolo obbligatoria molto più evidente (tavolo e tasto pulsanti)',
+    'Tolte le reazioni dalla partita',
+    'iPhone: la carta selezionata si alza subito',
+    'Orizzontale: schermo davvero intero (senza margini laterali), popup degli effetti più piccoli e fuori dalle carte'
+  ]},
   {v:'1.2.2', d:'__BUILD__', title:'Orizzontale e iOS', items:[
     'Modalità orizzontale: carte dei bot ridisegnate (un solo angolo, niente testo che esce), carte in mano più grandi, niente spazio sprecato in alto',
     'iOS: carta deselezionata torna subito al suo posto',
@@ -6250,6 +6347,7 @@ const UI = {
       const tags = [];
       if(m.isHost) tags.push('<em class="t host">Host</em>');
       if(me) tags.push('<em class="t me">Tu</em>');
+      if(m.kind==='human' && !m.isHost && R.phase!=='game') tags.push(m.ready ? '<em class="t ready">✓ Pronto</em>' : '<em class="t wait">…</em>');
       if(m.kind==='bot') tags.push(m.random ? '<em class="t bot">Bot casuale</em>' : '<em class="t bot">Bot</em>');
       const ed = me ? '<button class="s-edit" id="btn-edit-me" title="Cambia nome e avatar">✎ Nome</button>' : '';
       const rnd = (isHost && m.kind==='bot') ? `<button class="s-rnd${m.random?' on':''}" data-rnd="${m.mid}" title="${m.random?'Bot casuale: cambia ninja a ogni partita':'Rendi casuale'}">🎲</button>` : '';
@@ -6308,9 +6406,14 @@ const UI = {
       const pOn = !!L.settings.party;
       const label = !ok ? (pOn ? `Il party richiede almeno ${PARTY_MIN_PLAYERS} giocatori` : 'Servono almeno 2 giocatori')
         : (pOn ? `Inizia party · ${n} giocatori · ${Party.gamesFor(L.settings, n)} partite` : `Inizia partita · ${n} giocatori`);
-      foot.innerHTML = `<button class="btn-primary big" id="btn-start" ${ok?'':'disabled'}>${label}</button>`;
+      const hum = L.members.filter(m=>m.kind==='human' && !m.isHost);
+      const rdy = hum.filter(m=>m.ready).length;
+      const rinfo = hum.length ? `<div class="lobby-ready">${rdy===hum.length ? '✅ Tutti pronti' : `✋ ${rdy}/${hum.length} pronti`}</div>` : '';
+      foot.innerHTML = `${rinfo}<button class="btn-primary big${hum.length && rdy<hum.length ? ' notall' : ''}" id="btn-start" ${ok?'':'disabled'}>${label}</button>`;
     } else {
-      foot.innerHTML = `<div class="lobby-wait">In attesa che l’host avvii la partita…</div>`;
+      const meM = L.members.find(m=>m.mid===myMid);
+      const on = !!(meM && meM.ready);
+      foot.innerHTML = `<button class="btn-primary big${on?' ready-on':''}" id="btn-ready">${on ? '✓ Sono pronto (annulla)' : 'Sono pronto'}</button><div class="lobby-wait">${on ? 'Aspetta che l’host avvii la partita…' : 'Premi quando sei pronto: l’host avvia la partita.'}</div>`;
     }
     UI.bindLobby();
   },
@@ -6333,6 +6436,7 @@ const UI = {
       else box.style.display = 'none';
     };
     if(q('btn-edit-me')) q('btn-edit-me').onclick = openProfile;
+    if(q('btn-ready')) q('btn-ready').onclick = ()=>{ const L = UI.lobbyData(); const m = L && L.members.find(x=>x.mid===R.myMid); sendToHost({t:'ready', v: !(m && m.ready)}); };
     if(q('btn-add-bot')) q('btn-add-bot').onclick = ()=>Room.addBot();
     if(q('btn-add-rnd')) q('btn-add-rnd').onclick = ()=>Room.addBot(true);
     document.querySelectorAll('[data-rnd]').forEach(b=>{ b.onclick = ()=>Room.toggleRandom(+b.dataset.rnd); });
@@ -6823,7 +6927,7 @@ function wireUp(){
     Modal.choice('Proporre la patta?', 'Se tutti gli altri giocatori (non bot) ancora in gara accettano, la partita finisce in parità.', [['Proponi','y'],['Annulla','n']], v=>{ if(v==='y') sendToHost({t:'draw', a:'offer'}); }, true);
   };
   $('draw-banner').addEventListener('click', e=>{ const b = e.target.closest('button[data-d]'); if(b) sendToHost({t:'draw', a:b.dataset.d}); });
-  $('btn-react').onclick = ()=>$('react-tray').classList.toggle('open');
+
   $('btn-end').onclick = ()=>{
     if(R.role==='host'){
       Modal.choice('Terminare la partita?', (R.party ? 'Nessuna classifica: il party viene annullato e tutti tornano alla stanza.' : 'Nessuna classifica: tutti tornano alla stanza.'), [['Termina','y'],['Continua a giocare','n']], v=>{ if(v==='y') Host.abort(); }, true);
@@ -6864,7 +6968,7 @@ render = function(){
   _origRender();
   const V = Client.V;
   if(V){
-    $('btn-react').style.display = multiHuman() ? '' : 'none';
+    // reazioni rimosse dalla partita
     $('btn-end').textContent = R.role==='host' ? 'Termina' : 'Esci';
     renderDraw(V);
   }
