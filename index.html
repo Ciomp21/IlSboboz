@@ -1241,6 +1241,11 @@
   /* less empty space under the content on iPhone: only part of the home-indicator area is kept free */
   .screen{ padding-bottom:max(calc(env(safe-area-inset-bottom, 0px) * .3), 10px); }
 
+  /* same margin under the game as at its sides */
+  #game-screen{ padding-bottom:max(env(safe-area-inset-left, 0px), 6px) !important; }
+  html.land #game-screen{ padding-bottom:4px !important; }
+  #human-area{ padding-bottom:calc(env(safe-area-inset-bottom, 0px) * .3 + 6px); }
+
 </style>
 </head>
 <body>
@@ -1453,7 +1458,7 @@
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.2.3',   // mostrata in fondo alla home
-  buildTime: '2026-10-29T11:18',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-29T11:42',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
