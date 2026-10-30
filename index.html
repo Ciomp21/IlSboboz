@@ -38,7 +38,7 @@
   }
   html.fs{ --top-gap: 30px; }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;width: 100vw;height: 100vh;height: 100dvh;overflow: hidden;position: fixed;top: 0;left: 0;overscroll-behavior: none;}
+  html,body{margin:0;padding:0;width: 100vw;height: 100vh;height: 100dvh;overflow: hidden;position: absolute;top: 0;left: 0;overscroll-behavior: none;}
   body{
     font-family:'Inter',sans-serif;
     background: radial-gradient(ellipse at 50% 20%, #12291f, #05130d 75%);
@@ -1481,19 +1481,6 @@ window.SBOBOZ_CONFIG = {
 
 </script>
 <script id="game-src">
-
-// Registriamo l'altezza reale iniziale dello schermo intero
-const initialHeight = window.innerHeight;
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', () => {
-    // Quando tiri giù la tendina, il visualViewport si rimpicciolisce.
-    // Con questa riga impediamo al body di ridimensionarsi di conseguenza,
-    // inchiodandolo all'altezza iniziale e forzando la tendina ad andare "sopra".
-    document.body.style.height = initialHeight + 'px';
-  });
-}
-
 (function(){
 /* ============================================================
    DATA
