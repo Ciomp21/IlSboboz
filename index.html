@@ -38,8 +38,30 @@
   }
   html.fs{ --top-gap: 30px; }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;width: 100vw;height: 100vh;height: 100dvh;overflow: hidden;position: fixed;top: 0;left: 0;overscroll-behavior: none;touch-action: none;box-sizing: border-box;}
-  body{
+  /* 1. Azzeramento totale e blocco del viewport */
+html, body {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #05130d; /* Il colore scuro del tuo gioco */
+  
+  /* Disabilita spaziature automatiche di sicurezza che creano i margini */
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* 2. Se hai un div/element principale che contiene la grafica del gioco */
+body > * {
+  box-sizing: border-box;
+}body{
     font-family:'Inter',sans-serif;
     background: radial-gradient(ellipse at 50% 20%, #12291f, #05130d 75%);
     color:var(--cream);
