@@ -5,9 +5,9 @@
   "description": "Il gioco di carte Sboboz come non lo hai mai visto prima. I tuoi amici ti aspettano, ma contro i ninja non hai speranza!",
   "lang": "it",
   "dir": "ltr",
-  "start_url": "./",
+  "start_url": "./?standalone=true",
   "scope": "./",
-  "display": "fullscreen",
+  "display": "standalone",
   "display_override": [
     "standalone",
     "minimal-ui"
