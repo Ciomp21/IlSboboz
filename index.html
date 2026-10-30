@@ -1482,25 +1482,17 @@ window.SBOBOZ_CONFIG = {
 </script>
 <script id="game-src">
 
-// Funzione per bloccare le dimensioni reali dell'area di gioco
-function bloccaDimensioniSchermo() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    
-    // Forza il body a mantenere questa altezza esatta, anche se la barra compare
-    document.body.style.width = w + 'px';
-    document.body.style.height = h + 'px';
+// Registriamo l'altezza reale iniziale dello schermo intero
+const initialHeight = window.innerHeight;
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    // Quando tiri giù la tendina, il visualViewport si rimpicciolisce.
+    // Con questa riga impediamo al body di ridimensionarsi di conseguenza,
+    // inchiodandolo all'altezza iniziale e forzando la tendina ad andare "sopra".
+    document.body.style.height = initialHeight + 'px';
+  });
 }
-
-// Esegui al caricamento e se per caso la finestra prova a ridimensionarsi
-window.addEventListener('load', bloccaDimensioniSchermo);
-
-// Questo è il trucco: intercettiamo il tentativo del browser di ridimensionare 
-// la pagina a causa della barra e lo neutralizziamo
-window.addEventListener('resize', (e) => {
-    e.stopImmediatePropagation();
-    // Se vuoi che il gioco ignori il resize della barra, blocchiamo l'azione
-});
 
 (function(){
 /* ============================================================
