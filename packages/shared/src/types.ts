@@ -86,7 +86,13 @@ export interface GameState {
   readonly turns: number;
   readonly sequence: number;
   readonly repetitions: Readonly<Record<string, number>>;
+  readonly pendingEffect: PendingEffect | null;
 }
+
+export type PendingEffect =
+  | { readonly type: 'constraint'; readonly playerId: string; readonly cardIds: readonly string[]; readonly rank: '8' | '9' }
+  | { readonly type: 'discard'; readonly playerId: string; readonly cardIds: readonly string[] }
+  | { readonly type: 'super-card'; readonly playerId: string; readonly cardIds: readonly string[] };
 
 export interface PublicPlayerView {
   readonly id: string;
@@ -112,6 +118,7 @@ export interface PublicGameView {
   readonly superSbobozCount: number;
   readonly constraint: Constraint | null;
   readonly sequence: number;
+  readonly pendingEffect: PendingEffect | null;
 }
 
 export interface LobbyMember {
@@ -132,6 +139,7 @@ export interface LobbyView {
 
 export type NetworkMessage =
   | { readonly type: 'hello'; readonly protocol: number; readonly roomCode: string; readonly token: string }
+  | { readonly type: 'welcome'; readonly protocol: number; readonly memberId: string; readonly room: LobbyView }
   | { readonly type: 'action'; readonly requestId: string; readonly action: GameAction }
   | { readonly type: 'state'; readonly sequence: number; readonly view: PublicGameView }
   | { readonly type: 'reject'; readonly requestId: string; readonly reason: string }
@@ -146,6 +154,12 @@ export type GameAction =
       readonly cardIds: readonly string[];
       readonly jollyRank?: Rank;
       readonly constraintMode?: Constraint['mode'];
+      readonly discardCardId?: string;
+      readonly superCardId?: string;
+    }
+  | {
+      readonly type: 'resolve-effect';
+      readonly mode?: Constraint['mode'];
       readonly discardCardId?: string;
       readonly superCardId?: string;
     }

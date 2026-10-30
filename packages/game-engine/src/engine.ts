@@ -73,6 +73,8 @@ function cloneState(state: GameState): {
   sbobozPile: Card[];
   superSbobozPile: Card[];
   finishOrder: string[];
+  pendingEffect: GameState['pendingEffect'];
+  constraint: GameState['constraint'];
 } {
   return {
     players: state.players.map(clonePlayer),
@@ -81,6 +83,8 @@ function cloneState(state: GameState): {
     sbobozPile: [...state.sbobozPile],
     superSbobozPile: [...state.superSbobozPile],
     finishOrder: [...state.finishOrder],
+    pendingEffect: state.pendingEffect,
+    constraint: state.constraint,
   };
 }
 
@@ -178,6 +182,7 @@ export function createGame(config: GameConfig): GameState {
   return {
     phase: 'setup', players, turn: 0, drawPile: deck, table: [],
     sbobozPile: [], superSbobozPile: [], constraint: null, suppressNext: false,
+    pendingEffect: null,
     sbobozThreshold: numDecks === 1 ? 4 : 6, numDecks, hasJolly,
     finishOrder: [], turns: 0, sequence: 0, repetitions: {},
   };
@@ -218,7 +223,39 @@ function cardsFromPlayer(player: PlayerState, ids: readonly string[], zone: Card
   return ids.map((id) => source.find((card) => card.uid === id)).filter((card): card is Card => Boolean(card));
 }
 
+function finalizePlay(state: GameState, playerId: string): TransitionResult {
+  const data = cloneState(state);
+  const target = data.players.find((player) => player.id === playerId);
+  if (!target) return fail(state, 'Unknown player.');
+  while (target.hand.length < 5 && data.drawPile.length > 0) target.hand = [...target.hand, data.drawPile.pop()!];
+  target.stats.maxHand = Math.max(target.stats.maxHand, target.hand.length);
+  if (target.hand.length === 0 && target.faceUp.length === 0 && target.faceDown.length === 0) {
+    target.finished = true;
+    if (!data.finishOrder.includes(target.id)) data.finishOrder.push(target.id);
+  }
+  const phase: GameState['phase'] = data.players.filter((player) => !player.finished).length <= 1 ? 'finished' : 'play';
+  let nextTurn = state.turn;
+  if (phase === 'play') {
+    do { nextTurn = (nextTurn + 1) % data.players.length; } while (data.players[nextTurn].finished);
+  }
+  return {
+    state: { ...state, ...data, phase, turn: nextTurn, sequence: state.sequence + 1, pendingEffect: null },
+    events: phase === 'finished' ? [{ type: 'game-finished', playerId }] : [],
+  };
+}
+
 export function getLegalActions(state: GameState, playerId: string): GameAction[] {
+  if (state.pendingEffect?.playerId === playerId) {
+    if (state.pendingEffect.type === 'constraint') {
+      return [{ type: 'resolve-effect', mode: state.pendingEffect.rank === '8' ? 'higher' : 'effect' }];
+    }
+    if (state.pendingEffect.type === 'discard') {
+      const player = playerFor(state, playerId);
+      return player?.hand[0] ? [{ type: 'resolve-effect', discardCardId: player.hand[0].uid }] : [];
+    }
+    const card = state.superSbobozPile[state.superSbobozPile.length - 1];
+    return card ? [{ type: 'resolve-effect', superCardId: card.uid }] : [];
+  }
   if (state.phase === 'setup') {
     const player = playerFor(state, playerId);
     if (!player || player.ready) return [];
@@ -240,6 +277,37 @@ export function getLegalActions(state: GameState, playerId: string): GameAction[
 
 export function applyAction(state: GameState, playerId: string, action: GameAction): TransitionResult {
   if (action.type === 'complete-setup') return finishSetup(state, playerId, action.cardIds);
+  if (action.type === 'resolve-effect') {
+    if (!state.pendingEffect || state.pendingEffect.playerId !== playerId) return fail(state, 'No effect is waiting for this player.');
+    const pending = state.pendingEffect;
+    const data = cloneState(state);
+    data.pendingEffect = null;
+    if (pending.type === 'constraint') {
+      if (pending.rank === '8' && action.mode !== 'higher' && action.mode !== 'lower') {
+        return fail(state, 'Choose whether the next card is higher or lower than eight.');
+      }
+      if (pending.rank === '9' && action.mode !== 'effect' && action.mode !== 'noeffect') {
+        return fail(state, 'Choose whether the next card has an effect.');
+      }
+      data.constraint = { type: pending.rank, mode: action.mode! };
+    } else if (pending.type === 'discard') {
+      const target = data.players.find((player) => player.id === playerId)!;
+      const discard = target.hand.find((card) => card.uid === action.discardCardId);
+      if (!discard) return fail(state, 'Choose a card to discard.');
+      target.hand = target.hand.filter((card) => card.uid !== discard.uid);
+      data.superSbobozPile = [...data.superSbobozPile, discard];
+      target.stats.discards += 1;
+    } else if (pending.type === 'super-card') {
+      const target = data.players.find((player) => player.id === playerId)!;
+      const picked = data.superSbobozPile.find((card) => card.uid === action.superCardId);
+      if (!picked) return fail(state, 'Choose a card from the Super-Sboboz.');
+      data.superSbobozPile = data.superSbobozPile.filter((card) => card.uid !== picked.uid);
+      target.hand = [...target.hand, { ...picked, rank: picked.wasJolly ? '2' : picked.rank }];
+      target.stats.jdraws += 1;
+      target.stats.maxHand = Math.max(target.stats.maxHand, target.hand.length);
+    }
+    return finalizePlay({ ...state, ...data }, playerId);
+  }
   if (state.phase !== 'play' || activePlayer(state).id !== playerId) return fail(state, 'It is not your turn.');
   if (action.type === 'pickup-table') {
     const data = cloneState(state);
@@ -328,6 +396,15 @@ export function applyAction(state: GameState, playerId: string, action: GameActi
       target.stats.counters += 1;
     }
     if (effectsAllowed && playedRank === '5' && target.hand.length > 0) {
+      if (!action.discardCardId) {
+        return {
+          state: {
+            ...state, ...data, table: data.table, constraint: null, sequence: state.sequence + 1,
+            pendingEffect: { type: 'discard', playerId, cardIds: played.map((card) => card.uid) },
+          },
+          events: [{ type: 'card-played', playerId, cardIds: played.map((card) => card.uid) }],
+        };
+      }
       const discard = target.hand.find((card) => card.uid === action.discardCardId) ?? target.hand[0];
       target.hand = target.hand.filter((card) => card.uid !== discard.uid);
       superSbobozPile = [...superSbobozPile, discard];
@@ -336,6 +413,15 @@ export function applyAction(state: GameState, playerId: string, action: GameActi
     if (effectsAllowed && playedRank === '7') suppressNext = true;
     if (effectsAllowed && (playedRank === '8' || playedRank === '9')) {
       const mode = action.constraintMode;
+      if (!mode) {
+        return {
+          state: {
+            ...state, ...data, table: data.table, constraint: null, sequence: state.sequence + 1,
+            pendingEffect: { type: 'constraint', playerId, cardIds: played.map((card) => card.uid), rank: playedRank },
+          },
+          events: [{ type: 'card-played', playerId, cardIds: played.map((card) => card.uid) }],
+        };
+      }
       if (playedRank === '8' && (mode === 'higher' || mode === 'lower')) {
         constraint = { type: '8', mode };
       } else if (playedRank === '9' && (mode === 'effect' || mode === 'noeffect')) {
@@ -343,13 +429,23 @@ export function applyAction(state: GameState, playerId: string, action: GameActi
       }
     }
     if (effectsAllowed && playedRank === 'J' && superSbobozPile.length > 0) {
+      if (!action.superCardId) {
+        return {
+          state: {
+            ...state, ...data, table: data.table, constraint: null, sequence: state.sequence + 1,
+            pendingEffect: { type: 'super-card', playerId, cardIds: played.map((card) => card.uid) },
+          },
+          events: [{ type: 'card-played', playerId, cardIds: played.map((card) => card.uid) }],
+        };
+      }
       const picked = superSbobozPile.find((card) => card.uid === action.superCardId) ?? superSbobozPile[superSbobozPile.length - 1];
       superSbobozPile = superSbobozPile.filter((card) => card.uid !== picked.uid);
       target.hand = [...target.hand, { ...picked, rank: picked.wasJolly ? '2' : picked.rank }];
       target.stats.jdraws += 1;
       target.stats.maxHand = Math.max(target.stats.maxHand, target.hand.length);
     }
-    if (effectsAllowed && playedRank === 'K') {
+    const extraTurn = effectsAllowed && playedRank === 'K';
+    if (extraTurn) {
       sbobozPile = [...sbobozPile, ...table];
       table = [];
       target.stats.sboboz += 1;
@@ -377,16 +473,15 @@ export function applyAction(state: GameState, playerId: string, action: GameActi
       target.finished = true;
       if (!data.finishOrder.includes(target.id)) data.finishOrder.push(target.id);
     }
-    const remaining = data.players.filter((entry) => !entry.finished);
-    if (remaining.length <= 1) phase = 'finished';
-    else {
+    if (data.players.filter((player) => !player.finished).length <= 1) phase = 'finished';
+    else if (target.finished || (!sboboz && !extraTurn)) {
       do { nextTurn = (nextTurn + 1) % data.players.length; } while (data.players[nextTurn].finished);
     }
     const events: DomainEvent[] = [{ type: 'card-played', playerId, cardIds: played.map((card) => card.uid) }];
     if (sboboz) events.push({ type: 'sboboz', playerId });
     if (phase === 'finished') events.push({ type: 'game-finished', playerId });
     const nextState = {
-      ...state, ...data, table, sbobozPile, superSbobozPile, constraint, suppressNext,
+      ...state, ...data, table, sbobozPile, superSbobozPile, constraint, suppressNext, pendingEffect: null,
       turn: nextTurn, phase: phase as GameState['phase'], turns: state.turns + 1, sequence: state.sequence + 1,
       repetitions: state.repetitions,
     };
@@ -438,5 +533,6 @@ export function getPublicView(state: GameState, playerId: string): PublicGameVie
     superSbobozCount: state.superSbobozPile.length,
     constraint: state.constraint,
     sequence: state.sequence,
+    pendingEffect: state.pendingEffect,
   };
 }

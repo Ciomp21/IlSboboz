@@ -77,7 +77,8 @@ Important behavior to preserve:
 - The number K participates in Sboboz-related behavior and extra-turn
   resolution.
 - The number 8 and 9 have mode/choice behavior selected from visible game
-  information.
+  information after the card has been placed on the table; the engine keeps a
+  pending effect until the active player confirms the mode.
 - The number 2, 4, 7, and other effect ranks alter turn or constraint
   resolution according to the existing contextual implementation.
 - Jolly effects must be resolved against the same legal-rank constraints as
@@ -94,10 +95,14 @@ current behavior.
 - The threshold and the resulting table/pile split are part of game state.
 - The triggering player and relevant statistics are recorded.
 - Depending on the effect and rank, the active player can receive an extra
-  turn, a penalty, or a counter opportunity.
+  turn, a penalty, or a counter opportunity. A successful Sboboz clears the
+  table and leaves the turn with the triggering player.
 - The Sboboz pile can later be restored or consumed by special effects.
 - If no legal continuation remains, the player can pick up the table through
   the dedicated action.
+- A player wins immediately when their hand, face-up cards, and face-down
+  cards are exhausted. The table remains a historical played pile and does not
+  delay the win transition.
 
 ## Draws, stalemates, and completion
 
@@ -128,4 +133,3 @@ Before declaring the engine complete, tests must cover deck counts, setup,
 grouped plays, Jolly selection, every special rank, Sboboz threshold and
 counter paths, table pickup, hidden-card failures, finish order, stalemate,
 and private-state filtering.
-

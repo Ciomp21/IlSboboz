@@ -1,13 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const repositoryRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   root: 'apps/web',
   plugins: [react()],
   resolve: {
     alias: {
-      '@ilsboboz/shared': '/packages/shared/src',
-      '@ilsboboz/game-engine': '/packages/game-engine/src',
+      '@ilsboboz/shared': resolve(repositoryRoot, 'packages/shared/src'),
+      '@ilsboboz/game-engine': resolve(repositoryRoot, 'packages/game-engine/src'),
     }
   },
   build: {

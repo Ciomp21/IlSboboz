@@ -97,7 +97,7 @@ describe('PeerJS transport adapter', () => {
       requestId: 'setup',
       action: { type: 'complete-setup', cardIds: [] },
     });
-    expect(received[0]).toEqual({
+    expect(received.find((message) => message.type === 'reject')).toEqual({
       type: 'reject',
       requestId: 'setup',
       reason: 'Select exactly 5 cards.',

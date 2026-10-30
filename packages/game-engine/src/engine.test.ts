@@ -143,6 +143,7 @@ describe('game engine foundation', () => {
         { ...game().players[1], hand: [], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
       ],
     });
+
     const result = applyAction(state, 'p1', {
       type: 'play',
       cardIds: ['eight'],
@@ -151,6 +152,29 @@ describe('game engine foundation', () => {
     expect(result.state.constraint).toEqual({ type: '8', mode: 'higher' });
     expect(isLegalRank(result.state, '9', 'hand')).toBe(true);
     expect(isLegalRank(result.state, '7', 'hand')).toBe(false);
+  });
+
+  it('waits for the eight effect choice after placing the card', () => {
+    const eight = { uid: 'eight-pending', rank: '8' as const, suit: '♠' as const };
+    const state = playState({
+      players: [
+        { ...game().players[0], hand: [eight], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+        { ...game().players[1], hand: [], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+      ],
+    });
+    const played = applyAction(state, 'p1', { type: 'play', cardIds: [eight.uid] });
+    expect(played.state.table.map((card) => card.uid)).toEqual([eight.uid]);
+    expect(played.state.pendingEffect).toEqual({
+      type: 'constraint',
+      playerId: 'p1',
+      cardIds: [eight.uid],
+      rank: '8',
+    });
+    expect(played.state.turn).toBe(0);
+    const resolved = applyAction(played.state, 'p1', { type: 'resolve-effect', mode: 'higher' });
+    expect(resolved.state.constraint).toEqual({ type: '8', mode: 'higher' });
+    expect(resolved.state.pendingEffect).toBeNull();
+    expect(resolved.state.turn).toBe(1);
   });
 
   it('sets the nine effect constraint from the selected mode', () => {
@@ -169,6 +193,22 @@ describe('game engine foundation', () => {
     expect(result.state.constraint).toEqual({ type: '9', mode: 'effect' });
     expect(isLegalRank(result.state, '7', 'hand')).toBe(true);
     expect(isLegalRank(result.state, '6', 'hand')).toBe(false);
+  });
+
+  it('clears a constraint after the next card is played', () => {
+    const ace = { uid: 'ace-after-nine', rank: 'A' as const, suit: '♥' as const };
+    const state = playState({
+      constraint: { type: '8', mode: 'higher' },
+      players: [
+        { ...game().players[0], hand: [ace], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+        { ...game().players[1], hand: [ace], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+      ],
+    });
+    const result = applyAction(state, 'p1', {
+      type: 'play',
+      cardIds: [ace.uid],
+    });
+    expect(result.state.constraint).toBeNull();
   });
 
   it('uses a jack to take a card from the super-Sboboz pile', () => {
@@ -201,6 +241,7 @@ describe('game engine foundation', () => {
     expect(result.state.table).toHaveLength(0);
     expect(result.state.sbobozPile.map((card) => card.uid)).toEqual(['table', 'king']);
     expect(result.state.players[0].stats.sbobozKings).toBe(1);
+    expect(result.state.turn).toBe(0);
   });
 
   it('allows same-rank groups and rejects mixed-rank groups without mutating state', () => {
@@ -240,6 +281,52 @@ describe('game engine foundation', () => {
     expect(result.state.table).toHaveLength(0);
     expect(result.state.sbobozPile).toHaveLength(4);
     expect(result.state.players[0].stats.sboboz).toBe(1);
+    expect(result.state.turn).toBe(0);
+  });
+
+  it('finishes immediately when the player has no cards left', () => {
+    const ace = { uid: 'winning-ace', rank: 'A' as const, suit: '♠' as const };
+    const state = playState({
+      drawPile: [],
+      players: [
+        { ...game().players[0], hand: [ace], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+        { ...game().players[1], hand: [ace], faceUp: [], faceDown: [], coveredBy: {}, ready: true },
+      ],
+    });
+    const result = applyAction(state, 'p1', { type: 'play', cardIds: [ace.uid] });
+    expect(result.state.phase).toBe('finished');
+    expect(result.state.finishOrder).toEqual(['p1']);
+    expect(result.state.table).toHaveLength(1);
+  });
+
+  it('continues after the first player finishes in a three-player game', () => {
+    const winner = { uid: 'first-winner', rank: 'A' as const, suit: '♠' as const };
+    const state = createGame({
+      random: fixedRandom,
+      players: [
+        { id: 'p1', name: 'Uno', kind: 'human' },
+        { id: 'p2', name: 'Due', kind: 'bot' },
+        { id: 'p3', name: 'Tre', kind: 'bot' },
+      ],
+    });
+    const playable: GameState = {
+      ...state,
+      phase: 'play',
+      drawPile: [],
+      turn: 0,
+      players: state.players.map((player, index) => ({
+        ...player,
+        hand: index === 0 ? [winner] : [winner],
+        faceUp: [],
+        faceDown: [],
+        coveredBy: {},
+        ready: true,
+      })),
+    };
+    const result = applyAction(playable, 'p1', { type: 'play', cardIds: [winner.uid] });
+    expect(result.state.phase).toBe('play');
+    expect(result.state.finishOrder).toEqual(['p1']);
+    expect(result.state.turn).toBe(1);
   });
 
   it('returns an invalid hidden reveal to hand and picks up the table', () => {

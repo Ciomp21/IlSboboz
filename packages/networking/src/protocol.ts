@@ -1,4 +1,4 @@
-import type { GameAction, NetworkMessage, PublicGameView } from '@ilsboboz/shared';
+import type { GameAction, LobbyView, NetworkMessage, PublicGameView } from '@ilsboboz/shared';
 
 export const PROTOCOL_VERSION = 1;
 
@@ -10,6 +10,9 @@ function isAction(value: unknown): value is GameAction {
   if (!isRecord(value) || typeof value.type !== 'string') return false;
   if (value.type === 'pickup-table') return true;
   if (value.type === 'reveal') return typeof value.cardId === 'string';
+  if (value.type === 'resolve-effect') {
+    return value.mode === undefined || typeof value.mode === 'string';
+  }
   if (value.type === 'complete-setup' || value.type === 'play') {
     return Array.isArray(value.cardIds) && value.cardIds.every((id) => typeof id === 'string');
   }
@@ -29,6 +32,14 @@ function isPublicView(value: unknown): value is PublicGameView {
     && typeof value.sequence === 'number';
 }
 
+function isLobbyView(value: unknown): value is LobbyView {
+  return isRecord(value)
+    && typeof value.roomCode === 'string'
+    && typeof value.hostId === 'string'
+    && (value.phase === 'lobby' || value.phase === 'game' || value.phase === 'results')
+    && Array.isArray(value.members);
+}
+
 export function parseNetworkMessage(value: unknown): NetworkMessage | null {
   if (!isRecord(value) || typeof value.type !== 'string') return null;
   switch (value.type) {
@@ -37,6 +48,12 @@ export function parseNetworkMessage(value: unknown): NetworkMessage | null {
         && typeof value.roomCode === 'string'
         && typeof value.token === 'string'
         ? { type: 'hello', protocol: value.protocol, roomCode: value.roomCode, token: value.token }
+        : null;
+    case 'welcome':
+      return typeof value.protocol === 'number'
+        && typeof value.memberId === 'string'
+        && isLobbyView(value.room)
+        ? { type: 'welcome', protocol: value.protocol, memberId: value.memberId, room: value.room }
         : null;
     case 'action':
       return typeof value.requestId === 'string' && isAction(value.action)

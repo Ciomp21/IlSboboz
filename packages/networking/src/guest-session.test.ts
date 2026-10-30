@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createGuestSession } from './guest-session';
+import { PROTOCOL_VERSION } from './protocol';
 import type { PublicGameView } from '@ilsboboz/shared';
 
 const view = (sequence: number): PublicGameView => ({
@@ -13,6 +14,7 @@ const view = (sequence: number): PublicGameView => ({
   superSbobozCount: 0,
   constraint: null,
   sequence,
+  pendingEffect: null,
 });
 
 describe('guest session', () => {
@@ -33,5 +35,22 @@ describe('guest session', () => {
     expect(guest.view?.sequence).toBe(1);
     expect(guest.receive({ type: 'state', sequence: 2, view: view(2) })).toBe(true);
     expect(guest.connected).toBe(true);
+  });
+
+  it('stores the welcome lobby and assigned member', () => {
+    const guest = createGuestSession();
+    expect(guest.receive({
+      type: 'welcome',
+      protocol: PROTOCOL_VERSION,
+      memberId: 'p2',
+      room: {
+        roomCode: 'ABC123',
+        hostId: 'p1',
+        phase: 'game',
+        members: [],
+      },
+    })).toBe(true);
+    expect(guest.memberId).toBe('p2');
+    expect(guest.lobby?.roomCode).toBe('ABC123');
   });
 });

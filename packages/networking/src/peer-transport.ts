@@ -2,6 +2,7 @@ import Peer, { DataConnection, PeerOptions } from 'peerjs';
 import type { GameConfig, NetworkMessage } from '@ilsboboz/shared';
 import { createHostSession, type HostSession } from './host-controller';
 import { parseNetworkMessage, PROTOCOL_VERSION } from './protocol';
+import type { RoomManager } from './room-manager';
 
 export interface PeerConnection {
   readonly peer: string;
@@ -90,6 +91,7 @@ class PeerJsAdapter implements PeerAdapter {
 
 export interface HostPeerServer {
   readonly peerId: string;
+  readonly roomCode: string;
   close(): void;
 }
 
@@ -98,10 +100,12 @@ export async function createHostPeerServer(
   factory: PeerFactory = createPeerFactory(),
   roomCode = '',
   tokenForPeer: (peerId: string) => string = (peerId) => peerId,
+  roomManager?: RoomManager,
 ): Promise<HostPeerServer> {
   const adapter = await factory.create();
   const session: HostSession = createHostSession(config);
   const connections = new Set<PeerConnection>();
+  const authenticated = new Map<PeerConnection, string>();
   adapter.onConnection((connection) => {
     connections.add(connection);
     connection.onData((raw) => {
@@ -113,16 +117,67 @@ export async function createHostPeerServer(
           connection.close();
           return;
         }
+        let playerId = tokenForPeer(connection.peer);
+        if (roomManager) {
+          if (message.roomCode !== roomManager.roomCode) {
+            connection.send({ type: 'reject', requestId: 'handshake', reason: 'Incompatible room or protocol.' });
+            connection.close();
+            return;
+          }
+          try {
+            playerId = roomManager.reconnect(message.token).id;
+          } catch {
+            connection.send({ type: 'reject', requestId: 'handshake', reason: 'Invalid or expired reconnect token.' });
+            connection.close();
+            return;
+          }
+        }
+        if (!session.state.players.some((player) => player.id === playerId)) {
+          connection.send({ type: 'reject', requestId: 'handshake', reason: 'Unknown player.' });
+          connection.close();
+          return;
+        }
+        authenticated.set(connection, playerId);
+        connection.send({
+          type: 'welcome',
+          protocol: PROTOCOL_VERSION,
+          memberId: playerId,
+          room: roomManager ? roomManager.lobby : { ...session.lobby, roomCode },
+        });
+        connection.send(session.snapshotFor(playerId));
         return;
       }
-      const responses = session.handle(tokenForPeer(connection.peer), message);
+      const playerId = authenticated.get(connection);
+      if (!playerId) {
+        connection.send({ type: 'reject', requestId: 'handshake', reason: 'Handshake required.' });
+        connection.close();
+        return;
+      }
+      if (message.type === 'leave') {
+        connection.close();
+        return;
+      }
+      const responses = session.handle(playerId, message);
       responses.forEach((response) => connection.send(response));
     });
-    connection.onClose(() => connections.delete(connection));
-    connection.onError(() => connections.delete(connection));
+    connection.onClose(() => {
+      const playerId = authenticated.get(connection);
+      connections.delete(connection);
+      authenticated.delete(connection);
+      if (roomManager) {
+        if (playerId && playerId !== roomManager.hostId) {
+          roomManager.disconnect(playerId);
+        }
+      }
+    });
+    connection.onError(() => {
+      connections.delete(connection);
+      authenticated.delete(connection);
+    });
   });
   return {
     peerId: adapter.id,
+    roomCode: roomManager?.roomCode ?? roomCode,
     close() {
       connections.forEach((connection) => connection.close());
       adapter.close();
@@ -135,6 +190,7 @@ export interface GuestPeerClient {
   connect(hostPeerId: string, roomCode: string, token: string): Promise<void>;
   send(message: NetworkMessage): void;
   onMessage(callback: (message: NetworkMessage) => void): void;
+  onDisconnect(callback: () => void): void;
   disconnect(): void;
 }
 
@@ -144,6 +200,7 @@ export async function createGuestPeerClient(
   const adapter = await factory.create();
   let connection: PeerConnection | null = null;
   let receiver: ((message: NetworkMessage) => void) | null = null;
+  let disconnectHandler: (() => void) | null = null;
   return {
     peerId: adapter.id,
     async connect(hostPeerId, roomCode, token) {
@@ -152,6 +209,8 @@ export async function createGuestPeerClient(
         const message = parseNetworkMessage(raw);
         if (message) receiver?.(message);
       });
+      connection.onClose(() => disconnectHandler?.());
+      connection.onError(() => disconnectHandler?.());
       connection.send({ type: 'hello', protocol: PROTOCOL_VERSION, roomCode, token });
     },
     send(message) {
@@ -160,6 +219,9 @@ export async function createGuestPeerClient(
     },
     onMessage(callback) {
       receiver = callback;
+    },
+    onDisconnect(callback) {
+      disconnectHandler = callback;
     },
     disconnect() {
       connection?.close();
