@@ -1579,6 +1579,21 @@ html.land #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top),
   #results-overlay{ padding-top:max(var(--safe-top), var(--edge)) !important; }
   #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top), var(--edge)) - max(env(safe-area-inset-bottom), 8px)) !important; }
 }
+/* pick-a-card dialogs (5 and J): bigger cards, easier to read */
+.modal-card-row{ --card-w:60px; --card-h:84.6px; --cw:60px; gap:8px; }
+@media (max-width:380px){ .modal-card-row{ --card-w:54px; --card-h:76.1px; --cw:54px; gap:6px; } }
+@media (min-width:900px){ .modal-card-row{ --card-w:72px; --card-h:101.5px; --cw:72px; } }
+/* logo: the left cards of the fan pass behind the title, the right ones in front of it */
+#home-screen .fan{ z-index:auto; }
+#home-screen .logo{ position:relative; z-index:3; }
+#home-screen .fan-card.c1{ z-index:1; } #home-screen .fan-card.c2{ z-index:2; } #home-screen .fan-card.c3{ z-index:3; }
+#home-screen .fan-card.c4{ z-index:4; } #home-screen .fan-card.c5{ z-index:5; }
+.modal-card-row{ max-height:calc(var(--app-height) - 230px); overflow-y:auto; padding:4px 2px; }
+.form-strip i.w .ico{ color:#1a1204; width:1.15em; height:1.15em; }
+.form-strip i.w .ico .ic{ stroke-width:2.4; }
+/* the closed menu waits just outside the screen: its shadow must not darken the right edge of the background */
+#side-menu{ box-shadow:none !important; visibility:hidden; transition:transform .26s cubic-bezier(.3,.8,.3,1), box-shadow .26s, visibility 0s linear .26s; }
+#side-menu.open{ box-shadow:-20px 0 50px rgba(0,0,0,.5) !important; visibility:visible; transition:transform .26s cubic-bezier(.3,.8,.3,1), box-shadow .26s, visibility 0s; }
 
 </style>
 </head>
@@ -1802,7 +1817,7 @@ html.land #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top),
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.3.7',   // mostrata in fondo alla home
-  buildTime: '2026-10-31T19:59',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-31T20:17',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -6715,7 +6730,7 @@ function wireStats(){
 ============================================================ */
 const CHANGELOG = [
   {v:'1.3.7', d:'2026-10-31', title:'Ping e dettagli', items:[
-    'Ping sempre visibile (anche quello dell’host) e su una sola riga, righe della stanza più pulite, schermo intero automatico al primo tocco nell’app installata, margini di home e fine partita come in partita'
+    'Ping sempre visibile (anche quello dell’host) e su una sola riga, righe della stanza più pulite, schermo intero automatico al primo tocco nell’app installata, margini di home e fine partita come in partita, numero 1 nei cerchi delle vittorie nelle statistiche, logo con le carte a sinistra dietro il titolo e a destra davanti, carte più grandi quando scarti o peschi'
   ]},
   {v:'1.3.6', d:'2026-10-31', title:'Animazioni e home', items:[
     'Carte che volano senza scatti (stesse proporzioni dall’inizio all’arrivo), jolly giocato con aspetto pulito, «Termina» fa sparire anche la carta in volo, home su PC proporzionata anche a schermo non intero, titoli delle stanze più leggibili con lo stato della stanza anche su telefono'
