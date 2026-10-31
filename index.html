@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#05130d">
+<meta name="theme-color" content="#0e271d">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Il gioco di carte Sboboz come non lo hai mai visto prima. I tuoi amici ti aspettano, ma contro i ninja non hai speranza!">
 <meta name="application-name" content="IlSboboz">
@@ -1072,7 +1072,7 @@
   }
 
   /* ================= premium finish ================= */
-  body{ background:radial-gradient(ellipse at 50% 0%, #17382b 0%, #0a1e16 55%, #040d09 100%); }
+  body{ background:linear-gradient(180deg, #0e271d 0, rgba(14,39,29,0) 170px) top/100% 170px no-repeat, radial-gradient(ellipse at 50% 0%, #17382b 0%, #0a1e16 55%, #040d09 100%); background-color:#040d09; }
   .topbar{ background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.34)); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06); }
   .topbar h2{ background:linear-gradient(180deg, #f6dc8e, #d9a93f); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; text-shadow:none; letter-spacing:.01em; }
   #opponent-seats{ background:linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.18)); box-shadow:inset 0 1px 0 rgba(255,255,255,.04); }
@@ -1548,6 +1548,37 @@
 @media (min-width:900px) and (min-height:500px){
   #game-screen, html.fs #game-screen{ padding-top:max(var(--safe-top), var(--edge)) !important; }
 }
+/* 1.3.6b: one line per player in the room, one line for the ping everywhere */
+.s-ping, .opp-ping, .s-tags em{ white-space:nowrap; }
+.s-tags{ flex:0 0 auto; align-items:center; }
+.s-tags em .sh{ display:none; }
+@media (max-width:480px){
+  .seat-row .s-tags em.ready .lg, .seat-row .s-tags em.wait .lg{ display:none; }
+  .seat-row .s-tags em.ready .sh, .seat-row .s-tags em.wait .sh{ display:inline; }
+  .seat-row .s-tags em.ready, .seat-row .s-tags em.wait{ padding:2px 8px; }
+  .seat-row .s-ping{ font-size:.6rem; padding:3px 6px; flex:0 0 auto; }
+  .seat-row .s-ping:not(:empty)::before{ margin-right:4px; }
+  .seat-row .s-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+}
+/* room code in the menu: centred, the trailing letter-spacing does not push it aside */
+#sm-room{ flex-direction:column !important; align-items:center !important; justify-content:center; gap:6px; text-align:center; }
+#sm-room > span{ font-size:.8rem; opacity:.75; }
+#sm-room .sm-code{ flex:none; font-size:1.5rem; letter-spacing:.2em; padding-left:.2em; text-align:center; }
+#sm-room .sm-copy{ align-self:center; }
+#sm-ping{ justify-content:center; gap:10px; }
+#sm-ping .s-ping{ margin-left:0 !important; }
+/* home: the space under the version equals the space above the buttons */
+#home-screen{ padding-bottom:max(calc(env(safe-area-inset-bottom, 0px) * .3), 5px) !important; }
+#home-screen .app-version{ margin-bottom:0; }
+/* end-of-game results: the same margins as in the game (a band for the buttons on top) */
+#results-overlay{ padding:calc(max(var(--safe-top), var(--edge)) + var(--fab-h) + 4px) max(env(safe-area-inset-right), 6px) max(env(safe-area-inset-bottom), 8px) max(env(safe-area-inset-left), 6px) !important; box-sizing:border-box; }
+#results-box{ max-height:calc(var(--app-height) - max(var(--safe-top), var(--edge)) - var(--fab-h) - 4px - max(env(safe-area-inset-bottom), 8px)) !important; }
+html.land #results-overlay, html.fs.land #results-overlay{ padding-top:max(var(--safe-top), var(--edge)) !important; }
+html.land #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top), var(--edge)) - max(env(safe-area-inset-bottom), 8px)) !important; }
+@media (min-width:900px) and (min-height:500px){
+  #results-overlay{ padding-top:max(var(--safe-top), var(--edge)) !important; }
+  #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top), var(--edge)) - max(env(safe-area-inset-bottom), 8px)) !important; }
+}
 
 </style>
 </head>
@@ -1770,8 +1801,8 @@
    Puoi cambiare queste liste a piacere (anche senza ricompilare nulla).
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
-  version: '1.3.6',   // mostrata in fondo alla home
-  buildTime: '2026-10-31T15:09',   // data e ora di creazione di questo file (per le novità)
+  version: '1.3.7',   // mostrata in fondo alla home
+  buildTime: '2026-10-31T19:59',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -3479,7 +3510,7 @@ const Room = {
     const now = Date.now();
     const pings = Room.pingMap();
     broadcastGuests({t:'ping', ts:now, p:pings});
-    UI.pingChanged(pings);
+    UI.pingChanged();
     R.members.slice().forEach(m=>{
       if(m.kind==='human' && !m.isHost && m.conn && m.connected && now - m.lastSeen > 16000){
         try{ m.conn.close(); }catch(e){}
@@ -4056,7 +4087,7 @@ const Guest = {
       case 'ping':
         Guest.send({t:'pong', ts:msg.ts});
         R.pings = msg.p || {};
-        UI.pingChanged(R.pings);
+        UI.pingChanged();
         break;
       case 'reject': Guest.wantLeave = true; Guest.fail(msg.reason||'Entrata rifiutata.', true); break;
       case 'welcome':
@@ -4749,8 +4780,17 @@ function updateFullscreenButtons(){
 document.addEventListener('fullscreenchange', updateFullscreenButtons);
 // installed app (not iOS, which is already full screen): go full screen at the first touch
 if(IS_STANDALONE && !IS_IOS && FS_REQ){
-  const goFs = ()=>{ document.removeEventListener('pointerdown', goFs, true); if(!fsElement()){ try{ const r = (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); if(r && r.catch) r.catch(()=>{}); }catch(e){} } };
-  document.addEventListener('pointerdown', goFs, true);
+  /* Touch screens grant the permission only when the finger is lifted (pointerup / click), not on pointerdown, so
+     we try on each of them until the full screen has really started. The full-screen button itself is left alone. */
+  const EVS = ['pointerup','touchend','click'];
+  const stop = ()=>{ EVS.forEach(n=>document.removeEventListener(n, goFs, true)); };
+  const goFs = (e)=>{
+    if(fsElement()){ stop(); return; }
+    if(e && e.target && e.target.closest && e.target.closest('.fab, .fs-toggle, #btn-fullscreen-game')) return;
+    try{ const r = (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); if(r && r.then) r.then(stop, ()=>{}); }catch(e2){}
+  };
+  EVS.forEach(n=>document.addEventListener(n, goFs, true));
+  document.addEventListener('fullscreenchange', ()=>{ if(fsElement()) stop(); });
 }
 document.addEventListener('webkitfullscreenchange', ()=>{ updateFullscreenButtons(); scheduleFitSettled(); });
 
@@ -6674,6 +6714,9 @@ function wireStats(){
    an update. Dates/times are when each file was produced.
 ============================================================ */
 const CHANGELOG = [
+  {v:'1.3.7', d:'2026-10-31', title:'Ping e dettagli', items:[
+    'Ping sempre visibile (anche quello dell’host) e su una sola riga, righe della stanza più pulite, schermo intero automatico al primo tocco nell’app installata, margini di home e fine partita come in partita'
+  ]},
   {v:'1.3.6', d:'2026-10-31', title:'Animazioni e home', items:[
     'Carte che volano senza scatti (stesse proporzioni dall’inizio all’arrivo), jolly giocato con aspetto pulito, «Termina» fa sparire anche la carta in volo, home su PC proporzionata anche a schermo non intero, titoli delle stanze più leggibili con lo stato della stanza anche su telefono'
   ]},
@@ -7020,7 +7063,7 @@ const UI = {
       const tags = [];
       if(m.isHost) tags.push('<em class="t host">Host</em>');
       if(me) tags.push('<em class="t me">Tu</em>');
-      if(m.kind==='human' && !m.isHost && R.phase!=='game') tags.push(m.ready ? '<em class="t ready">✓ Pronto</em>' : '<em class="t wait">Non pronto</em>');
+      if(m.kind==='human' && !m.isHost && R.phase!=='game') tags.push(m.ready ? '<em class="t ready"><span class="lg">✓ Pronto</span><span class="sh">✓</span></em>' : '<em class="t wait"><span class="lg">Non pronto</span><span class="sh">…</span></em>');
       if(m.kind==='bot') tags.push(m.random ? '<em class="t bot">Bot casuale</em>' : '<em class="t bot">Bot</em>');
       const ed = me ? '<button class="s-edit" id="btn-edit-me" title="Cambia nome e avatar" aria-label="Cambia nome e avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3zM14 7l3 3"/></svg></button>' : '';
       const rnd = (isHost && m.kind==='bot') ? `<button class="s-rnd${m.random?' on':''}" data-rnd="${m.mid}" title="${m.random?'Bot casuale: cambia ninja a ogni partita':'Rendi casuale'}">🎲</button>` : '';
@@ -7029,7 +7072,7 @@ const UI = {
         ${ava}
         <span class="s-name">${esc(m.name)}</span>${ed}
         <span class="s-tags">${tags.join('')}</span>
-        ${(m.kind==='human' && m.connected && R.online) ? `<span class="s-ping" data-ping="${(m.isHost && isHost) ? 'worst' : (m.isHost ? 'host' : m.mid)}"></span>` : ''}
+        ${(m.kind==='human' && m.connected && (R.online || R.role==='guest')) ? `<span class="s-ping" data-ping="${(m.isHost && isHost) ? 'worst' : (m.isHost ? 'host' : m.mid)}"></span>` : ''}
         ${rnd}
         <span class="s-dot ${m.connected?'on':'off'}"></span>
         ${rm}
