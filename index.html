@@ -1817,7 +1817,7 @@ html.land #results-box{ max-height:calc(var(--app-height) - max(var(--safe-top),
    Modificare questo blocco NON impedisce ai giocatori di entrare nella stessa stanza. */
 window.SBOBOZ_CONFIG = {
   version: '1.3.7',   // mostrata in fondo alla home
-  buildTime: '2026-10-31T20:17',   // data e ora di creazione di questo file (per le novità)
+  buildTime: '2026-10-31T20:31',   // data e ora di creazione di questo file (per le novità)
   // statistiche d'uso anonime con Umami (senza cookie). Per attivarle:
   // crea un sito su https://cloud.umami.is e incolla qui sotto il suo "Website ID".
   // Lasciato vuoto = nessun dato inviato.
@@ -4793,20 +4793,6 @@ function updateFullscreenButtons(){
   document.querySelectorAll('.fs-toggle').forEach(b=>{ b.innerHTML = (isFs ? FS_EXIT : FS_ENTER) + '<span>' + (isFs ? 'Esci da schermo intero' : 'Schermo intero') + '</span>'; });
 }
 document.addEventListener('fullscreenchange', updateFullscreenButtons);
-// installed app (not iOS, which is already full screen): go full screen at the first touch
-if(IS_STANDALONE && !IS_IOS && FS_REQ){
-  /* Touch screens grant the permission only when the finger is lifted (pointerup / click), not on pointerdown, so
-     we try on each of them until the full screen has really started. The full-screen button itself is left alone. */
-  const EVS = ['pointerup','touchend','click'];
-  const stop = ()=>{ EVS.forEach(n=>document.removeEventListener(n, goFs, true)); };
-  const goFs = (e)=>{
-    if(fsElement()){ stop(); return; }
-    if(e && e.target && e.target.closest && e.target.closest('.fab, .fs-toggle, #btn-fullscreen-game')) return;
-    try{ const r = (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); if(r && r.then) r.then(stop, ()=>{}); }catch(e2){}
-  };
-  EVS.forEach(n=>document.addEventListener(n, goFs, true));
-  document.addEventListener('fullscreenchange', ()=>{ if(fsElement()) stop(); });
-}
 document.addEventListener('webkitfullscreenchange', ()=>{ updateFullscreenButtons(); scheduleFitSettled(); });
 
 /* ============================================================
